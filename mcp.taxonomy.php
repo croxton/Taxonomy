@@ -454,17 +454,21 @@ class Taxonomy_mcp {
 	
 	function edit_nodes()
 	{
+	
+		if (! $this->EE->cp->allowed_group('can_access_content')  OR ! $this->EE->cp->allowed_group('can_access_files'))
+		{
+			show_error($this->EE->lang->line('unauthorized_access'));
+		}
+		
 		// check the tree is being passed
-		if ( ! isset($_GET['tree']))
+		if ( ! $this->EE->input->get('tree'))
 		{
 			$this->EE->session->set_flashdata('message_failure', $this->EE->lang->line('no_such_tree'));
 			$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy');
 		}
 
-		$tree = $_GET['tree'];
-		
-		
-		
+		$tree = $this->EE->input->get('tree');
+
 		// check the tree table exists
 		if (!$this->EE->db->table_exists('exp_taxonomy_tree_'.$tree))
 		{
@@ -487,9 +491,7 @@ class Taxonomy_mcp {
 		
 		$this->EE->cp->set_breadcrumb(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy',$this->EE->lang->line('taxonomy_module_name'));
 		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('edit_nodes'));
-		
 
-		
 		$vars = array();
 		
 		// Duplicate code starts here from edit_node()
@@ -510,7 +512,6 @@ class Taxonomy_mcp {
 			$usertemplates 	=  $row->template_preferences;
 			$userchannels	=  $row->channel_preferences;
 		}	
-		
 		
 		if($usertemplates == 0)
 		{
@@ -596,7 +597,6 @@ class Taxonomy_mcp {
 		
 		$vars['asset_path'] = 'expressionengine/third_party/taxonomy/views/';
 
-		
 		// print_r($vars['root']);
 		
 		if($root_array === false)
@@ -615,72 +615,89 @@ class Taxonomy_mcp {
 	
 	function add_root()
 	{
-	
-	$tree = $_POST['tree'];
+		
+		if (! $this->EE->cp->allowed_group('can_access_content')  OR ! $this->EE->cp->allowed_group('can_access_files'))
+		{
+			show_error($this->EE->lang->line('unauthorized_access'));
+		}
+		
+		// check the tree is being passed
+		if ( ! $this->EE->input->post('tree'))
+		{
+			$this->EE->session->set_flashdata('message_failure', $this->EE->lang->line('no_such_tree'));
+			$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy');
+		}
 
-	$this->EE->load->library('MPTtree');
-	$this->EE->mpttree->set_opts(array( 'table' => 'exp_taxonomy_tree_'.$tree,
-									'left' => 'lft',
-									'right' => 'rgt',
-									'id' => 'node_id',
-									'title' => 'label'));
+		$tree = $this->EE->input->post('tree');
 	
-	$data = array(
-					'node_id'			=> '',
-					'label'				=> isset($_POST['label']) ? htmlentities($_POST['label']) : '',
-					'entry_id'			=> isset($_POST['entry_id']) ? $_POST['entry_id'] : '',
-					'template_path'		=> isset($_POST['template_path']) ? $_POST['template_path'] : '',
-					'custom_url'		=> isset($_POST['custom_url']) ? $_POST['custom_url'] : '',
-					'extra'				=> isset($_POST['extra']) ? $_POST['extra'] : ''
-					);
-					
-	$data = $this->EE->security->xss_clean($data);				
-	
-	$this->EE->mpttree->insert_root($data);
-	
-	$this->EE->session->set_flashdata('message_success', $this->EE->lang->line('root_added'));
-	$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=edit_nodes'.AMP.'tree='.$tree);
+		$this->EE->load->library('MPTtree');
+		$this->EE->mpttree->set_opts(array( 'table' => 'exp_taxonomy_tree_'.$tree,
+										'left' => 'lft',
+										'right' => 'rgt',
+										'id' => 'node_id',
+										'title' => 'label'));
+		
+		$data = array(
+						'node_id'			=> '',
+						'label'				=> isset($_POST['label']) ? htmlentities($_POST['label']) : '',
+						'entry_id'			=> isset($_POST['entry_id']) ? $_POST['entry_id'] : '',
+						'template_path'		=> isset($_POST['template_path']) ? $_POST['template_path'] : '',
+						'custom_url'		=> isset($_POST['custom_url']) ? $_POST['custom_url'] : '',
+						'extra'				=> isset($_POST['extra']) ? $_POST['extra'] : ''
+						);
+						
+		$data = $this->EE->security->xss_clean($data);				
+		
+		$this->EE->mpttree->insert_root($data);
+		
+		$this->EE->session->set_flashdata('message_success', $this->EE->lang->line('root_added'));
+		$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=edit_nodes'.AMP.'tree='.$tree);
 	
 	}
 	
 
 	function add_node()
 	{
+		if (! $this->EE->cp->allowed_group('can_access_content')  OR ! $this->EE->cp->allowed_group('can_access_files'))
+		{
+			show_error($this->EE->lang->line('unauthorized_access'));
+		}
 	
 		$tree = $this->EE->input->post('tree');
 		
-		if ($this->EE->db->table_exists('exp_taxonomy_tree_'.$tree))
-		{
-			$parent_node_lft = $_POST['parent_node_lft'];
-		
-			$this->EE->load->library('MPTtree');
-			$this->EE->mpttree->set_opts(array( 'table' => 'exp_taxonomy_tree_'.$tree,
-											'left' => 'lft',
-											'right' => 'rgt',
-											'id' => 'node_id',
-											'title' => 'label'));
-			
-			$data = array(
-							'node_id'			=> '',
-							'label'				=> isset($_POST['label']) ? htmlentities($_POST['label']) : '',
-							'entry_id'			=> isset($_POST['entry_id']) ? $_POST['entry_id'] : '',
-							'template_path'		=> isset($_POST['template_path']) ? $_POST['template_path'] : '',
-							'custom_url'		=> isset($_POST['custom_url']) ? $_POST['custom_url'] : '',
-							'extra'				=> isset($_POST['extra']) ? $_POST['extra'] : ''
-							);
-							
-			$data = $this->EE->security->xss_clean($data);				
-			
-			$this->EE->mpttree->append_node($parent_node_lft,$data);
-		
-			// $this->EE->session->set_flashdata('message_success', $this->EE->lang->line('node_added'));
-			$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=edit_nodes'.AMP.'tree='.$tree.AMP.time());
-		}
-		else
+		if ( ! $this->EE->db->table_exists('exp_taxonomy_tree_'.$tree))
 		{
 			$this->EE->session->set_flashdata('message_failure', $this->EE->lang->line('no_such_tree'));
 			$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy');
-		}	
+		}
+		
+		$parent_node_lft = $this->EE->input->post('parent_node_lft');
+	
+		$this->EE->load->library('MPTtree');
+		$this->EE->mpttree->set_opts(array( 'table' => 'exp_taxonomy_tree_'.$tree,
+										'left' => 'lft',
+										'right' => 'rgt',
+										'id' => 'node_id',
+										'title' => 'label'));
+		
+		$data = array(
+						'node_id'			=> '',
+						'label'				=> isset($_POST['label']) ? htmlentities($_POST['label']) : '',
+						'entry_id'			=> isset($_POST['entry_id']) ? $_POST['entry_id'] : '',
+						'template_path'		=> isset($_POST['template_path']) ? $_POST['template_path'] : '',
+						'custom_url'		=> isset($_POST['custom_url']) ? $_POST['custom_url'] : '',
+						'extra'				=> isset($_POST['extra']) ? $_POST['extra'] : ''
+						);
+						
+		$data = $this->EE->security->xss_clean($data);				
+		
+		$this->EE->mpttree->append_node($parent_node_lft,$data);
+		
+		// this messes up the jquery for some reason...
+		//$this->EE->session->set_flashdata('message_success', $this->EE->lang->line('node_added'));
+		
+		$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=edit_nodes'.AMP.'tree='.$tree.AMP.time());
+			
 	
 	}
 	
@@ -690,9 +707,19 @@ class Taxonomy_mcp {
 	// delete a single node, except the root...
 	function delete_node()
 	{
+		if (! $this->EE->cp->allowed_group('can_access_content')  OR ! $this->EE->cp->allowed_group('can_access_files'))
+		{
+			show_error($this->EE->lang->line('unauthorized_access'));
+		}
 		
-		$tree = $_GET['tree'];
-		$id = $_GET['node_id'];
+		$tree = $this->EE->input->get('tree');
+		$id = $this->EE->input->get('node_id');
+		
+		if ( ! $this->EE->db->table_exists('exp_taxonomy_tree_'.$tree))
+		{
+			$this->EE->session->set_flashdata('message_failure', $this->EE->lang->line('no_such_tree'));
+			$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy');
+		}
 		
 		$this->EE->load->library('MPTtree');
 		$this->EE->mpttree->set_opts(array( 'table' => 'exp_taxonomy_tree_'.$tree,
@@ -703,17 +730,28 @@ class Taxonomy_mcp {
 										
 		
 		$node = $this->EE->mpttree->get_node_byid($id);
+		
 		$this->EE->mpttree->delete_node($node['lft']);
 		$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=edit_nodes'.AMP.'tree='.$tree.AMP.'deleted=true');
 
 	}
 	
-	// delete an entire branch (combine with above function when not 2am.
+	// delete an entire branch (combine with above function when not 2am).
 	function delete_branch()
 	{
+		if (! $this->EE->cp->allowed_group('can_access_content')  OR ! $this->EE->cp->allowed_group('can_access_files'))
+		{
+			show_error($this->EE->lang->line('unauthorized_access'));
+		}
 		
-		$tree = $_GET['tree'];
-		$id = $_GET['node_id'];
+		$tree = $this->EE->input->get('tree');
+		$id = $this->EE->input->get('node_id');
+		
+		if ( ! $this->EE->db->table_exists('exp_taxonomy_tree_'.$tree))
+		{
+			$this->EE->session->set_flashdata('message_failure', $this->EE->lang->line('no_such_tree'));
+			$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy');
+		}
 		
 		$this->EE->load->library('MPTtree');
 		$this->EE->mpttree->set_opts(array( 'table' => 'exp_taxonomy_tree_'.$tree,
@@ -721,8 +759,7 @@ class Taxonomy_mcp {
 										'right' => 'rgt',
 										'id' => 'node_id',
 										'title' => 'label'));
-										
-		
+
 		$node = $this->EE->mpttree->get_node_byid($id);
 		$this->EE->mpttree->delete_branch($node['lft']);
 		$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=edit_nodes'.AMP.'tree='.$tree.AMP.'deleted=true');
@@ -732,8 +769,19 @@ class Taxonomy_mcp {
 	// handles nudging nodes by main edit_nodes interface
 	function node_move()
 	{
-		$tree = $_GET['tree'];
-		$id = $_GET['node_id'];
+		if (! $this->EE->cp->allowed_group('can_access_content')  OR ! $this->EE->cp->allowed_group('can_access_files'))
+		{
+			show_error($this->EE->lang->line('unauthorized_access'));
+		}
+		
+		$tree = $this->EE->input->get('tree');
+		$id = $this->EE->input->get('node_id');
+		
+		if ( ! $this->EE->db->table_exists('exp_taxonomy_tree_'.$tree))
+		{
+			$this->EE->session->set_flashdata('message_failure', $this->EE->lang->line('no_such_tree'));
+			$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy');
+		}
 		
 		$this->EE->load->library('MPTtree');
 		$this->EE->mpttree->set_opts(array( 'table' => 'exp_taxonomy_tree_'.$tree,
@@ -766,11 +814,21 @@ class Taxonomy_mcp {
 	
 	function edit_node()
 	{
+		if (! $this->EE->cp->allowed_group('can_access_content')  OR ! $this->EE->cp->allowed_group('can_access_files'))
+		{
+			show_error($this->EE->lang->line('unauthorized_access'));
+		}
 	
 		$this->EE->load->library('table');
 		$this->EE->load->helper('form');
-		$tree = $_GET['tree'];
-		$id = $_GET['node_id'];
+		$tree = $this->EE->input->get('tree');
+		$id = $this->EE->input->get('node_id');
+		
+		if ( ! $this->EE->db->table_exists('exp_taxonomy_tree_'.$tree))
+		{
+			$this->EE->session->set_flashdata('message_failure', $this->EE->lang->line('no_such_tree'));
+			$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy');
+		}
 		
 		$this->EE->load->library('MPTtree');
 		$this->EE->mpttree->set_opts(array( 'table' => 'exp_taxonomy_tree_'.$tree,
@@ -808,7 +866,6 @@ class Taxonomy_mcp {
 			$usertemplates 	=  $row->template_preferences;
 			$userchannels	=  $row->channel_preferences;
 		}	
-		
 		
 		if($usertemplates == 0)
 		{
@@ -891,11 +948,21 @@ class Taxonomy_mcp {
 	
 	function update_node()
 	{
-		$tree = $_POST['tree'];
-		$id = $_POST['id'];
+
+		if (! $this->EE->cp->allowed_group('can_access_content')  OR ! $this->EE->cp->allowed_group('can_access_files'))
+		{
+			show_error($this->EE->lang->line('unauthorized_access'));
+		}
 		
+		$tree = $this->EE->input->post('tree');
+		$id = $this->EE->input->post('id');
 		
-		
+		if ( ! $this->EE->db->table_exists('exp_taxonomy_tree_'.$tree))
+		{
+			$this->EE->session->set_flashdata('message_failure', $this->EE->lang->line('no_such_tree'));
+			$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy');
+		}
+
 		$this->EE->load->library('MPTtree');
 		$this->EE->mpttree->set_opts(array( 'table' => 'exp_taxonomy_tree_'.$tree,
 										'left' => 'lft',
@@ -913,8 +980,8 @@ class Taxonomy_mcp {
 						);
 						
 		$this->EE->db->query($this->EE->db->update_string('exp_taxonomy_tree_'.$tree, $data, "node_id = '$id'"));
-		$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=edit_nodes'.AMP.'tree='.$tree);			
-					
+		$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=edit_nodes'.AMP.'tree='.$tree);
+		
 	}
 	
 	// just a place to play with stuff.
