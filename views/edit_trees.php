@@ -14,8 +14,6 @@
 									);
 
 			// no results?  Give the "no files" message
-			
-			
 			if (count($tree_info) == 0)
 			{
 				$this->table->add_row(array('data' => lang('no_trees'), 'colspan' => 3, 'class' => 'no_trees_warning'));
@@ -32,6 +30,7 @@
 				$this->table->add_row(
 				$tree['id'],
 				form_hidden('id['.$tree['id'].']', $tree['id']).
+				form_hidden('site_id['.$tree['id'].']', set_value('site_id', $site_id), '').
 				form_input('label['.$tree['id'].']', set_value('label', $tree['label']), 'id="tree_label"'),
 				form_multiselect('template_preferences['.$tree['id'].'][]', $template_preferences, set_value('template_preferences['.$tree['id'].']', $selected_weblogs)),
 				form_multiselect('channel_preferences['.$tree['id'].'][]', $channel_preferences, set_value('channel_preferences['.$tree['id'].']', $selected_channels))									

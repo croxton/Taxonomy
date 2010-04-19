@@ -83,12 +83,16 @@ class Taxonomy_mcp {
 		$this->EE->javascript->compile();
 		
 		// grab the trees
-		$query = $this->EE->db->get('exp_taxonomy_trees');	
+		// $query = $this->EE->db->get('exp_taxonomy_trees');	
+		$query = $this->EE->db->getwhere('exp_taxonomy_trees',array('site_id' => $this->EE->config->item('site_id')));
+		
+		//$this->EE->config->item('site_id')
 
 		foreach($query->result_array() as $row)
 		{
 			// assign vars per result
 			$vars['trees'][$row['id']]['id'] = $row['id'];
+			$vars['trees'][$row['id']]['site_id'] = $row['site_id'];
 			$vars['trees'][$row['id']]['tree_label'] = $row['label'];
 			$vars['trees'][$row['id']]['edit_link'] = BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=edit_trees'.AMP.'id='.$row['id'];
 			$vars['trees'][$row['id']]['edit_nodes_link'] = BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=edit_nodes'.AMP.'tree='.$row['id'];
@@ -138,6 +142,7 @@ class Taxonomy_mcp {
 		
 		$this->EE->javascript->compile();
 		
+		$vars['site_id'] = $this->EE->config->item('site_id');
 		
 		// get the templates available
 		$this->EE->load->model('template_model');
@@ -240,9 +245,10 @@ class Taxonomy_mcp {
 			$title = (isset($_POST['label'][$id]) && $_POST['label'][$id] != '') ? $_POST['label'][$id] : $_POST['label'][$id];
 			
 			$data = array(
-							'id'				=> $_POST['id'][$id],
-							'label'				=> $_POST['label'][$id],
-							'template_preferences'		=> $template_preferences,
+							'id'					=> $_POST['id'][$id],
+							'site_id'				=> $_POST['site_id'][$id],
+							'label'					=> $_POST['label'][$id],
+							'template_preferences'	=> $template_preferences,
 							'channel_preferences' 	=> $channel_preferences
 							);
 	
@@ -308,7 +314,7 @@ class Taxonomy_mcp {
 			else
 			{
 				$this->EE->db->query($this->EE->db->update_string('exp_taxonomy_trees', $data, "id = '$id'"));
-				$cp_message = $this->EE->lang->line('updated');
+				$cp_message = $this->EE->lang->line('properties_updated');
 			}
 		}
 		
@@ -329,6 +335,8 @@ class Taxonomy_mcp {
 
 		$this->EE->load->helper(array('form'));
 		$this->EE->load->library('table');
+		
+		$vars['site_id'] = $this->EE->config->item('site_id');
 		
 		if ($this->EE->input->get_post('toggle'))
 		{
@@ -384,6 +392,7 @@ class Taxonomy_mcp {
    			foreach ($query->result() as $row)
 			{
 				$vars['tree_info'][$row->id]['id'] = $row->id;
+				$vars['tree_info'][$row->id]['site_id'] = $row->site_id;
 				$vars['tree_info'][$row->id]['label'] = $row->label;
 				$vars['tree_info'][$row->id]['template_preferences'] = $row->template_preferences;
 				$vars['tree_info'][$row->id]['channel_preferences'] = $row->channel_preferences;

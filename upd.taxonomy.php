@@ -24,7 +24,7 @@
 
 class Taxonomy_upd {
 
-	var $version = '0.22';
+	var $version = '0.23';
 	
 	function Taxonomy_upd()
 	{
@@ -61,6 +61,7 @@ class Taxonomy_upd {
 														'constraint'	 => '10',
 														'unsigned'		 => TRUE,
 														'auto_increment' => TRUE),
+						'site_id'			=> array('type'	=> 'int', 'constraint'	=> '10'),
 						'label'		  		=> array('type' => 'varchar', 'constraint' => '250'),
 						'template_preferences'		=> array('type' => 'varchar', 'constraint' => '250', 'default' => 'all'),
 						'channel_preferences'		=> array('type' => 'varchar', 'constraint' => '250', 'default' => 'all')
@@ -127,7 +128,22 @@ class Taxonomy_upd {
 	function update($current='')
 	{
 		
-		return TRUE;
+		if ($current == $this->version)
+		{
+			return FALSE;
+		}
+			
+		if ($current < 0.23) 
+		{
+			$this->EE->load->dbforge();
+			$fields = array(
+                        'site_id' => array('type'	=> 'int', 'constraint'	=> '4', 'default' => $this->EE->config->item('site_id'))
+							);
+			$this->EE->dbforge->add_column('taxonomy_trees', $fields);
+			
+			// $.ee_notice("Module updated to v0.23");
+			
+		} 
 	}
 	
 }

@@ -45,6 +45,7 @@ $lang = array(
 "no_such_tree"					=> 'No tree selected, or the selected tree does not exist!',
 "invalid_trees"					=> 'Invalid Tree!',
 "this_is_root"					=> 'This is the root node!',
+"properties_updated"					=> 'Properties have been updated!',
 
 //
 ''=>''
