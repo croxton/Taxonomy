@@ -45,7 +45,9 @@ $lang = array(
 "no_such_tree"					=> 'No tree selected, or the selected tree does not exist!',
 "invalid_trees"					=> 'Invalid Tree!',
 "this_is_root"					=> 'This is the root node!',
-"properties_updated"					=> 'Properties have been updated!',
+"properties_updated"			=> 'Properties have been updated!',
+"no_templates_exist"			=> 'No Templates exist in this site yet, please create at least 1 Template group!',
+"no_channels_exist"				=> 'No Channels exist in this site yet, please create at least 1 Channel!',
 
 //
 ''=>''

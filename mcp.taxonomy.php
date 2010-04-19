@@ -147,6 +147,14 @@ class Taxonomy_mcp {
 		// get the templates available
 		$this->EE->load->model('template_model');
         $templates = $this->EE->template_model->get_templates($this->EE->config->item('site_id'));
+        
+        // no templates?	
+		if ($templates->num_rows() == 0)
+		{
+			$this->EE->session->set_flashdata('message_failure', $this->EE->lang->line('no_templates_exist'));
+			$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy');
+		}
+                
 		foreach($templates->result_array() as $template)
 		{
 			$vars['templates']['options'][$template['template_id']] = '/'.$template['group_name'].'/'.$template['template_name'].'/';
@@ -155,6 +163,14 @@ class Taxonomy_mcp {
 		// get the channels available
 		$this->EE->load->model('channel_model');
 		$channels = $this->EE->channel_model->get_channels($this->EE->config->item('site_id'));
+		
+		// no channels?	
+		if ($channels->num_rows() == 0)
+		{
+			$this->EE->session->set_flashdata('message_failure', $this->EE->lang->line('no_channels_exist'));
+			$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy');
+		}
+		
 		foreach($channels->result_array() as $channel)
 		{
 			$vars['channels']['options'][$channel['channel_id']] = $channel['channel_title'];
