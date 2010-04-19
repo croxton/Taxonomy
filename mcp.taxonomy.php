@@ -190,7 +190,7 @@ class Taxonomy_mcp {
 	function update_trees()
 	{
 
-		if (! $this->EE->cp->allowed_group('can_access_content')  OR ! $this->EE->cp->allowed_group('can_access_files'))
+		if (! $this->EE->cp->allowed_group('can_access_content'))
 		{
 			show_error($this->EE->lang->line('unauthorized_access'));
 		}
@@ -346,7 +346,7 @@ class Taxonomy_mcp {
 	
 	function edit_trees()
 	{
-		if (! $this->EE->cp->allowed_group('can_access_content')  OR ! $this->EE->cp->allowed_group('can_access_files'))
+		if (! $this->EE->cp->allowed_group('can_access_content'))
 		{
 			show_error($this->EE->lang->line('unauthorized_access'));
 		}
@@ -482,7 +482,7 @@ class Taxonomy_mcp {
 	function edit_nodes()
 	{
 	
-		if (! $this->EE->cp->allowed_group('can_access_content')  OR ! $this->EE->cp->allowed_group('can_access_files'))
+		if (! $this->EE->cp->allowed_group('can_access_content'))
 		{
 			show_error($this->EE->lang->line('unauthorized_access'));
 		}
@@ -643,7 +643,7 @@ class Taxonomy_mcp {
 	function add_root()
 	{
 		
-		if (! $this->EE->cp->allowed_group('can_access_content')  OR ! $this->EE->cp->allowed_group('can_access_files'))
+		if (! $this->EE->cp->allowed_group('can_access_content'))
 		{
 			show_error($this->EE->lang->line('unauthorized_access'));
 		}
@@ -685,7 +685,7 @@ class Taxonomy_mcp {
 
 	function add_node()
 	{
-		if (! $this->EE->cp->allowed_group('can_access_content')  OR ! $this->EE->cp->allowed_group('can_access_files'))
+		if (! $this->EE->cp->allowed_group('can_access_content'))
 		{
 			show_error($this->EE->lang->line('unauthorized_access'));
 		}
@@ -734,7 +734,7 @@ class Taxonomy_mcp {
 	// delete a single node, except the root...
 	function delete_node()
 	{
-		if (! $this->EE->cp->allowed_group('can_access_content')  OR ! $this->EE->cp->allowed_group('can_access_files'))
+		if (! $this->EE->cp->allowed_group('can_access_content'))
 		{
 			show_error($this->EE->lang->line('unauthorized_access'));
 		}
@@ -766,7 +766,7 @@ class Taxonomy_mcp {
 	// delete an entire branch (combine with above function when not 2am).
 	function delete_branch()
 	{
-		if (! $this->EE->cp->allowed_group('can_access_content')  OR ! $this->EE->cp->allowed_group('can_access_files'))
+		if (! $this->EE->cp->allowed_group('can_access_content'))
 		{
 			show_error($this->EE->lang->line('unauthorized_access'));
 		}
@@ -796,7 +796,7 @@ class Taxonomy_mcp {
 	// handles nudging nodes by main edit_nodes interface
 	function node_move()
 	{
-		if (! $this->EE->cp->allowed_group('can_access_content')  OR ! $this->EE->cp->allowed_group('can_access_files'))
+		if (! $this->EE->cp->allowed_group('can_access_content'))
 		{
 			show_error($this->EE->lang->line('unauthorized_access'));
 		}
@@ -841,7 +841,7 @@ class Taxonomy_mcp {
 	
 	function edit_node()
 	{
-		if (! $this->EE->cp->allowed_group('can_access_content')  OR ! $this->EE->cp->allowed_group('can_access_files'))
+		if (! $this->EE->cp->allowed_group('can_access_content'))
 		{
 			show_error($this->EE->lang->line('unauthorized_access'));
 		}
@@ -976,7 +976,7 @@ class Taxonomy_mcp {
 	function update_node()
 	{
 
-		if (! $this->EE->cp->allowed_group('can_access_content')  OR ! $this->EE->cp->allowed_group('can_access_files'))
+		if (! $this->EE->cp->allowed_group('can_access_content'))
 		{
 			show_error($this->EE->lang->line('unauthorized_access'));
 		}
