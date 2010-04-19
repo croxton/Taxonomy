@@ -138,7 +138,7 @@ class Taxonomy_mcp {
 		
 		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('add_tree'));
 		
-		$vars['action_url'] = 'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=add_tree';		
+		// $vars['action_url'] = 'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=add_tree';		
 		
 		$this->EE->javascript->compile();
 		
@@ -207,8 +207,7 @@ class Taxonomy_mcp {
 			$this->EE->session->set_flashdata('message_failure', $this->EE->lang->line('choose_tree'));
 			$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=add_tree');
 		}
-
-		// there's a bug somewhere here that only sets 1 template and 1 channel on new trees
+		
 		foreach($tree_names as $id => $tree)
 		{
 			if (isset($_POST['id'][$id]) && $_POST['id'][$id] != '')
@@ -217,7 +216,7 @@ class Taxonomy_mcp {
 				$new = FALSE;
 			}
 			
-			if (isset($_POST['template_preferences'][$id]) && isset($_POST['template_preferences'][$id]))
+			if (isset($_POST['template_preferences'][$id]))
 			{
 				if($new == TRUE)
 				{
@@ -238,7 +237,7 @@ class Taxonomy_mcp {
 				$template_preferences = '1';
 			}
 			
-			if (isset($_POST['channel_preferences'][$id]) && isset($_POST['channel_preferences'][$id]))
+			if (isset($_POST['channel_preferences'][$id]))
 			{
 				if($new == TRUE)
 				{
@@ -257,9 +256,8 @@ class Taxonomy_mcp {
 			{
 				$channel_preferences = '1';
 			}
-			
-			$title = (isset($_POST['label'][$id]) && $_POST['label'][$id] != '') ? $_POST['label'][$id] : $_POST['label'][$id];
-			
+
+						
 			$data = array(
 							'id'					=> $_POST['id'][$id],
 							'site_id'				=> $_POST['site_id'][$id],
@@ -267,6 +265,10 @@ class Taxonomy_mcp {
 							'template_preferences'	=> $template_preferences,
 							'channel_preferences' 	=> $channel_preferences
 							);
+			
+			
+							
+			// print_r($data);				
 	
 			/** ---------------------------------
 			/**  Do our insert or update

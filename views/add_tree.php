@@ -13,8 +13,8 @@
 
 	
 		$this->table->add_row(
-		form_hidden('id[]', set_value('id', ''), '').
 		form_hidden('site_id[]', set_value('site_id', $site_id), '').
+		form_hidden('id[]', '').
 		form_input('label[]', set_value('label', ''), 'id="tree_label"'),
 		form_multiselect('template_preferences[][]', $templates, ''),
 		form_multiselect('channel_preferences[][]', $channels, '')	
