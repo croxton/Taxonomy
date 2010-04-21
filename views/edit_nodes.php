@@ -217,14 +217,28 @@ $(document).ready(function() {
 					$trash_icon = '';
 				}
 				
+				$mask = '';
+				
 				$template = $flat_tree[$i]['template_path'];
 				$selected_template_path = $templates['options'][$template];
 				$custom_url = $flat_tree[$i]['custom_url'];
+				
 				
 				if($custom_url)
 				{
 					$selected_template_path = '';
 					$flat_tree[$i]['url_title'] = '';
+					$node_icon = "<img src='".$asset_path."gfx/link.png' style='margin-right: 5px; vertical-align: bottom;' />";
+					$mask = '?URL=';
+				}
+				
+				$properties = $custom_url.$selected_template_path.$flat_tree[$i]['url_title'];
+				
+				$truncated_properties = substr($properties,0,30);
+				
+				if(strlen($properties) > 30)
+				{
+					$truncated_properties .= "&hellip;";
 				}
 				
 				
@@ -233,10 +247,11 @@ $(document).ready(function() {
 							$move_left.$move_right,
 							$move_up.$move_down,
 							$spacer.$node_icon."<a href='".$node_link_base.AMP.'method=edit_node'.AMP.'node_id='.$node_id.AMP.'tree='.$tree."'>".$node_label."",
-							$custom_url.$selected_template_path.$flat_tree[$i]['url_title'],
+							"<span class='node_properties'><a href='".$url_prefix.$mask.$properties."' title='".lang('visit').$properties."'>".$truncated_properties."</a></span>",
 							$trash_icon
 						);	
 			
+				
 			 
 			}
 		}

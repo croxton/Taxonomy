@@ -6,6 +6,7 @@ a#search_for_nodes img { vertical-align: middle;}
 #node_search {width:400px;height:40px;overflow:auto;}
 input#autocomplete_entries {width: 300px;}
 #fancybox-inner  table.mainTable {border-top: 1px solid #d0d7df;}
+table.mainTable span.node_properties a { color: #6c6c6c;}
  
  
 /* 

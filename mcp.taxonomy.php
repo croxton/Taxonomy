@@ -521,6 +521,7 @@ class Taxonomy_mcp {
 
 		$vars = array();
 		
+		
 		// Duplicate code starts here from edit_node()
 		// fetch the user template and channel preferences for this tree
 		$this->EE->db->where_in('id', $tree);
@@ -623,6 +624,8 @@ class Taxonomy_mcp {
 		$vars['flat_tree'] = $this->EE->mpttree->get_flat_tree_v2(1);
 		
 		$vars['asset_path'] = 'expressionengine/third_party/taxonomy/views/';
+		$vars['url_prefix'] = $this->EE->functions->fetch_site_index();
+
 
 		// print_r($vars['root']);
 		
