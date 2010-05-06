@@ -4,8 +4,8 @@
  *  Taxonomy Module for ExpressionEngine 2
  *
  * @package		ExpressionEngine
- * @subpackage	Fieldtypes
- * @category	Fieldtypes
+ * @subpackage	Taxonomy
+ * @category	Modules
  * @author    	Iain Urquhart <shout@iain.co.nz>
  * @copyright 	Copyright (c) 2010 Iain Urquhart
  * @license   	http://creativecommons.org/licenses/MIT/  MIT License
