@@ -41,6 +41,7 @@ $lang = array(
 "create_tree"					=> 'Create Tree',
 "parent_node"					=> 'Parent Node',
 "template_preferences"			=> 'Selected Templates',
+"template"						=> 'Template',
 "channel_preferences"			=> 'Selected Channels',
 "no_such_tree"					=> 'No tree selected, or the selected tree does not exist!',
 "invalid_trees"					=> 'Invalid Tree!',

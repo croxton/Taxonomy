@@ -194,15 +194,15 @@
 					<table class="mainTable" border="0" cellspacing="0" cellpadding="0">
 
 							<tr>
-								<td style="width: 100px;">Menu Label</td>
+								<td style="width: 100px;">'.$this->EE->lang->line('node_label').'</td>
 								<td>'.$label.'</td>
 							</tr>
 							<tr>
-								<td>Parent Node</td>
+								<td>'.$this->EE->lang->line('parent_node').'</td>
 								<td>'.$parent_node_options.'</td>
 							</tr>
 							<tr>
-								<td>Template</td>
+								<td>'.$this->EE->lang->line('template').'</td>
 								<td>'.$template.'</td>
 							</tr>
 					</table>';
