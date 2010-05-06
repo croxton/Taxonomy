@@ -287,7 +287,7 @@
 				$taxonomy_data['node_id'] = $node['node_id'];
 
 				// update/insert the values
-				$mpttree->update_node($node['lft'],$taxonomy_data);
+				// 
 
 				// check if the submitted parent is different
 				if($parent_node_lft != $existing_parent['lft'])
@@ -296,12 +296,16 @@
 					$mpttree->delete_node($node['lft']);
 
 					// insert the update as a new node
-					$mpttree->append_node($parent_node_lft,$taxonomy_data);
+					$mpttree->append_node_last($parent_node_lft,$taxonomy_data);
 
 					// buggy, with the potential to fark the node tree completeley
 					// if a parent node is moved down the tree it wipes the whole branch
 					// with bizarre lft and rgt values
 					// $mpttree->move_node_append_last($node['lft'],$parent_node_lft);
+				}
+				else
+				{
+					$mpttree->update_node($node['lft'],$taxonomy_data);
 				}
 
 			}
