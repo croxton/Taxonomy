@@ -49,6 +49,7 @@ $lang = array(
 "no_templates_exist"			=> 'No Templates exist in this site yet, please create at least 1 Template group!',
 "no_channels_exist"				=> 'No Channels exist in this site yet, please create at least 1 Channel!',
 "visit"							=> 'Visit: ',
+"select_tree"					=> 'Select the tree associated with this field',
 
 //
 ''=>''

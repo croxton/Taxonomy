@@ -1,40 +1,28 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-/*
-	Copyright (c) 2010 Iain Urquhart - shout@iain.co.nz
 
-	Permission is hereby granted, free of charge, to any person obtaining a copy
-	of this software and associated documentation files (the "Software"), to deal
-	in the Software without restriction, including without limitation the rights
-	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-	copies of the Software, and to permit persons to whom the Software is
-	furnished to do so, subject to the following conditions:
-
-	The above copyright notice and this permission notice shall be included in
-	all copies or substantial portions of the Software.
-
-	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-	THE SOFTWARE.
- */
-
-	// @todo - language
+/**
+ *  Taxonomy Fieldtype for ExpressionEngine 2
+ *
+ * @package		ExpressionEngine
+ * @subpackage	Fieldtypes
+ * @category	Fieldtypes
+ * @author    	Iain Urquhart <shout@iain.co.nz>
+ * @copyright 	Copyright (c) 2010 Iain Urquhart
+ * @license   	http://creativecommons.org/licenses/MIT/  MIT License
+*/
 
 	class Taxonomy_ft extends EE_Fieldtype
 	{
 		var $info = array(
 			'name'		=> 'Taxonomy',
-			'version'	=> '0.1'
+			'version'	=> '0.2'
 		);
 
 		public function Taxonomy_ft()
 		{
 			parent::EE_Fieldtype();
 			require PATH_THIRD.'taxonomy/libraries/mpttree.php';
-
+			$this->EE->lang->loadfile('taxonomy');
 		}	
 
 		public function display_field($data)
@@ -55,7 +43,7 @@
 			// check the tree table exists
 			if (!$this->EE->db->table_exists('exp_taxonomy_tree_'.$tree))
 			{
-				return 'No such tree exists! Please check field configuration';
+				return $this->EE->lang->line('no_such_tree');
 			}
 
 			$this->EE->db->where_in('id', $tree);
@@ -191,16 +179,17 @@
 
 					$parent_node_options .= "</select>";
 
-					// rewrite template select option with selected attribute
+					// replace active/selected template option with selected attribute
 					$template = str_replace('value="'.$row->template_path.'">', 'value="'.$row->template_path.'" selected="selected">', $template);
 
 				}
 
 			}
 
-			// add the hidden field that flags if this is new or an edit
+			// add the hidden field that flags if this is 'new' or an 'edit' submission_type
 			$return .= form_hidden($this->field_name.'[submission_type]', $submission_type, '');
 			
+			// @todo
 			$return .= '
 					<table class="mainTable" border="0" cellspacing="0" cellpadding="0">
 
@@ -239,8 +228,6 @@
 
 			$data = $this->cache['data'][$this->settings['field_id']];
 			
-			// print_r($data);
-			
 			if(!$data)
 			{
 				return NULL;
@@ -261,7 +248,7 @@
 			// check tree exists
 			if ( ! $this->EE->db->table_exists('exp_taxonomy_tree_'.$tree))
 			{
-				// need to think about this
+				// need to think about this @todo
 				return NULL;
 			}	
 
@@ -321,11 +308,22 @@
 
 		public function display_settings($data)
 		{
-		
+			
+			// fetch the trees available on this site
+			$query = $this->EE->db->getwhere('exp_taxonomy_trees',array('site_id' => $this->EE->config->item('site_id')));
+			
+			//build the select options
+			$options = array();
+			
+			foreach($query->result_array() as $row)
+			{
+				$options[$row['id']] = $row['label'];
+			}
+			
 			$this->EE->table->add_row(
-			$this->EE->lang->line('tree_id_label'),
-			form_input(array('field_list_items','name'=>'field_list_items', 'class'=>'fullfield', 'value'=>$data['field_list_items']))
-		);
+				$this->EE->lang->line('select_tree'),
+				form_dropdown('field_list_items', $options, $data['field_list_items'])
+			);
 		}
 
 		function install()
