@@ -7,7 +7,7 @@
 	$entry_list = '';
 	foreach($entries as $key => $entry)
 	{
-		$entry_list .= "{ id:'".$key."', entry:'".$entry."'}, ";
+		$entry_list .= "{ id:'".$key."', entry:'".addslashes($entry)."'}, ";
 	}
 	$entry_list .= "{ id: '', entry: ''} ";
 

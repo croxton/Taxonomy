@@ -517,7 +517,6 @@ class Taxonomy_mcp {
 		
 		
 		$this->EE->cp->set_breadcrumb(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy',$this->EE->lang->line('taxonomy_module_name'));
-		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('edit_nodes'));
 
 		$vars = array();
 		
@@ -539,6 +538,7 @@ class Taxonomy_mcp {
 		{
 			$usertemplates 	=  $row->template_preferences;
 			$userchannels	=  $row->channel_preferences;
+			$tree_label 	=  $row->label;
 		}	
 		
 		if($usertemplates == 0)
@@ -625,7 +625,8 @@ class Taxonomy_mcp {
 		
 		$vars['asset_path'] = 'expressionengine/third_party/taxonomy/views/';
 		$vars['url_prefix'] = $this->EE->functions->fetch_site_index();
-
+		
+		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('edit_nodes').': '.$tree_label);
 
 		// print_r($vars['root']);
 		

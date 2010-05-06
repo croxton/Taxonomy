@@ -1,3 +1,4 @@
+
 <script src="<?=$asset_path?>js/jquery.livequery.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript" src="<?=$asset_path?>js/fancybox/jquery.fancybox-1.3.1.pack.js"></script>
 <script type="text/javascript" src="<?=$asset_path?>js/jquery.autocomplete.min.js"></script>
@@ -7,7 +8,7 @@
 	$entry_list = '';
 	foreach($entries as $key => $entry)
 	{
-		$entry_list .= "{ id:'".$key."', entry:'".$entry."'}, ";
+		$entry_list .= "{ id:'".$key."', entry:'".addslashes($entry)."'}, ";
 	}
 	$entry_list .= "{ id: '', entry: ''} ";
 
