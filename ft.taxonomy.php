@@ -125,6 +125,8 @@
 
 			//output the field table
 			$return = '';
+			
+			$breadcrumb = '';
 
 			// are we editing an entry?
 			if($this->EE->input->get('entry_id'))
@@ -143,7 +145,8 @@
 				{
 					// flag it as an edit for the save process
 					$submission_type = 'edit';
-
+					$breadcrumb = '';
+					
 					$label = form_input(array(
 											'name'	=> $this->field_name.'[label]',
 											'id'	=> $this->field_id,
@@ -155,6 +158,25 @@
 					$parent_node_options .= "<option value=''>--</option>";
 
 					$parent = $mpttree->get_parent($row->lft,$row->rgt);
+					
+					// build the path to here crumb
+					$path = $mpttree->get_parents($row->lft,$row->rgt);
+					$path = array_reverse($path);
+					$depth = 0;		
+					foreach($path as $crumb)
+					{
+						$breadcrumb .= $crumb['label'].' &rarr; ';
+						$depth++;
+					}
+
+					if($depth == 0)
+					{
+						$breadcrumb .= lang('this_is_root');
+					}
+					else
+					{
+						$breadcrumb .= $node['label'];
+					}
 
 					foreach ($taxonomy_nodes as $node)
 					{
@@ -188,14 +210,12 @@
 
 			// add the hidden field that flags if this is 'new' or an 'edit' submission_type
 			$return .= form_hidden($this->field_name.'[submission_type]', $submission_type, '');
-			
-		
-			
+			// $return .= '<fieldset><legend>'.lang('path_to_here').'</legend> '.$breadcrumb.'</fieldset>';
 			// @todo
 			$return .= '
-					<table class="mainTable" border="0" cellspacing="0" cellpadding="0">
-							<tr>
-								<th colspan="2">Path to here:</th>
+					<table class="mainTable" border="0" cellspacing="0" cellpadding="0" style="margin-top: 5px;">
+							<tr class="matrix">
+								<th colspan="2" class="matrix">Node Properties</th>
 							</tr>
 							<tr>
 								<td style="width: 100px;">'.$this->EE->lang->line('node_label').'</td>
@@ -210,6 +230,7 @@
 								<td>'.$template.'</td>
 							</tr>
 					</table>';
+					
 			
 			return $return;
 
@@ -257,6 +278,7 @@
 			}	
 
 			$parent_node_lft = $data['parent_node_lft'];
+			
 
 			$taxonomy_data = array(
 							'node_id'			=> '',
@@ -290,18 +312,22 @@
 				// 
 
 				// check if the submitted parent is different
-				if($parent_node_lft != $existing_parent['lft'])
+				if($parent_node_lft != $existing_parent['lft'] && $parent_node_lft != '')
 				{
+					
+					// find the parent node that's intended
+					$parent_node_id = $mpttree->get_node($parent_node_lft);
+					
 					// delete the node and promote the children
 					$mpttree->delete_node($node['lft']);
+					
+					// now the lft values have possibly changed by the above delete
+					// find the intended parent node by its node_id, as that hasn't changed
+					$new_parent = $mpttree->get_node_byid($parent_node_id['node_id']);
+					
+					// insert the node!
+					$mpttree->append_node_last($new_parent['lft'],$taxonomy_data);
 
-					// insert the update as a new node
-					$mpttree->append_node_last($parent_node_lft,$taxonomy_data);
-
-					// buggy, with the potential to fark the node tree completeley
-					// if a parent node is moved down the tree it wipes the whole branch
-					// with bizarre lft and rgt values
-					// $mpttree->move_node_append_last($node['lft'],$parent_node_lft);
 				}
 				else
 				{
