@@ -211,7 +211,11 @@
 
 			// add the hidden field that flags if this is 'new' or an 'edit' submission_type
 			$return .= form_hidden($this->field_name.'[submission_type]', $submission_type, '');
-			// $return .= '<fieldset><legend>'.lang('path_to_here').'</legend> '.$breadcrumb.'</fieldset>';
+			
+			if($breadcrumb)
+			{
+				$return .= '<fieldset><legend>'.lang('path_to_here').'</legend> '.$breadcrumb.'</fieldset>';
+			}
 			// @todo
 			$return .= '
 					<table class="mainTable" border="0" cellspacing="0" cellpadding="0" style="margin-top: 5px;">
@@ -310,7 +314,6 @@
 				$taxonomy_data['node_id'] = $node['node_id'];
 
 				// update/insert the values
-				// 
 
 				// check if the submitted parent is different
 				if($parent_node_lft != $existing_parent['lft'] && $parent_node_lft != '')
@@ -332,6 +335,7 @@
 				}
 				else
 				{
+					// we're just updating the label or the template
 					$mpttree->update_node($node['lft'],$taxonomy_data);
 				}
 
