@@ -13,7 +13,7 @@
 
 class Taxonomy_upd {
 
-	var $version = '0.31';
+	var $version = '0.32';
 	
 	function Taxonomy_upd()
 	{

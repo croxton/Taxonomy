@@ -26,6 +26,7 @@ $lang = array(
 "tree_added"					=> 'Your new tree has been created!',
 "edit_nodes"					=> 'Edit Nodes',
 "insert_a_root"					=> 'Please insert a root node:',
+"no_root_node"					=> 'This tree has no nodes, please add at least a root node first!',
 "create_node"					=> 'Add a node',
 "name"							=> 'Node',
 "title"							=> 'Title',
@@ -51,6 +52,7 @@ $lang = array(
 "no_channels_exist"				=> 'No Channels exist in this site yet, please create at least 1 Channel!',
 "visit"							=> 'Visit: ',
 "select_tree"					=> 'Select the tree associated with this field',
+"node_properties"				=> 'Node Properties',
 
 //
 ''=>''

@@ -15,7 +15,7 @@
 	{
 		var $info = array(
 			'name'		=> 'Taxonomy',
-			'version'	=> '0.2'
+			'version'	=> '0.3'
 		);
 
 		public function Taxonomy_ft()
@@ -106,7 +106,8 @@
 			if( ! $taxonomy_nodes)
 			{
 				// @todo
-				return '<p>This tree has no nodes, please add at least a root node first!</p>';
+				$msg = lang('no_root_node');
+				return '<p>'.$msg.'</p>';
 			}
 			
 			// build the select parent pulldown
@@ -215,7 +216,7 @@
 			$return .= '
 					<table class="mainTable" border="0" cellspacing="0" cellpadding="0" style="margin-top: 5px;">
 							<tr class="matrix">
-								<th colspan="2" class="matrix">Node Properties</th>
+								<th colspan="2" class="matrix">'.$this->EE->lang->line('node_properties').'</th>
 							</tr>
 							<tr>
 								<td style="width: 100px;">'.$this->EE->lang->line('node_label').'</td>
