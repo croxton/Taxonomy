@@ -219,8 +219,8 @@
 			// @todo
 			$return .= '
 					<table class="mainTable" border="0" cellspacing="0" cellpadding="0" style="margin-top: 5px;">
-							<tr class="matrix">
-								<th colspan="2" class="matrix">'.$this->EE->lang->line('node_properties').'</th>
+							<tr>
+								<th colspan="2">'.$this->EE->lang->line('node_properties').'</th>
 							</tr>
 							<tr>
 								<td style="width: 100px;">'.$this->EE->lang->line('node_label').'</td>
