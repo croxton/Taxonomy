@@ -2303,6 +2303,7 @@ ORDER BY {$this->left_col} DESC) as parent";
 	        						'node_title' => $data['label'], 
 	        						'node_url' => $node_url,
 	        						'node_active' => $active,
+	        						'node_active_parent' => $active_parent,
 	        						'node_lft' => $data['lft'],
 									'node_rgt' => $data['rgt'],
 									'node_entry_id' =>  $data['entry_id'],
