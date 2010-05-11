@@ -298,7 +298,7 @@
 			if($data['submission_type'] =='new' && $data['label'] != '')
 			{
 				// easy, just insert it
-				$mpttree->append_node($parent_node_lft,$taxonomy_data);
+				$mpttree->append_node_last($parent_node_lft,$taxonomy_data);
 			}
 
 			// or are we editing

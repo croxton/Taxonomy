@@ -712,7 +712,7 @@ class Taxonomy_mcp {
 						
 		$data = $this->EE->security->xss_clean($data);				
 		
-		$this->EE->mpttree->append_node($parent_node_lft,$data);
+		$this->EE->mpttree->append_node_last($parent_node_lft,$data);
 		
 		// this messes up the jquery for some reason...
 		//$this->EE->session->set_flashdata('message_success', $this->EE->lang->line('node_added'));

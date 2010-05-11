@@ -71,6 +71,8 @@ class Taxonomy {
 				}
 				
 				$node_url = 	$this->EE->functions->fetch_site_index().$template_group.$template_name.$url_title;
+				// if we're not using an index, get rid of double slashes
+				$node_url = $this->EE->functions->remove_double_slashes($node_url);
 				
 				// override template and entry slug with custom url if set
 				if($crumb['custom_url'] != '')
@@ -191,6 +193,8 @@ class Taxonomy {
 				}
 				
 				$node_url = $this->EE->functions->fetch_site_index().$template_group.$template_name.$url_title;
+				// if we're not using an index, get rid of double slashes
+				$node_url = $this->EE->functions->remove_double_slashes($node_url);
 				
 				if($node['custom_url'] != '')
 				{
