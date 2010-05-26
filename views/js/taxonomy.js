@@ -15,8 +15,15 @@ $(document).ready(function() {
 	
 	
 	$("#edit_nodes a.fancypants").livequery('click', function() { 
+	
+		$.fancybox.showActivity();
+
+			// alert('foo');
    			var url = $(this).attr("href")+" #edit_nodes";
-				$("#edit_nodes").load(url);
+				$("#edit_nodes").load(url, function () {
+				    // this is the callback function, called after the load is finished.
+				    $.fancybox.hideActivity();
+				});
 				return false;
 	});	
 	
