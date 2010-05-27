@@ -367,11 +367,16 @@
 				$options[$row['id']] = $row['label'];
 			}
 			
-			$this->EE->table->add_row(
-				$this->EE->lang->line('select_tree'),
-				form_dropdown('field_list_items', $options, $data['field_list_items'])
-			);
-		}
+			// bugfix by Jeroen
+			$prefix = 'taxonomy';
+			$prefix = ($prefix ? "_$prefix" : "");
+ 			$this->EE->table->add_row(
+ 				$this->EE->lang->line('select_tree'),
+				form_dropdown($prefix.'field_list_items', $options, $data['field_list_items'])
+ 			);
+ 			
+ 		}			
+
 
 		function install()
 		{
