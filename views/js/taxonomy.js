@@ -16,10 +16,7 @@ $(document).ready(function() {
 	
 	$("#edit_nodes a.fancypants").livequery('click', function() { 
 	
-		$.fancybox.showActivity({
-    		'overlayOpacity'    :  0.2,
-    		'overlayColor'      : '#000' 
-		});
+		$.fancybox.showActivity();
 
 			// alert('foo');
    			var url = $(this).attr("href")+" #edit_nodes";
