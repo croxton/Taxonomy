@@ -15,7 +15,7 @@
 	{
 		var $info = array(
 			'name'		=> 'Taxonomy',
-			'version'	=> '0.3'
+			'version'	=> '0.31'
 		);
 
 		public function Taxonomy_ft()
@@ -30,9 +30,8 @@
 
 			$mpttree = new MPTtree;
 
-			// a bit hacky @todo
-			$tree = $this->settings['field_list_items'];
-			
+			$tree = $this->settings['tree_id'];
+						
 			// call the tree
 			$mpttree->set_opts(array( 'table' => 'exp_taxonomy_tree_'.$tree,
 										'left' => 'lft',
@@ -266,7 +265,7 @@
 			$mpttree = new MPTtree;
 			
 			// bit hacky @todo
-			$tree = $this->settings['field_list_items'];
+			$tree = $this->settings['tree_id'];
 			
 			// call the tree
 			$mpttree->set_opts(array( 'table' => 'exp_taxonomy_tree_'.$tree,
@@ -350,7 +349,9 @@
 		
 		public function save_settings($data)
 		{
-			return array();
+			return array(
+				'tree_id'	=> $this->EE->input->post('tree_id')
+			);
 		}
 
 		public function display_settings($data)
@@ -367,12 +368,14 @@
 				$options[$row['id']] = $row['label'];
 			}
 			
-			// bugfix by Jeroen
-			$prefix = 'taxonomy';
-			$prefix = ($prefix ? "_$prefix" : "");
+			if(!isset($data['tree_id']))
+			{
+				$data['tree_id'] = '';
+			}
+			
  			$this->EE->table->add_row(
  				$this->EE->lang->line('select_tree'),
-				form_dropdown($prefix.'field_list_items', $options, $data['field_list_items'])
+				form_dropdown('tree_id', $options, $data['tree_id'])
  			);
  			
  		}			
