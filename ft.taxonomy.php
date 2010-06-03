@@ -175,7 +175,7 @@
 					}
 					else
 					{
-						$breadcrumb .= $node['label'];
+						$breadcrumb .= $row->label;
 					}
 
 					foreach ($taxonomy_nodes as $node)
