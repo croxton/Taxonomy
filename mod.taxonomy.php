@@ -122,6 +122,15 @@ class Taxonomy {
 			{
 				$root = 1;
 			}
+			
+			if($this->EE->TMPL->fetch_param('root_node_entry_id'))
+			{
+				$root_entry_id = $this->EE->TMPL->fetch_param('root_node_entry_id');
+			}
+			else
+			{
+				$root_entry_id = NULL;
+			}
 
 			$this->EE->load->library('MPTtree');
 			$this->EE->mpttree->set_opts(array( 'table' => 'exp_taxonomy_tree_'.$tree,
@@ -139,9 +148,17 @@ class Taxonomy {
 				$path = $this->EE->mpttree->get_parents_crumbs($here['lft'],$here['rgt']);
 				$entry_id = $here['entry_id'];
 			}
-
-			$tree2array = $this->EE->mpttree->tree2array_v2($root);
-					
+			
+			// @todo
+			if($root_entry_id)
+			{
+				$tree2array = $this->EE->mpttree->tree2array_v2($root, $root_entry_id);
+			}
+			else
+			{
+				$tree2array = $this->EE->mpttree->tree2array_v2($root);
+			}	
+				
 			return $this->EE->mpttree->mptree_cp_loop($tree2array, $str, $display_root, $depth, $path, $entry_id);
 		}
 		else

@@ -2379,9 +2379,17 @@ ORDER BY {$this->left_col} DESC) as parent";
 	 * @param $root The node that shall be root in the tree (local scope)
 	 * @return A recursive array, false if the root node was not found
 	 */
-		function tree2array_v2($root = 1)
+		function tree2array_v2($root = 1, $root_entry_id = NULL)
 		{
-			$node = $this->get_node($root);
+			
+			if($root_entry_id)
+			{
+				$node = $this->get_node_by_entryid($root_entry_id);
+			}
+			else
+			{
+				$node = $this->get_node($root);
+			}
 			if($node == false)
 				return false;
 			// query
