@@ -161,6 +161,9 @@
 					
 					// build the path to here crumb
 					$path = $mpttree->get_parents($row->lft,$row->rgt);
+					
+					// print_r($path);
+					
 					$path = array_reverse($path);
 					$depth = 0;		
 					foreach($path as $crumb)
@@ -213,7 +216,7 @@
 			
 			if($breadcrumb)
 			{
-				$return .= '<fieldset><legend>'.lang('path_to_here').'</legend> '.$breadcrumb.'</fieldset>';
+				$return .= '<p id="taxonomy-crumb"><strong>'.lang('path_to_here').'</strong> '.$breadcrumb.'</p>';
 			}
 			// @todo
 			$return .= '

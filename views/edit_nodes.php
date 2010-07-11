@@ -4,6 +4,9 @@
 <script type="text/javascript" src="<?=$asset_path?>js/jquery.autocomplete.min.js"></script>
 
 <?php
+	
+	// this whole view needs rewritten, too much logic going on. (or lack of...)
+
 	// build the index for autocomplete
 	$entry_list = '';
 	foreach($entries as $key => $entry)
@@ -50,8 +53,8 @@ $(document).ready(function() {
 		print form_open('C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=add_node');
 		$this->table->set_template($cp_table_template);
 		$this->table->set_heading(
-				array('data' => "&nbsp;<img src='expressionengine/third_party/taxonomy/views/gfx/add_node.png' style='margin-right: 5px; vertical-align: bottom;' />&nbsp;".lang('create_node'), 'class' => 'create_node', 'style' => 'width:30%'),
-				array('data' => "", 'class' => 'create_node', 'style' => 'width:70%')
+				array('data' => "<span><img src='expressionengine/third_party/taxonomy/views/gfx/add_node.png' style='margin-right: 5px; vertical-align: bottom;' />&nbsp;".lang('create_node')."</span>", 'class' => 'create_node'),
+				array('data' => "")
 		);
 	
 		$select_tree_options = "<select name='parent_node_lft'>";
@@ -126,9 +129,7 @@ $(document).ready(function() {
 	</div>
 		
 <?php		
-		
 
-				
 		echo "<div id='edit_table_inner'>";
 		
 		$this->table->set_template($cp_table_template);
@@ -136,7 +137,6 @@ $(document).ready(function() {
 									array('data' => lang(''), 'style' => 'width: 40px;'),
 									array('data' => lang(''), 'style' => 'width: 30px;'),
 									array('data' => lang('name'), 'style' => ''),
-									array('data' => lang('properties'), 'style' => ''),
 									array('data' => lang('Delete'), 'style' => 'width:20px')
 								);
 	
@@ -204,9 +204,8 @@ $(document).ready(function() {
 					$trash_icon = "<a href='".$node_link_base.AMP."method=delete_branch".AMP."node_id=".$node_id.AMP."tree=".$tree.AMP."del_childs=yes' class='delete_nodes'>
 					<img src='".$asset_path."gfx/trash-children.png' style='margin-right: 5px; vertical-align: bottom;' /></a>";
 				}
-				
-				//onClick='if(confirm(\"".lang('branch_delete_question')."\")) return true; else return false'
-				
+						
+								
 				// root node can't have operations...
 				if ($flat_tree[$i]['lft'] == 1)
 				{
@@ -220,9 +219,16 @@ $(document).ready(function() {
 				
 				$mask = '';
 				
+				// @todo cleanup this mess...
 				$template = $flat_tree[$i]['template_path'];
 				$selected_template_path = $templates['options'][$template];
 				$custom_url = $flat_tree[$i]['custom_url'];
+				$edit_base = BASE.AMP.'C=content_publish'.AMP.'M=entry_form'.AMP.'channel_id='.$flat_tree[$i]['channel_id'].AMP.'entry_id='.$flat_tree[$i]['entry_id'];
+				$properties = $custom_url.$selected_template_path.$flat_tree[$i]['url_title'];
+				
+				$edit_node_url = "<a href='".$node_link_base.AMP.'method=edit_node'.AMP.'node_id='.$node_id.AMP.'tree='.$tree."'>Edit Node</a>";
+				$edit_entry_url = "<a href='".$edit_base."'>Edit Entry</a> ";
+				$visit_page_url = "<a href='".$url_prefix.$mask.$properties."' target='_blank' title='".lang('visit').$properties."'>Visit Page</a> ";
 				
 				
 				if($custom_url)
@@ -231,10 +237,9 @@ $(document).ready(function() {
 					$flat_tree[$i]['url_title'] = '';
 					$node_icon = "<img src='".$asset_path."gfx/link.png' style='margin-right: 5px; vertical-align: bottom;' />";
 					$mask = '?URL=';
+					$edit_entry_url = "";
 				}
-				
-				$properties = $custom_url.$selected_template_path.$flat_tree[$i]['url_title'];
-				
+
 				$truncated_properties = substr($properties,0,30);
 				
 				if(strlen($properties) > 30)
@@ -247,13 +252,11 @@ $(document).ready(function() {
 				$this->table->add_row(
 							$move_left.$move_right,
 							$move_up.$move_down,
-							$spacer.$node_icon."<a href='".$node_link_base.AMP.'method=edit_node'.AMP.'node_id='.$node_id.AMP.'tree='.$tree."'>".$node_label."",
-							"<span class='node_properties'><a href='".$url_prefix.$mask.$properties."' title='".lang('visit').$properties."'>".$truncated_properties."</a></span>",
+							"<div class='node-label-holder'>
+								<span class='edit-functions'>".$edit_node_url.$edit_entry_url.$visit_page_url."</span>
+							</div>".$spacer.$node_icon."<a href='".$node_link_base.AMP.'method=edit_node'.AMP.'node_id='.$node_id.AMP.'tree='.$tree."'>".$node_label."",
 							$trash_icon
 						);	
-			
-				
-			 
 			}
 		}
 		
