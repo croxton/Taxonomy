@@ -217,6 +217,7 @@ $(document).ready(function() {
 					$trash_icon = '';
 				}
 				
+				//@todo cp mask url
 				$mask = '';
 				
 				// @todo cleanup this mess...
@@ -224,11 +225,27 @@ $(document).ready(function() {
 				$selected_template_path = $templates['options'][$template];
 				$custom_url = $flat_tree[$i]['custom_url'];
 				$edit_base = BASE.AMP.'C=content_publish'.AMP.'M=entry_form'.AMP.'channel_id='.$flat_tree[$i]['channel_id'].AMP.'entry_id='.$flat_tree[$i]['entry_id'];
-				$properties = $custom_url.$selected_template_path.$flat_tree[$i]['url_title'];
+				
+				if($custom_url)
+				{
+					// @todo 
+					// should probably check if this is external or interal linking, and mask the external links
+					// so as not to give away our system location.
+					$visit_page_url = "<a href='".$custom_url."' target='_blank' title='".lang('visit')."'>Visit Page</a> ";
+				}
+				else
+				{
+					$taxonomy_url = $selected_template_path.$flat_tree[$i]['url_title'];
+					// strip double slashes except http://
+					$taxonomy_url = preg_replace("#(^|[^:])//+#", "\\1/", $taxonomy_url);
+					$visit_page_url = "<a href='".$taxonomy_url."' target='_blank' title='".lang('visit').$taxonomy_url."'>Visit Page</a> ";
+				}
+				
+				
 				
 				$edit_node_url = "<a href='".$node_link_base.AMP.'method=edit_node'.AMP.'node_id='.$node_id.AMP.'tree='.$tree."'>Edit Node</a>";
 				$edit_entry_url = "<a href='".$edit_base."'>Edit Entry</a> ";
-				$visit_page_url = "<a href='".$url_prefix.$mask.$properties."' target='_blank' title='".lang('visit').$properties."'>Visit Page</a> ";
+				
 				
 				
 				if($custom_url)
@@ -239,13 +256,16 @@ $(document).ready(function() {
 					$mask = '?URL=';
 					$edit_entry_url = "";
 				}
-
+				
+				/*
+				old ui
 				$truncated_properties = substr($properties,0,30);
 				
 				if(strlen($properties) > 30)
 				{
 					$truncated_properties .= "&hellip;";
 				}
+				*/
 				
 				
 				// build the table row!	
