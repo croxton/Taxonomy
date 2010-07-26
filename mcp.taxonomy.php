@@ -510,6 +510,7 @@ class Taxonomy_mcp {
 
 		$vars = array();
 		
+		$vars['site_url'] = $this->EE->functions->fetch_site_index();
 		
 		// Duplicate code starts here from edit_node()
 		// fetch the user template and channel preferences for this tree

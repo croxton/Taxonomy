@@ -235,7 +235,7 @@ $(document).ready(function() {
 				}
 				else
 				{
-					$taxonomy_url = $selected_template_path.$flat_tree[$i]['url_title'];
+					$taxonomy_url = $site_url.$selected_template_path.$flat_tree[$i]['url_title'];
 					// strip double slashes except http://
 					$taxonomy_url = preg_replace("#(^|[^:])//+#", "\\1/", $taxonomy_url);
 					$visit_page_url = "<a href='".$taxonomy_url."' target='_blank' title='".lang('visit').$taxonomy_url."'>Visit Page</a> ";
