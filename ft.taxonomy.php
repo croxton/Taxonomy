@@ -289,7 +289,7 @@
 
 			$taxonomy_data = array(
 							'node_id'			=> '',
-							'label'				=> htmlentities($data['label']),
+							'label'				=> htmlspecialchars($data['label'], ENT_COMPAT, 'UTF-8'), //
 							'entry_id'			=> $this->settings['entry_id'],
 							'template_path'		=> $data['template']
 							);
