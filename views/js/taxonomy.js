@@ -72,9 +72,27 @@ $(document).ready(function() {
 	});
 	
 	$(".add_tab_link").click(function(){
-	
-		return false;
+			return false;
 	});
+	
+		$("#edit_nodes a.delete_node").livequery('click', function() { 
+   			var url = $(this).attr("href")+" #edit_nodes";
+   			var answer = confirm("Are you sure you want to delete this node?")
+		    if (answer){
+		        $("#edit_nodes").load(url);
+		    }	
+			return false;
+	});	
+	
+	$("#edit_nodes a.delete_nodes").livequery('click', function() { 
+   			var url = $(this).attr("href")+" #edit_nodes";
+   			var answer = confirm("Are you sure you want to delete this node and all it's children?")
+		    if (answer){
+		        $("#edit_nodes").load(url);
+		    }	
+			return false;
+	});	
+	
 
 
 });

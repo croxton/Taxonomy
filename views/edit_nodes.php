@@ -22,23 +22,7 @@
 </script>
 <script type="text/javascript">
 $(document).ready(function() {
-	$("#edit_nodes a.delete_node").livequery('click', function() { 
-   			var url = $(this).attr("href")+" #edit_nodes";
-   			var answer = confirm("Are you sure you want to delete this node?")
-		    if (answer){
-		        $("#edit_nodes").load(url);
-		    }	
-			return false;
-	});	
-	
-	$("#edit_nodes a.delete_nodes").livequery('click', function() { 
-   			var url = $(this).attr("href")+" #edit_nodes";
-   			var answer = confirm("Are you sure you want to delete this node and all it's children?")
-		    if (answer){
-		        $("#edit_nodes").load(url);
-		    }	
-			return false;
-	});	
+
 });	
 </script>
 <script type="text/javascript" src="<?=$asset_path?>js/taxonomy.js"></script>

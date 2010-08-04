@@ -11,6 +11,9 @@
  * @license   	http://creativecommons.org/licenses/MIT/  MIT License
 */
 
+// if you're moving the js and images folders, define where they are located here
+define('ASSET_PATH', 'expressionengine/third_party/taxonomy/views/');
+
 
 class Taxonomy_mcp {
 
@@ -614,7 +617,7 @@ class Taxonomy_mcp {
 			
 		$vars['flat_tree'] = $this->EE->mpttree->get_flat_tree_v2(1);
 		
-		$vars['asset_path'] = 'expressionengine/third_party/taxonomy/views/';
+		$vars['asset_path'] = ASSET_PATH;
 		$vars['url_prefix'] = $this->EE->functions->fetch_site_index();
 		
 		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('edit_nodes').': '.$tree_label);
@@ -968,7 +971,7 @@ class Taxonomy_mcp {
 		natcasesort($vars['entries']);
 		// Duplicate code ENDS here
 		
-		$vars['asset_path'] = 'expressionengine/third_party/taxonomy/views/';
+		$vars['asset_path'] = ASSET_PATH;
 
 		return $this->EE->load->view('edit_node', $vars, TRUE);							
 
