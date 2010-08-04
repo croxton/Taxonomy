@@ -60,7 +60,7 @@ echo $node['label']."</p>  <br />";
 			form_hidden('tree', $tree, '').
 			form_hidden('id', $node['node_id'], '').
 			// form_hidden('extra', '', '').
-			form_input('label', set_value($node['label'], html_entity_decode($node['label'])), 'id="label", style="width: 60%;"')
+			form_input('label', set_value($node['label'], htmlspecialchars_decode($node['label'])), 'id="label", style="width: 60%;"')
 		);
 		
 		// add properties

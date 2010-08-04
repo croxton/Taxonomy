@@ -85,7 +85,7 @@ class Taxonomy_mcp {
 			$vars['trees'][$row['id']]['site_id'] = $row['site_id'];
 			$vars['trees'][$row['id']]['tree_label'] = $row['label'];
 			$vars['trees'][$row['id']]['edit_link'] = BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=edit_trees'.AMP.'id='.$row['id'];
-			$vars['trees'][$row['id']]['edit_nodes_link'] = BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=edit_nodes2'.AMP.'tree='.$row['id'];
+			$vars['trees'][$row['id']]['edit_nodes_link'] = BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=edit_nodes'.AMP.'tree='.$row['id'];
 			
 			$template = '';
 			$template_preferences = explode('|', $row['template_preferences']);
@@ -187,7 +187,7 @@ class Taxonomy_mcp {
 
 		$new = TRUE;
 
-		$tree_names = $_POST['id'];
+		$tree_names = $this->EE->input->post('id');
 		$template_preferences = '';
 		$channel_preferences = '';
 
@@ -510,6 +510,7 @@ class Taxonomy_mcp {
 
 		$vars = array();
 		
+		$vars['site_url'] = $this->EE->functions->fetch_site_index();
 		
 		// Duplicate code starts here from edit_node()
 		// fetch the user template and channel preferences for this tree
@@ -658,13 +659,16 @@ class Taxonomy_mcp {
 										'id' => 'node_id',
 										'title' => 'label'));
 		
+		$label = $this->EE->input->post('label');
+		$label = htmlspecialchars($_POST['label'], ENT_COMPAT, 'UTF-8');
+		
 		$data = array(
-						'node_id'			=> '',
-						'label'				=> isset($_POST['label']) ? htmlspecialchars($data['label'], ENT_COMPAT, 'UTF-8') : '',
-						'entry_id'			=> isset($_POST['entry_id']) ? $_POST['entry_id'] : '',
-						'template_path'		=> isset($_POST['template_path']) ? $_POST['template_path'] : '',
-						'custom_url'		=> isset($_POST['custom_url']) ? $_POST['custom_url'] : '',
-						'extra'				=> isset($_POST['extra']) ? $_POST['extra'] : ''
+						'node_id'			=> $this->EE->input->post('node_id'),
+						'label'				=> $label,
+						'entry_id'			=> $this->EE->input->post('entry_id'),
+						'template_path'		=> $this->EE->input->post('template_path'),
+						'custom_url'		=> $this->EE->input->post('custom_url'),
+						'extra'				=> $this->EE->input->post('extra')
 						);
 						
 		$data = $this->EE->security->xss_clean($data);				
@@ -701,13 +705,16 @@ class Taxonomy_mcp {
 										'id' => 'node_id',
 										'title' => 'label'));
 		
+		$label = $this->EE->input->post('label');
+		$label = htmlspecialchars($_POST['label'], ENT_COMPAT, 'UTF-8');
+		
 		$data = array(
-						'node_id'			=> '',
-						'label'				=> isset($_POST['label']) ? htmlspecialchars($data['label'], ENT_COMPAT, 'UTF-8') : '',
-						'entry_id'			=> isset($_POST['entry_id']) ? $_POST['entry_id'] : '',
-						'template_path'		=> isset($_POST['template_path']) ? $_POST['template_path'] : '',
-						'custom_url'		=> isset($_POST['custom_url']) ? $_POST['custom_url'] : '',
-						'extra'				=> isset($_POST['extra']) ? $_POST['extra'] : ''
+						'node_id'			=> $this->EE->input->post('node_id'),
+						'label'				=> $label,
+						'entry_id'			=> $this->EE->input->post('entry_id'),
+						'template_path'		=> $this->EE->input->post('template_path'),
+						'custom_url'		=> $this->EE->input->post('custom_url'),
+						'extra'				=> $this->EE->input->post('extra')
 						);
 						
 		$data = $this->EE->security->xss_clean($data);				
@@ -810,9 +817,11 @@ class Taxonomy_mcp {
 										'right' => 'rgt',
 										'id' => 'node_id',
 										'title' => 'label'));				
-										
-		if (isset ($_GET['direction'])) {
-			switch ($_GET['direction']) {		
+		
+		
+							
+		if($this->EE->input->get('direction')){
+			switch ($this->EE->input->get('direction')) {		
 				case 'left':
 					$this->EE->mpttree->move_left($id);
 				break;
@@ -991,13 +1000,16 @@ class Taxonomy_mcp {
 										'id' => 'node_id',
 										'title' => 'label'));
 		
+		$label = $this->EE->input->post('label');
+		$label = htmlspecialchars($_POST['label'], ENT_COMPAT, 'UTF-8');
+		
 		$data = array(
-						'node_id'			=> $id,
-						'label'				=> isset($_POST['label']) ? htmlspecialchars($data['label'], ENT_COMPAT, 'UTF-8') : '',
-						'entry_id'			=> isset($_POST['entry_id']) ? $_POST['entry_id'] : '',
-						'template_path'		=> isset($_POST['template_path']) ? $_POST['template_path'] : '',
-						'custom_url'		=> isset($_POST['custom_url']) ? $_POST['custom_url'] : '',
-						'extra'				=> isset($_POST['extra']) ? $_POST['extra'] : ''
+						'node_id'			=> $this->EE->input->post('node_id'),
+						'label'				=> $label,
+						'entry_id'			=> $this->EE->input->post('entry_id'),
+						'template_path'		=> $this->EE->input->post('template_path'),
+						'custom_url'		=> $this->EE->input->post('custom_url'),
+						'extra'				=> $this->EE->input->post('extra')
 						);
 						
 		$this->EE->db->query($this->EE->db->update_string('exp_taxonomy_tree_'.$tree, $data, "node_id = '$id'"));
@@ -1023,163 +1035,6 @@ class Taxonomy_mcp {
 	$vars['flat_tree'] = $this->EE->mpttree->get_flat_tree();								
 	
 	return $this->EE->load->view('xx_testbed', $vars, TRUE);	
-	}
-	
-	function edit_nodes2(){
-		
-		if (! $this->EE->cp->allowed_group('can_access_content'))
-		{
-			show_error($this->EE->lang->line('unauthorized_access'));
-		}
-		
-		// check the tree is being passed
-		if ( ! $this->EE->input->get('tree'))
-		{
-			$this->EE->session->set_flashdata('message_failure', $this->EE->lang->line('no_such_tree'));
-			$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy');
-		}
-
-		$tree = $this->EE->input->get('tree');
-
-		// check the tree table exists
-		if (!$this->EE->db->table_exists('exp_taxonomy_tree_'.$tree))
-		{
-			$this->EE->session->set_flashdata('message_failure', $this->EE->lang->line('no_such_tree'));
-			$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy');
-		}
-						
-		// get our poop together
-		$this->EE->load->library('javascript');
-		$this->EE->load->library('table');
-		$this->EE->load->helper('form');
-		
-		$this->EE->load->library('MPTtree');
-		$this->EE->mpttree->set_opts(array( 'table' => 'exp_taxonomy_tree_'.$tree,
-										'left' => 'lft',
-										'right' => 'rgt',
-										'id' => 'node_id',
-										'title' => 'label'));
-		
-		
-		$this->EE->cp->set_breadcrumb(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy',$this->EE->lang->line('taxonomy_module_name'));
-
-		$vars = array();
-										
-		$vars['tree'] = $this->EE->mpttree->tree2array_v2(1);
-		
-		// Duplicate code starts here from edit_node()
-		// fetch the user template and channel preferences for this tree
-		$this->EE->db->where_in('id', $tree);
-		$query = $this->EE->db->get('taxonomy_trees');
-		
-		// no results?	
-		if ($query->num_rows() == 0)
-		{
-			$this->EE->session->set_flashdata('message_failure', $this->EE->lang->line('no_templates_assigned'));
-			$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy');
-		}
-		
-		// grab the preference values
-		foreach ($query->result() as $row)
-		{
-			$usertemplates 	=  $row->template_preferences;
-			$userchannels	=  $row->channel_preferences;
-			$tree_label 	=  $row->label;
-		}	
-		
-		if($usertemplates == 0)
-		{
-			$usertemplates = array();
-		}
-		else
-		{
-			$usertemplates = array("template_id" => explode('|',$usertemplates));
-		}
-
-		// Get Templates
-        $this->EE->load->model('template_model');
-        $tquery = $this->EE->template_model->get_templates($this->EE->config->item('site_id'), array(), $usertemplates);
-        
-        $templates = array();
-        
-        // give a null value for template pulldown
-		$vars['templates']['options'][0] = '--';
-		
-		// remove /index label from each template group
-		foreach($tquery->result_array() as $template)
-		{
-			if($template['template_name'] =='index')
-			{
-				$vars['templates']['options'][$template['template_id']] = '/'.$template['group_name'].'/';
-			}
-			else
-			{
-				$vars['templates']['options'][$template['template_id']] = '/'.$template['group_name'].'/'.$template['template_name'].'/';
-			}
-		}
-				
-		//grab the channel entries
-		
-		if($userchannels == 0)
-		{
-			$userchannels = array();
-		}
-		else
-		{
-			$userchannels = explode('|',$userchannels);
-		}
-		
-		$this->EE->load->model('channel_entries_model');
-		
-		$fields_needed = array(
-								"entry_id", "channel_id", "title"
-								);
-
-		$this->EE->load->model('channel_model');
-
-		$channels = $this->EE->channel_model->get_channels($this->EE->config->item('site_id'));
-
-		$channels_needed = array();
-		foreach($channels->result_array() as $channel)
-		{
-			$channels_needed[$channel['channel_id']] = $channel['channel_title'];
-		}
-
-		// print_r($channels_needed);
-
-		$entries = $this->EE->channel_entries_model->get_entries($userchannels, $fields_needed);
-		
-		// give a null value option for entries select
-		$vars['entries'][0] = '--';
-		foreach($entries->result_array() as $entry)
-		{
-			$vars['entries'][$entry['entry_id']] = '['.$channels_needed[$entry['channel_id']].'] &rarr; '.$entry['title'];
-		}
-		
-		// sort alphabetically
-		natcasesort($vars['entries']);
-		
-		// Duplicate code ENDS here
-		
-		$root_array = $this->EE->mpttree->get_root();
-		$root_node = $root_array['node_id'];
-		
-		$vars['tree'] = $tree;
-		$vars['root'] = $root_array;
-			
-		$vars['flat_tree'] = $this->EE->mpttree->tree2array_v2();
-		
-		$vars['tree_html'] = $this->EE->mpttree->mptree_jtree($vars['flat_tree']);
-		
-		$vars['asset_path'] = 'expressionengine/third_party/taxonomy/views/';
-		$vars['url_prefix'] = $this->EE->functions->fetch_site_index();
-		
-		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('edit_nodes').': '.$tree_label);
-
-		// print_r($vars['root']);
-
-		
-		return $this->EE->load->view('edit_nodes_v2', $vars, TRUE);	
 	}
 	
 
