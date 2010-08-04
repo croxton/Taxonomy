@@ -663,7 +663,7 @@ class Taxonomy_mcp {
 		$label = htmlspecialchars($_POST['label'], ENT_COMPAT, 'UTF-8');
 		
 		$data = array(
-						'node_id'			=> $this->EE->input->post('node_id'),
+						'node_id'			=> $this->EE->input->post('id'),
 						'label'				=> $label,
 						'entry_id'			=> $this->EE->input->post('entry_id'),
 						'template_path'		=> $this->EE->input->post('template_path'),
@@ -709,7 +709,7 @@ class Taxonomy_mcp {
 		$label = htmlspecialchars($_POST['label'], ENT_COMPAT, 'UTF-8');
 		
 		$data = array(
-						'node_id'			=> $this->EE->input->post('node_id'),
+						'node_id'			=> $this->EE->input->post('id'),
 						'label'				=> $label,
 						'entry_id'			=> $this->EE->input->post('entry_id'),
 						'template_path'		=> $this->EE->input->post('template_path'),
@@ -1004,7 +1004,7 @@ class Taxonomy_mcp {
 		$label = htmlspecialchars($_POST['label'], ENT_COMPAT, 'UTF-8');
 		
 		$data = array(
-						'node_id'			=> $this->EE->input->post('node_id'),
+						'node_id'			=> $id,
 						'label'				=> $label,
 						'entry_id'			=> $this->EE->input->post('entry_id'),
 						'template_path'		=> $this->EE->input->post('template_path'),
