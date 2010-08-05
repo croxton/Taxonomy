@@ -26,7 +26,6 @@ class Taxonomy_mcp {
 	{
 		// Make a local reference to the ExpressionEngine super object
 		$this->EE =& get_instance();
-
 	}
 
 	// --------------------------------------------------------------------
@@ -116,7 +115,7 @@ class Taxonomy_mcp {
 	
 	
 	/**
-	 * Create a node tree form
+	 * Create a Taxonomy tree form
 	 *
 	 * @access	public
 	 */
@@ -179,7 +178,6 @@ class Taxonomy_mcp {
 	 *
 	 * @access	public
 	 */
-	
 	function update_trees()
 	{
 
@@ -334,9 +332,14 @@ class Taxonomy_mcp {
 		//printf("Last inserted record has id %d\n", mysql_insert_id());
 		
 		$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=index');
+		
 	}
 	
-	
+	/**
+	 * Edit tree label, templates and selected channels
+	 *
+	 * @access	public
+	 */
 	function edit_trees()
 	{
 		if (! $this->EE->cp->allowed_group('can_access_content'))
@@ -442,7 +445,11 @@ class Taxonomy_mcp {
 		return $this->EE->load->view('edit_trees', $vars, TRUE);
 	}
 	
-	
+	/**
+	 * Nuke the trees
+	 *
+	 * @access	public
+	 */
 	function delete_trees()
 	{
 		if ( ! $this->EE->input->post('delete'))
@@ -472,11 +479,11 @@ class Taxonomy_mcp {
 		
 	}
 	
-	
-	
-	
-	
-	
+	/**
+	 * Main interface for nudging nodes, and adding new ones
+	 *
+	 * @access	public
+	 */
 	function edit_nodes()
 	{
 		
@@ -572,29 +579,19 @@ class Taxonomy_mcp {
 			$channels_needed[$channel['channel_id']] = $channel['channel_title'];
 		}
 
-		// print_r($channels_needed);
-
 		$entries_list = $this->EE->channel_entries_model->get_entries($userchannels, $fields_needed);
-		
-		
-		
+
 		// give a null value option for entries select
 		$entries[0] = '--';
 		foreach($entries_list->result_array() as $entry)
 		{
 			$entries[$entry['entry_id']] = '['.$channels_needed[$entry['channel_id']].'] &rarr; '.$entry['title'];
 		}
-		
-		
+
 		$root_array = $this->EE->mpttree->get_root();
-		
-	
-		
-		
+
 		// sort alphabetically
 		natcasesort($entries);
-		
-		$vars['entries'] = $entries;
 		
 			// root doesn't exist, so stop the user here and have them enter one.
 		if($root_array === false)
@@ -614,17 +611,12 @@ class Taxonomy_mcp {
 
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+	/**
+	 * All trees must have a root node
+	 *
+	 * @access	public
+	 */
 	function add_root()
 	{
 		
@@ -632,22 +624,10 @@ class Taxonomy_mcp {
 		{
 			show_error($this->EE->lang->line('unauthorized_access'));
 		}
-		
-		// check the tree is being passed
-		if ( ! $this->EE->input->post('tree'))
-		{
-			$this->EE->session->set_flashdata('message_failure', $this->EE->lang->line('no_such_tree'));
-			$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy');
-		}
 
 		$tree = $this->EE->input->post('tree');
 	
-		$this->EE->load->library('MPTtree');
-		$this->EE->mpttree->set_opts(array( 'table' => 'exp_taxonomy_tree_'.$tree,
-										'left' => 'lft',
-										'right' => 'rgt',
-										'id' => 'node_id',
-										'title' => 'label'));
+		$this->validate_and_initialise_tree($tree);
 		
 		$label = $this->EE->input->post('label');
 		$label = htmlspecialchars($_POST['label'], ENT_COMPAT, 'UTF-8');
@@ -680,20 +660,9 @@ class Taxonomy_mcp {
 	
 		$tree = $this->EE->input->post('tree');
 		
-		if ( ! $this->EE->db->table_exists('exp_taxonomy_tree_'.$tree))
-		{
-			$this->EE->session->set_flashdata('message_failure', $this->EE->lang->line('no_such_tree'));
-			$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy');
-		}
+		$this->validate_and_initialise_tree($tree);
 		
 		$parent_node_lft = $this->EE->input->post('parent_node_lft');
-	
-		$this->EE->load->library('MPTtree');
-		$this->EE->mpttree->set_opts(array( 'table' => 'exp_taxonomy_tree_'.$tree,
-										'left' => 'lft',
-										'right' => 'rgt',
-										'id' => 'node_id',
-										'title' => 'label'));
 		
 		$label = $this->EE->input->post('label');
 		$label = htmlspecialchars($_POST['label'], ENT_COMPAT, 'UTF-8');
@@ -712,16 +681,13 @@ class Taxonomy_mcp {
 		$this->EE->mpttree->append_node_last($parent_node_lft,$data);
 		
 		// this messes up the jquery for some reason...
-		//$this->EE->session->set_flashdata('message_success', $this->EE->lang->line('node_added'));
+		$this->EE->session->set_flashdata('message_success', $this->EE->lang->line('node_added'));
 		
 		$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=edit_nodes'.AMP.'tree='.$tree.AMP.time());
 			
 	
 	}
-	
-	
-	
-	
+
 	// delete a single node, except the root...
 	function delete_node()
 	{
@@ -733,24 +699,16 @@ class Taxonomy_mcp {
 		$tree = $this->EE->input->get('tree');
 		$id = $this->EE->input->get('node_id');
 		
-		if ( ! $this->EE->db->table_exists('exp_taxonomy_tree_'.$tree))
-		{
-			$this->EE->session->set_flashdata('message_failure', $this->EE->lang->line('no_such_tree'));
-			$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy');
-		}
-		
-		$this->EE->load->library('MPTtree');
-		$this->EE->mpttree->set_opts(array( 'table' => 'exp_taxonomy_tree_'.$tree,
-										'left' => 'lft',
-										'right' => 'rgt',
-										'id' => 'node_id',
-										'title' => 'label'));
+		$this->validate_and_initialise_tree($tree);
 										
-		
 		$node = $this->EE->mpttree->get_node_byid($id);
 		
 		$this->EE->mpttree->delete_node($node['lft']);
-		$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=edit_nodes'.AMP.'tree='.$tree.AMP.'deleted=true');
+		
+		$resp['data'] = $this->generate_add_node_form();
+		$resp['data'] .= $this->generate_edit_table();
+				
+		$this->EE->output->send_ajax_response($resp);
 
 	}
 	
@@ -765,76 +723,28 @@ class Taxonomy_mcp {
 		$tree = $this->EE->input->get('tree');
 		$id = $this->EE->input->get('node_id');
 		
-		if ( ! $this->EE->db->table_exists('exp_taxonomy_tree_'.$tree))
-		{
-			$this->EE->session->set_flashdata('message_failure', $this->EE->lang->line('no_such_tree'));
-			$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy');
-		}
-		
-		$this->EE->load->library('MPTtree');
-		$this->EE->mpttree->set_opts(array( 'table' => 'exp_taxonomy_tree_'.$tree,
-										'left' => 'lft',
-										'right' => 'rgt',
-										'id' => 'node_id',
-										'title' => 'label'));
+		$this->validate_and_initialise_tree($tree);
 
 		$node = $this->EE->mpttree->get_node_byid($id);
 		$this->EE->mpttree->delete_branch($node['lft']);
-		$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=edit_nodes'.AMP.'tree='.$tree.AMP.'deleted=true');
+		
+		$resp['data'] = $this->generate_add_node_form();
+		$resp['data'] .= $this->generate_edit_table();
+				
+		$this->EE->output->send_ajax_response($resp);
+		
+		
+		
+		
+		
+		
+		
+		
+		// $this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=edit_nodes'.AMP.'tree='.$tree.AMP.'deleted=true');
 		
 	}
-	
-	// handles nudging nodes by main edit_nodes interface
-	function node_move()
-	{
-		if (! $this->EE->cp->allowed_group('can_access_content'))
-		{
-			show_error($this->EE->lang->line('unauthorized_access'));
-		}
-		
-		$tree = $this->EE->input->get('tree');
-		$id = $this->EE->input->get('node_id');
-		
-		if ( ! $this->EE->db->table_exists('exp_taxonomy_tree_'.$tree))
-		{
-			$this->EE->session->set_flashdata('message_failure', $this->EE->lang->line('no_such_tree'));
-			$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy');
-		}
-		
-		$this->EE->load->library('MPTtree');
-		$this->EE->mpttree->set_opts(array( 'table' => 'exp_taxonomy_tree_'.$tree,
-										'left' => 'lft',
-										'right' => 'rgt',
-										'id' => 'node_id',
-										'title' => 'label'));				
-		
-		
-							
-		if($this->EE->input->get('direction')){
-			switch ($this->EE->input->get('direction')) {		
-				case 'left':
-					$this->EE->mpttree->move_left($id);
-				break;
-				case 'right':
-					$this->EE->mpttree->move_right($id);
-				break;
-				case 'up':
-					$this->EE->mpttree->move_up($id);
-				break;
-				case 'down':
-					$this->EE->mpttree->move_down($id);
-				break;
-			}
-		}								
-										
-		$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=edit_nodes'.AMP.'tree='.$tree);									
-	}
-	
 	
 
-	
-	
-	
 	function edit_node()
 	{
 		if (! $this->EE->cp->allowed_group('can_access_content'))
@@ -946,7 +856,8 @@ class Taxonomy_mcp {
 	
 	
 	// generates the add and edit node form
-	// only difference between add and edit is the select parent option.
+	// only difference between add and edit is the select parent option
+	// and the add/edit labels
 	// pass selected values for inputs via selected array
 	// @todo needs a blimin' cleanup.. braindump.
 	private function generate_add_node_form($selected = NULL)
@@ -957,6 +868,7 @@ class Taxonomy_mcp {
 			show_error($this->EE->lang->line('unauthorized_access'));
 		}
 		
+		// if we're not showing parent select, then we're editing.
 		$show_parent_select = FALSE;
 		
 		// are we receiving selected values?
@@ -1071,15 +983,13 @@ class Taxonomy_mcp {
 		$entry_list .= "{ id: '', entry: ''} ";
 		
 		
-		
+		// set the autocomplete js
 		$r .= "
 		<script type='text/javascript'>
 			var entries = [$entry_list];
 		</script>
 		";
-		
-		
-		
+
 		$entries_options = array();
 		// give a null value option for entries select
 		$entries_options[0] = '--';
@@ -1111,29 +1021,27 @@ class Taxonomy_mcp {
 									'row_start'			=> '<tr class="even">',
 									'row_alt_start'		=> '<tr class="odd">'				
 								);
+		$this->EE->table->set_template($cp_table_template);
 		
 		if($show_parent_select)
 		{
 			$r .= '<div id="add_node">';
-		}
-		
-		if($show_parent_select)
-		{
 			$r .= form_open('C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=add_node');
+			$this->EE->table->set_heading(
+				array('data' => "<span><img src='expressionengine/third_party/taxonomy/views/gfx/add_node.png' style='margin-right: 5px; vertical-align: bottom;' />&nbsp;".lang('create_node')."</span>", 'class' => 'create_node'),
+				array('data' => "")
+				);
 		}
 		else
 		{
 			$r .= form_open('C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=update_node');
+			$this->EE->table->set_heading(
+				array('data' => lang('option')),
+				array('data' => lang('value'))
+			);
 		}
-		$this->EE->table->set_template($cp_table_template);
-		$this->EE->table->set_heading(
-				array('data' => "<span><img src='expressionengine/third_party/taxonomy/views/gfx/add_node.png' style='margin-right: 5px; vertical-align: bottom;' />&nbsp;".lang('create_node')."</span>", 'class' => 'create_node'),
-				array('data' => "")
-		);
-	
-		
-		
-		// select node name, 
+
+		// select node name/label 
 		$this->EE->table->add_row(
 			lang('node_label'),
 			form_hidden('tree', $tree, '').
@@ -1170,14 +1078,23 @@ class Taxonomy_mcp {
 			"</div> <a href='#node_search' id='search_for_nodes' title='".lang('search_for_nodes')."'><img src='".ASSET_PATH."gfx/search.png' alt='".lang('search_for_nodes')."' /></a>"
 		);
 		
-		
 		$this->EE->table->add_row(
 			lang('override_url'),
 			form_input('custom_url', set_value($selected['custom_url'], $selected['custom_url']), 'id="custom_url", style="width: 60%;"')
 		);
+		
+		if($show_parent_select)
+		{
+			$submit_value = lang('add');
+		}
+		else
+		{
+			$submit_value = lang('edit');
+		}
+		
 		$this->EE->table->add_row(
 			'',
-			form_submit(array('name' => 'submit', 'value' => lang('add'), 'class' => 'submit'))
+			form_submit(array('name' => 'submit', 'value' => $submit_value, 'class' => 'submit'))
 		);
 		
 		$r .= $this->EE->table->generate();
@@ -1192,11 +1109,7 @@ class Taxonomy_mcp {
 		
 		return $r;			
 	
-	
 	}
-	
-	
-	
 	
 	// generates the html for the edit nodes table
 	// not in a view because I want the edit nodes table to be sent via ajax
@@ -1403,6 +1316,7 @@ class Taxonomy_mcp {
 	
 	
 	// if a tree id is not passed via a get or the tree id doesn't exist, thrown an error
+	// set opts on mpttree
 	private function validate_and_initialise_tree($tree_id = NULL)
 	{
 		// check the tree is being passed

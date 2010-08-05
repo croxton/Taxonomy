@@ -81,20 +81,38 @@ $(document).ready(function() {
 			return false;
 	});
 	
-		$("#edit_nodes a.delete_node").livequery('click', function() { 
-   			var url = $(this).attr("href")+" #edit_nodes";
+	$("#edit_nodes a.delete_node").livequery('click', function() { 
+   			var url = $(this).attr("href");
    			var answer = confirm("Are you sure you want to delete this node?")
 		    if (answer){
-		        $("#edit_nodes").load(url);
+		        $.fancybox.showActivity();
+				var url = $(this).attr("href");
+				
+				$.getJSON(url,
+		        function(data){
+		          	// alert(data.some_message);
+		            $("#edit_nodes").html(data.data);
+		            $.fancybox.hideActivity();
+		         
+		        });
 		    }	
 			return false;
 	});	
 	
 	$("#edit_nodes a.delete_nodes").livequery('click', function() { 
-   			var url = $(this).attr("href")+" #edit_nodes";
+   			var url = $(this).attr("href");
    			var answer = confirm("Are you sure you want to delete this node and all it's children?")
 		    if (answer){
-		        $("#edit_nodes").load(url);
+		        $.fancybox.showActivity();
+				var url = $(this).attr("href");
+				
+				$.getJSON(url,
+		        function(data){
+		          	// alert(data.some_message);
+		            $("#edit_nodes").html(data.data);
+		            $.fancybox.hideActivity();
+		         
+		        });
 		    }	
 			return false;
 	});	

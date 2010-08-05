@@ -2,23 +2,6 @@
 <script type="text/javascript" src="<?=$asset_path?>js/fancybox/jquery.fancybox-1.3.1.pack.js"></script>
 <script type="text/javascript" src="<?=$asset_path?>js/jquery.autocomplete.min.js"></script>
 
-<?php
-	
-	// this whole view needs rewritten, too much logic going on. (or lack of...)
-
-	// build the index for autocomplete
-	$entry_list = '';
-	foreach($entries as $key => $entry)
-	{
-		$entry_list .= "{ id:'".$key."', entry:'".addslashes($entry)."'}, ";
-	}
-	$entry_list .= "{ id: '', entry: ''} ";
-
-?>		
-
-<script type="text/javascript">
-	var entries = [<?=$entry_list?>];
-</script>
 <script type="text/javascript" src="<?=$asset_path?>js/taxonomy.js"></script>
 <link rel="stylesheet" type="text/css" href="<?=$asset_path?>css/taxonomy.css" />
 
