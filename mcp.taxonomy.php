@@ -620,6 +620,8 @@ class Taxonomy_mcp {
 		$vars['asset_path'] = ASSET_PATH;
 		$vars['url_prefix'] = $this->EE->functions->fetch_site_index();
 		
+		$vars['tree_table'] = $this->generate_edit_table();
+		
 		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('edit_nodes').': '.$tree_label);
 
 		// print_r($vars['root']);
@@ -844,6 +846,9 @@ class Taxonomy_mcp {
 	}
 	
 	
+
+	
+	
 	
 	function edit_node()
 	{
@@ -1038,6 +1043,265 @@ class Taxonomy_mcp {
 	$vars['flat_tree'] = $this->EE->mpttree->get_flat_tree();								
 	
 	return $this->EE->load->view('xx_testbed', $vars, TRUE);	
+	}
+	
+	
+	
+		// handles nudging nodes by ajax
+	function node_move_ajax()
+	{
+		if (! $this->EE->cp->allowed_group('can_access_content'))
+		{
+			show_error($this->EE->lang->line('unauthorized_access'));
+		}
+		
+		$tree = $this->EE->input->get('tree');
+		$id = $this->EE->input->get('node_id');
+		
+		if ( ! $this->EE->db->table_exists('exp_taxonomy_tree_'.$tree))
+		{
+			$this->EE->session->set_flashdata('message_failure', $this->EE->lang->line('no_such_tree'));
+			$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy');
+		}
+		
+		$this->EE->load->library('MPTtree');
+		$this->EE->mpttree->set_opts(array( 'table' => 'exp_taxonomy_tree_'.$tree,
+										'left' => 'lft',
+										'right' => 'rgt',
+										'id' => 'node_id',
+										'title' => 'label'));				
+		
+		if($this->EE->input->get('direction')){
+			switch ($this->EE->input->get('direction')) {		
+				case 'left':
+					$this->EE->mpttree->move_left($id);
+				break;
+				case 'right':
+					$this->EE->mpttree->move_right($id);
+				break;
+				case 'up':
+					$this->EE->mpttree->move_up($id);
+				break;
+				case 'down':
+					$this->EE->mpttree->move_down($id);
+				break;
+			}
+		}
+		
+		$resp['data'] = $this->generate_edit_table();
+				
+		$this->EE->output->send_ajax_response($resp);							
+										
+		//$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=edit_nodes'.AMP.'tree='.$tree);									
+	}
+	
+	
+	
+	private function generate_add_node_form()
+	{
+	
+	
+	}
+	
+	
+	
+	
+	
+	private function generate_edit_table()
+	{
+		// not in a view because I want the edit nodes table to be sent via ajax
+		// a better way of doing this?
+		if (! $this->EE->cp->allowed_group('can_access_content'))
+		{
+			show_error($this->EE->lang->line('unauthorized_access'));
+		}
+		
+		// check the tree is being passed
+		if ( ! $this->EE->input->get('tree'))
+		{
+			$this->EE->session->set_flashdata('message_failure', $this->EE->lang->line('no_such_tree'));
+			$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy');
+		}
+		
+		$r = '<div id="edit_table_inner">';
+		$tree = $this->EE->input->get('tree');
+		$site_url = $this->EE->functions->fetch_site_index();
+		
+		
+		// check the tree table exists
+		if (!$this->EE->db->table_exists('exp_taxonomy_tree_'.$tree))
+		{
+			$this->EE->session->set_flashdata('message_failure', $this->EE->lang->line('no_such_tree'));
+			$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy');
+		}
+	
+		$this->EE->load->library('MPTtree');
+		$this->EE->mpttree->set_opts(array( 'table' => 'exp_taxonomy_tree_'.$tree,
+										'left' => 'lft',
+										'right' => 'rgt',
+										'id' => 'node_id',
+										'title' => 'label'));
+										
+		$flat_tree = $this->EE->mpttree->get_flat_tree_v2(1);
+		
+		
+		$this->EE->db->where_in('id', $tree);
+		$query = $this->EE->db->get('taxonomy_trees');
+		
+		// no results?	
+		if ($query->num_rows() == 0)
+		{
+			$this->EE->session->set_flashdata('message_failure', $this->EE->lang->line('no_templates_assigned'));
+			$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy');
+		}
+		
+		$this->EE->load->library('table');
+		
+		$cp_table_template = array(
+									'table_open'		=> '<table class="mainTable" border="0" cellspacing="0" cellpadding="0">',
+									'row_start'			=> '<tr class="even">',
+									'row_alt_start'		=> '<tr class="odd">'				
+								);
+								
+		$this->EE->table->set_template($cp_table_template);
+		$this->EE->table->set_heading(
+									array('data' => lang(''), 'style' => 'width: 40px;'),
+									array('data' => lang(''), 'style' => 'width: 30px;'),
+									array('data' => lang('name'), 'style' => ''),
+									array('data' => lang('Delete'), 'style' => 'width:20px')
+								);
+		
+		$treeCount = count ($flat_tree);
+			
+		// $r =	'<strong>foo</strong>';
+		for ($i = 0; $i < $treeCount; $i++)
+			{	
+				$root_spcr = '<img src="'.PATH_CP_GBL_IMG.'clear.gif" border="0"  width="12" height="14" alt="" title="" />';
+				$spcr = '<img src="'.PATH_CP_GBL_IMG.'clear.gif" border="0"  width="24" height="14" alt="" title="" />';
+				$indent = $spcr.'<img src="'.PATH_CP_GBL_IMG.'cat_marker.gif" border="0"  width="18" height="14" alt="" title="" /> ';
+				
+				// establish indentation
+				if ( $flat_tree[$i]['level'] == 0 ) 
+				{
+					$spacer = $root_spcr;
+				}
+				else 
+				{
+					$spacer = str_repeat($spcr, $flat_tree[$i]['level']-1);
+					$spacer .= $indent; 
+				}
+				
+				// get the mess um.. messsy?
+				$node_label = $flat_tree[$i]['label'];
+				$node_id 	= $flat_tree[$i]['node_id'];
+				$custom_url = $flat_tree[$i]['custom_url'];
+				$template_path = $flat_tree[$i]['template_path'];
+				$level = $flat_tree[$i]['level'];
+				
+				$entry_id 	= $flat_tree[$i]['entry_id'];
+				if ($entry_id == 0)
+				{
+					$entry_id = '';
+				}
+				
+				$node_link_base = BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy';
+				
+				// define buttons for manipulating node heirarchy must cleanup.... @todo
+				$move_left = "<a href='".$node_link_base.AMP."method=node_move_ajax".AMP."direction=up".AMP."node_id=".$node_id.AMP."tree=".$tree."' class='fancypants'><img src='".ASSET_PATH."gfx/arw_left.png' /></a>";
+				
+				$move_right = "<a href='".$node_link_base.AMP."method=node_move_ajax".AMP."direction=down".AMP."node_id=".$node_id.AMP."tree=".$tree."' class='fancypants'><img src='".ASSET_PATH."gfx/arw_right.png' /></a>";
+				
+				
+				$move_up = "<a href='".$node_link_base.AMP."method=node_move_ajax".AMP."direction=left".AMP."node_id=".$node_id.AMP."tree=".$tree."' class='fancypants'><img src='".ASSET_PATH."gfx/arw_up.png' style='vertical-align: bottom; margin-left: -5px;' /></a>";
+				
+				$move_down = "<a href='".$node_link_base.AMP."method=node_move_ajax".AMP."direction=right".AMP."node_id=".$node_id.AMP."tree=".$tree."' class='fancypants'><img src='".ASSET_PATH."gfx/arw_down.png' style='vertical-align: bottom; margin-right: -5px;' /></a> ";
+
+				
+	
+				// does the node have children, if so change the icons.
+				if ($flat_tree[$i]['childs'] == 1)
+				{
+					$node_icon 	= "<img src='".ASSET_PATH."gfx/page.png'  style='margin-right: 5px; vertical-align: bottom;' />";
+					$trash_icon = "<a href='".$node_link_base.AMP."method=delete_node".AMP."node_id=".$node_id.AMP."tree=".$tree."'   class='delete_node'>
+					<img src='".ASSET_PATH."gfx/trash.png' style='margin-right: 5px; vertical-align: bottom;' /></a>";
+				}
+				else
+				{
+					$node_icon = "<img src='".ASSET_PATH."gfx/folder.png' style='margin-right: 5px; vertical-align: bottom;' />";
+					$trash_icon = "<a href='".$node_link_base.AMP."method=delete_branch".AMP."node_id=".$node_id.AMP."tree=".$tree.AMP."del_childs=yes' class='delete_nodes'>
+					<img src='".ASSET_PATH."gfx/trash-children.png' style='margin-right: 5px; vertical-align: bottom;' /></a>";
+				}
+						
+								
+				// root node can't have operations...
+				if ($flat_tree[$i]['lft'] == 1)
+				{
+				
+					$move_left = '';
+					$move_right = '';
+					$move_up = '';
+					$move_down = '';
+					$trash_icon = '';
+				}
+				
+				//@todo cp mask url
+				$mask = '';
+				
+				// @todo cleanup this mess...
+				$template = $flat_tree[$i]['template_path'];
+				$selected_template_path = 'foo'; // $templates['options'][$template];
+				$custom_url = $flat_tree[$i]['custom_url'];
+				$edit_base = BASE.AMP.'C=content_publish'.AMP.'M=entry_form'.AMP.'channel_id='.$flat_tree[$i]['channel_id'].AMP.'entry_id='.$flat_tree[$i]['entry_id'];
+				
+				if($custom_url)
+				{
+					// @todo 
+					// should probably check if this is external or interal linking, and mask the external links
+					// so as not to give away our system location.
+					$visit_page_url = "<a href='".$custom_url."' target='_blank' title='".lang('visit')."'>Visit Page</a> ";
+				}
+				else
+				{
+					$taxonomy_url = $site_url.$selected_template_path.$flat_tree[$i]['url_title'];
+					// strip double slashes except http://
+					$taxonomy_url = preg_replace("#(^|[^:])//+#", "\\1/", $taxonomy_url);
+					$visit_page_url = "<a href='".$taxonomy_url."' target='_blank' title='".lang('visit').$taxonomy_url."'>Visit Page</a> ";
+				}
+				
+				
+				
+				$edit_node_url = "<a href='".$node_link_base.AMP.'method=edit_node'.AMP.'node_id='.$node_id.AMP.'tree='.$tree."'>Edit Node</a>";
+				$edit_entry_url = "<a href='".$edit_base."'>Edit Entry</a> ";
+				
+				
+				
+				if($custom_url)
+				{
+					$selected_template_path = '';
+					$flat_tree[$i]['url_title'] = '';
+					$node_icon = "<img src='".ASSET_PATH."gfx/link.png' style='margin-right: 5px; vertical-align: bottom;' />";
+					$mask = '?URL=';
+					$edit_entry_url = "";
+				}
+				
+				// build the table row!	
+				$this->EE->table->add_row(
+							$move_left.$move_right,
+							$move_up.$move_down,
+							"<div class='node-label-holder'>
+								<span class='edit-functions'>".$edit_node_url.$edit_entry_url.$visit_page_url."</span>
+							</div>".$spacer.$node_icon."<a href='".$node_link_base.AMP.'method=edit_node'.AMP.'node_id='.$node_id.AMP.'tree='.$tree."'>".$node_label."",
+							$trash_icon
+						);	
+			}
+			
+		
+		
+		$r .= $this->EE->table->generate();
+		$this->EE->table->clear(); // reset the table
+		$r .= "</div>";
+		return $r;
+	
 	}
 	
 

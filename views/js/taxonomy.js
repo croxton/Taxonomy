@@ -17,14 +17,19 @@ $(document).ready(function() {
 	$("#edit_nodes a.fancypants").livequery('click', function() { 
 	
 		$.fancybox.showActivity();
-
+		var url = $(this).attr("href");
+		
+		$.getJSON(url,
+        function(data){
+          	// alert(data.some_message);
+            $("#edit_nodes").html(data.data);
+            $.fancybox.hideActivity();
+         
+        });
+		
+		return false;
 			// alert('foo');
-   			var url = $(this).attr("href")+" #edit_nodes";
-				$("#edit_nodes").load(url, function () {
-				    // this is the callback function, called after the load is finished.
-				    $.fancybox.hideActivity();
-				});
-				return false;
+
 	});	
 	
 	$("th.create_node").livequery('click', function() { 

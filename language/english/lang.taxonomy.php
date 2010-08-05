@@ -53,6 +53,7 @@ $lang = array(
 "visit"							=> 'Visit: ',
 "select_tree"					=> 'Select the tree associated with this field',
 "node_properties"				=> 'Node Properties',
+"search_for_nodes"				=> 'Search for Nodes',
 
 //
 ''=>''
