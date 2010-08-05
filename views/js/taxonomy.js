@@ -5,6 +5,7 @@ $(document).ready(function() {
 		id = formatted.split("|") ;
 		// $("<li>").html( !data ? "No match!" : "Selected: " + id[0]).appendTo("#node_search_results");
 		$("#select_entry select option[value='" + id[0] + "']").attr("selected","selected");
+		// alert(id[0]);
 	}
 
 	

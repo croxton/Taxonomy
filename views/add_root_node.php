@@ -21,7 +21,7 @@
 		
 		$this->table->add_row(
 			lang('internal_url'),
-			form_dropdown('template_path', $templates['options'], '').
+			form_dropdown('template_path', $templates, '').
 			" &nbsp; ".
 			form_dropdown('entry_id', $entries, '')
 		);
@@ -42,4 +42,4 @@
 		
 		print form_close();
 		
-	?>
+?>
