@@ -2075,6 +2075,8 @@ ORDER BY {$this->left_col} DESC) as parent";
 		$level = 0;
 		$i=0;
 		foreach($query->result_array() as $row){
+		
+		// print_r($row);
 			
 			// go more shallow, if needed
 			if(count($right)){

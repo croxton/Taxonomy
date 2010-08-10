@@ -76,7 +76,7 @@ class Taxonomy_mcp {
 		
 		// grab the trees
 		// $query = $this->EE->db->get('exp_taxonomy_trees');	
-		$query = $this->EE->db->getwhere('exp_taxonomy_trees',array('site_id' => $this->EE->config->item('site_id')));
+		$query = $this->EE->db->get_where('exp_taxonomy_trees',array('site_id' => $this->EE->config->item('site_id')));
 		
 		//$this->EE->config->item('site_id')
 
@@ -155,6 +155,7 @@ class Taxonomy_mcp {
 		// get the channels available
 		$this->EE->load->model('channel_model');
 		$channels = $this->EE->channel_model->get_channels($this->EE->config->item('site_id'));
+		
 		
 		// no channels?	
 		if ($channels->num_rows() == 0)
@@ -1130,6 +1131,8 @@ class Taxonomy_mcp {
 		
 		$flat_tree = $this->EE->mpttree->get_flat_tree_v2(1);
 		
+		// print_r($flat_tree);
+
 		$this->EE->load->library('table');
 		
 		$r = '<div id="edit_table_inner">';
@@ -1216,6 +1219,7 @@ class Taxonomy_mcp {
 					$spacer .= $indent; 
 				}
 				
+				
 				// get the mess um.. messsy?
 				$node_label = $flat_tree[$i]['label'];
 				$node_id 	= $flat_tree[$i]['node_id'];
@@ -1293,6 +1297,11 @@ class Taxonomy_mcp {
 					$visit_page_url = "<a href='".$taxonomy_url."' target='_blank' title='".lang('visit').$taxonomy_url."'>Visit Page</a> ";
 					$edit_node_url = "<a href='".$node_link_base.AMP.'method=edit_node'.AMP.'node_id='.$node_id.AMP.'tree='.$tree."'>Edit Node</a>";
 					$edit_entry_url = "<a href='".$edit_base."'>Edit Entry</a> ";
+				}
+				
+				if(!$flat_tree[$i]['entry_id'])
+				{
+					$edit_entry_url = '';
 				}
 
 				$this->EE->table->add_row(
