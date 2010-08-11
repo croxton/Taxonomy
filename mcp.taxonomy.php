@@ -77,7 +77,7 @@ class Taxonomy_mcp {
 		
 		// grab the trees
 		// $query = $this->EE->db->get('exp_taxonomy_trees');	
-		$query = $this->EE->db->getwhere('exp_taxonomy_trees',array('site_id' => $this->EE->config->item('site_id')));
+		$query = $this->EE->db->get_where('exp_taxonomy_trees',array('site_id' => $this->EE->config->item('site_id')));
 		
 		//$this->EE->config->item('site_id')
 

@@ -361,7 +361,7 @@
 		{
 			
 			// fetch the trees available on this site
-			$query = $this->EE->db->getwhere('exp_taxonomy_trees',array('site_id' => $this->EE->config->item('site_id')));
+			$query = $this->EE->db->get_where('exp_taxonomy_trees',array('site_id' => $this->EE->config->item('site_id')));
 			
 			//build the select options
 			$options = array();

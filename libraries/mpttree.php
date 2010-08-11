@@ -400,7 +400,7 @@ class MPTtree {
 	 * but if no rows returned, false
 	 */
 	function get_root(){
-		$query = $this->EE->db->getwhere($this->tree_table,array($this->left_col => 1),1);
+		$query = $this->EE->db->get_where($this->tree_table,array($this->left_col => 1),1);
 		$return = $query->num_rows() ? $query->row_array() : false;
 		return $return;
 	}
@@ -413,7 +413,7 @@ class MPTtree {
 	 * but if no rows returned, false
 	 */
 	function get_node($lft){
-		$query = $this->EE->db->getwhere($this->tree_table,array($this->left_col => $lft),1);
+		$query = $this->EE->db->get_where($this->tree_table,array($this->left_col => $lft),1);
 		$return = $query->num_rows() ? $query->row_array() : false;
 
 		return $return;
@@ -427,7 +427,7 @@ class MPTtree {
 	 * but if no rows returned, false
 	 */
 	function get_node_byid($id){
-		$query = $this->EE->db->getwhere($this->tree_table,array($this->id_col => $id),1);
+		$query = $this->EE->db->get_where($this->tree_table,array($this->id_col => $id),1);
 		$return = $query->num_rows() ? $query->row_array() : false;
 		if(!$return)
 			echo 'Node with '.$this->id_col.' '.$id.' was not found.';
@@ -450,7 +450,7 @@ class MPTtree {
 			return $this->get_descendants_wlevel($lft,$rgt);
 		$this->EE->db->where($this->left_col.' >',$lft);
 		$this->EE->db->where($this->right_col.' <',$rgt);
-		$this->EE->db->orderby($this->left_col,'asc');
+		$this->EE->db->order_by($this->left_col,'asc');
 		$query = $this->EE->db->get($this->tree_table);
 		return $query->num_rows() ? $query->result_array() : array();
 	}
@@ -507,7 +507,7 @@ ORDER BY node.{$this->left_col};");
 		$this->EE->db->where($this->left_col.' >',$lft);
 		$this->EE->db->where($this->right_col.' <',$rgt);
 		$this->EE->db->where($where);
-		$this->EE->db->orderby($this->left_col,'asc');
+		$this->EE->db->order_by($this->left_col,'asc');
 		$query = $this->EE->db->get($this->tree_table);
 		return $query->num_rows() ? $query->result_array() : array();
 	}
@@ -654,7 +654,7 @@ ORDER BY node.{$this->left_col}) as a");
 	function get_parents($lft,$rgt){
 		$this->EE->db->where($this->left_col.' <',$lft);
 		$this->EE->db->where($this->right_col.' >',$rgt);
-		$this->EE->db->orderby($this->left_col,'desc');
+		$this->EE->db->order_by($this->left_col,'desc');
 		$query = $this->EE->db->get($this->tree_table);
 		return $query->num_rows() ? $query->result_array() : array();
 	}
@@ -670,7 +670,7 @@ ORDER BY node.{$this->left_col}) as a");
 	function get_parent($lft,$rgt){
 		$this->EE->db->where($this->left_col.' <',$lft);
 		$this->EE->db->where($this->right_col.' >',$rgt);
-		$this->EE->db->orderby($this->left_col,'desc');
+		$this->EE->db->order_by($this->left_col,'desc');
 		$this->EE->db->limit(1); // we only want the first of all parents
 		$query = $this->EE->db->get($this->tree_table);
 		return $query->num_rows() ? $query->row_array() : false;
@@ -1481,7 +1481,7 @@ ORDER BY {$this->left_col} DESC) as parent";
 	function find_gaps(){
 		// Get all lfts and rgts and sort them in a list
 		$this->EE->db->select($this->left_col.', '.$this->right_col);
-		$this->EE->db->orderby($this->left_col,'asc');
+		$this->EE->db->order_by($this->left_col,'asc');
 		$table = $this->EE->db->get($this->tree_table);
 		$nums = array();
 		foreach($table->result() as $row){
@@ -2499,13 +2499,13 @@ ORDER BY {$this->left_col} DESC) as parent";
 
 	
 	function get_node_by_entryid($entry_id){
-		$query = $this->EE->db->getwhere($this->tree_table,array('entry_id' => $entry_id),1);
+		$query = $this->EE->db->get_where($this->tree_table,array('entry_id' => $entry_id),1);
 		$return = $query->num_rows() ? $query->row_array() : false;
 		return $return;
 	}
 	
 	function get_node_by_nodeid($node_id){
-		$query = $this->EE->db->getwhere($this->tree_table,array('node_id' => $node_id),1);
+		$query = $this->EE->db->get_where($this->tree_table,array('node_id' => $node_id),1);
 		$return = $query->num_rows() ? $query->row_array() : false;
 		return $return;
 	}
