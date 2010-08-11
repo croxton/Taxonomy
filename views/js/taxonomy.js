@@ -5,6 +5,7 @@ $(document).ready(function() {
 		id = formatted.split("|") ;
 		// $("<li>").html( !data ? "No match!" : "Selected: " + id[0]).appendTo("#node_search_results");
 		$("#select_entry select option[value='" + id[0] + "']").attr("selected","selected");
+		// alert(id[0]);
 	}
 
 	
@@ -17,14 +18,19 @@ $(document).ready(function() {
 	$("#edit_nodes a.fancypants").livequery('click', function() { 
 	
 		$.fancybox.showActivity();
-
+		var url = $(this).attr("href");
+		
+		$.getJSON(url,
+        function(data){
+          	// alert(data.some_message);
+            $("#edit_nodes").html(data.data);
+            $.fancybox.hideActivity();
+         
+        });
+		
+		return false;
 			// alert('foo');
-   			var url = $(this).attr("href")+" #edit_nodes";
-				$("#edit_nodes").load(url, function () {
-				    // this is the callback function, called after the load is finished.
-				    $.fancybox.hideActivity();
-				});
-				return false;
+
 	});	
 	
 	$("th.create_node").livequery('click', function() { 
@@ -75,20 +81,38 @@ $(document).ready(function() {
 			return false;
 	});
 	
-		$("#edit_nodes a.delete_node").livequery('click', function() { 
-   			var url = $(this).attr("href")+" #edit_nodes";
+	$("#edit_nodes a.delete_node").livequery('click', function() { 
+   			var url = $(this).attr("href");
    			var answer = confirm("Are you sure you want to delete this node?")
 		    if (answer){
-		        $("#edit_nodes").load(url);
+		        $.fancybox.showActivity();
+				var url = $(this).attr("href");
+				
+				$.getJSON(url,
+		        function(data){
+		          	// alert(data.some_message);
+		            $("#edit_nodes").html(data.data);
+		            $.fancybox.hideActivity();
+		         
+		        });
 		    }	
 			return false;
 	});	
 	
 	$("#edit_nodes a.delete_nodes").livequery('click', function() { 
-   			var url = $(this).attr("href")+" #edit_nodes";
+   			var url = $(this).attr("href");
    			var answer = confirm("Are you sure you want to delete this node and all it's children?")
 		    if (answer){
-		        $("#edit_nodes").load(url);
+		        $.fancybox.showActivity();
+				var url = $(this).attr("href");
+				
+				$.getJSON(url,
+		        function(data){
+		          	// alert(data.some_message);
+		            $("#edit_nodes").html(data.data);
+		            $.fancybox.hideActivity();
+		         
+		        });
 		    }	
 			return false;
 	});	
