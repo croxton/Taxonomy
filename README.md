@@ -2,7 +2,7 @@
 
 ### Overview
 
-The Taxonomy Module is a navigation & auto breadcumb building tool which uses nested sets to control hierarchy. The class used is straight from the CI community (MPTtree) and that does most of the heavy lifting.
+The Taxonomy Module is a navigation/breadcrumb building tool for 'page' sections of your site. The module uses nested sets to control hierarchy and utilises the MPTtree library from the CodeIgniter community.
 
 Unlike the Pages Module, Taxonomy uri's are built using regular template_group/url_title or template_group/template/url_title paths Ñ so for example, the uri /page/copyright/ could represent something 10 levels deep in the Taxonomy module.
 
