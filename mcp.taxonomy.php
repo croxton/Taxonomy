@@ -1320,6 +1320,7 @@ class Taxonomy_mcp {
 				$selected_template_path = $templates['options'][$template];
 				$custom_url = $flat_tree[$i]['custom_url'];
 				$edit_base = BASE.AMP.'C=content_publish'.AMP.'M=entry_form'.AMP.'channel_id='.$flat_tree[$i]['channel_id'].AMP.'entry_id='.$flat_tree[$i]['entry_id'];
+				$edit_node_url = "<a href='".$node_link_base.AMP.'method=edit_node'.AMP.'node_id='.$node_id.AMP.'tree='.$tree."'>Edit Node</a>";
 				
 				if($custom_url)
 				{
@@ -1336,7 +1337,7 @@ class Taxonomy_mcp {
 					// strip double slashes except http://
 					$taxonomy_url = preg_replace("#(^|[^:])//+#", "\\1/", $taxonomy_url);
 					$visit_page_url = "<a href='".$taxonomy_url."' target='_blank' title='".lang('visit').$taxonomy_url."'>Visit Page</a> ";
-					$edit_node_url = "<a href='".$node_link_base.AMP.'method=edit_node'.AMP.'node_id='.$node_id.AMP.'tree='.$tree."'>Edit Node</a>";
+					
 					$edit_entry_url = "<a href='".$edit_base."'>Edit Entry</a> ";
 				}
 				
