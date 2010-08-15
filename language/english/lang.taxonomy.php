@@ -54,7 +54,9 @@ $lang = array(
 "select_tree"					=> 'Select the tree associated with this field',
 "node_properties"				=> 'Node Properties',
 "search_for_nodes"				=> 'Search for Nodes',
-
+"taxonomy_config"				=> 'Module Configuration',
+"asset_path_config"				=> 'Location of the <strong>taxonomy_assets</strong> folder',
+"taxonomy_config_updated"		=> 'Taxonomy preferences have been updated',
 //
 ''=>''
 );

@@ -30,6 +30,6 @@
 
 	<?=$add_node_table?>
 		
-	<?= $tree_table ?>
+	<?=$tree_table?>
 
 	</div>

@@ -2,15 +2,10 @@
 <script type="text/javascript" src="<?=$asset_path?>js/fancybox/jquery.fancybox-1.3.1.pack.js"></script>
 <script type="text/javascript" src="<?=$asset_path?>js/jquery.autocomplete.min.js"></script>
 
-
 <script type="text/javascript" src="<?=$asset_path?>js/taxonomy.js"></script>
 <link rel="stylesheet" type="text/css" href="<?=$asset_path?>css/taxonomy.css" />
 
 <?php
-
-// print_r($node);
-// print_r($path);
-// print_r($templates);
 
 // output a breadcrumb to this node:
 echo "<p><strong>".lang('path_to_here')."</strong> ";

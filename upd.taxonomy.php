@@ -13,7 +13,7 @@
 
 class Taxonomy_upd {
 
-	var $version = '0.5';
+	var $version = '0.51';
 	
 	function Taxonomy_upd()
 	{
@@ -58,9 +58,33 @@ class Taxonomy_upd {
 
 		$this->EE->dbforge->add_field($fields);
 		$this->EE->dbforge->add_key('id', TRUE);
-		$this->EE->dbforge->create_table('taxonomy_trees');	
+		$this->EE->dbforge->create_table('taxonomy_trees');
 		
 		unset($fields);
+		
+		// build the module config table
+		// holds the tinyest of settings for now,
+		// I imagine there will be more to addin due course
+		$fields = array(
+			            'id' 					=> array('type' => 'int', 'constraint' => '10', 'unsigned' => TRUE, 'auto_increment' => TRUE,),
+			            'site_id' 				=> array('type' => 'int', 'constraint' => '10', 'unsigned' => TRUE,),
+			            'asset_path' 			=> array('type' => 'varchar', 'constraint' => '250')
+			        );
+
+        $this->EE->dbforge->add_field($fields);
+        $this->EE->dbforge->add_key('id', TRUE);
+        $this->EE->dbforge->create_table('taxonomy_config');
+        
+		unset($fields);
+		
+		// insert our default config settings for this site
+		$settings_data = array(
+			               'id' => NULL,
+			               'site_id' => $this->EE->config->item('site_id'),
+			               'asset_path' => 'expressionengine/third_party/taxonomy/views/taxonomy_assets/'
+			            	);
+		
+		$this->EE->db->insert('taxonomy_config', $settings_data); 
 		
 		return TRUE;
 
@@ -98,7 +122,8 @@ class Taxonomy_upd {
 		}
 
 		$this->EE->dbforge->drop_table('taxonomy_trees');
-
+		
+		$this->EE->dbforge->drop_table('taxonomy_config');
 
 		return TRUE;
 	}
@@ -132,7 +157,35 @@ class Taxonomy_upd {
 			
 			// $.ee_notice("Module updated to v0.23");
 			
+		}
+		
+		// addition of the preferences table
+		if ($current < 0.51) 
+		{
+			$this->EE->load->dbforge();
+			$fields = array(
+			            'id' 					=> array('type' => 'int', 'constraint' => '10', 'unsigned' => TRUE, 'auto_increment' => TRUE,),
+			            'site_id' 				=> array('type' => 'int', 'constraint' => '10', 'unsigned' => TRUE, 'default' => $this->EE->config->item('site_id')),
+			            'asset_path' 			=> array('type' => 'varchar', 'constraint' => '250', 'default' => 'expressionengine/third_party/taxonomy/views/taxonomy_assets/')
+			        );
+
+	        $this->EE->dbforge->add_field($fields);
+	        $this->EE->dbforge->add_key('id', TRUE);
+	        $this->EE->dbforge->create_table('taxonomy_config');
+			
+			unset($fields);
+			
+			$settings_data = array(
+			               'id' => NULL,
+			               'site_id' => $this->EE->config->item('site_id'),
+			               'asset_path' => 'expressionengine/third_party/taxonomy/views/taxonomy_assets/'
+			            	);
+		
+			$this->EE->db->insert('taxonomy_config', $settings_data); 
+			
 		} 
+		
+		
 	}
 	
 }

@@ -11,12 +11,7 @@
  * @license   	http://creativecommons.org/licenses/MIT/  MIT License
 */
 
-// if you're moving the js and images folders, define where they are located here
-define('ASSET_PATH', 'expressionengine/third_party/taxonomy/views/');
-
-
 class Taxonomy_mcp {
-
 	/**
 	 * Constructor
 	 *
@@ -24,8 +19,14 @@ class Taxonomy_mcp {
 	 */
 	function Taxonomy_mcp()
 	{
+
 		// Make a local reference to the ExpressionEngine super object
 		$this->EE =& get_instance();
+		
+		// get our preferences
+		$preferences = $this->fetch_taxonomy_preferences();
+		define('ASSET_PATH', $preferences['asset_path']);
+		
 	}
 
 	// --------------------------------------------------------------------
@@ -44,6 +45,7 @@ class Taxonomy_mcp {
 		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('taxonomy_module_name'));
 		
 			$this->EE->cp->set_right_nav(array(
+				'taxonomy_config'	=> BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=configure',
 				'add_nodetree'		=> BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=add_tree'
 			));
 
@@ -114,6 +116,46 @@ class Taxonomy_mcp {
 	}
 	
 	
+	
+	
+	/**
+	 * Configure Module
+	 *
+	 * @access	public
+	 */
+	 // @todo: module permissions/member group rights
+	function configure()
+	{
+		$this->EE->load->library('table');
+		$this->EE->cp->set_variable('cp_page_title', $this->EE->lang->line('taxonomy_config'));
+		$this->EE->cp->set_breadcrumb(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy',$this->EE->lang->line('taxonomy_module_name'));
+		
+		$vars['site_id'] = $this->EE->config->item('site_id');
+		
+		$vars['preferences'] = $this->fetch_taxonomy_preferences();
+		
+		// has the user sent updated settings
+		if($this->EE->input->post('site_id'))
+		{
+			$data = array(
+               'site_id' 	=> $vars['site_id'],
+               'asset_path' => $this->EE->input->post('asset_path')
+            );
+			
+			$this->EE->db->where('site_id', $vars['site_id']);
+			$this->EE->db->update('taxonomy_config', $data); 
+			
+			$cp_message = $this->EE->lang->line('taxonomy_config_updated');
+			$this->EE->session->set_flashdata('message_success', $cp_message);
+			$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy');
+
+		}
+		
+		return $this->EE->load->view('configure', $vars, TRUE);
+	}
+
+
+
 	/**
 	 * Create a Taxonomy tree form
 	 *
@@ -1029,7 +1071,7 @@ class Taxonomy_mcp {
 			$r .= '<div id="add_node">';
 			$r .= form_open('C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=add_node');
 			$this->EE->table->set_heading(
-				array('data' => "<span><img src='expressionengine/third_party/taxonomy/views/gfx/add_node.png' style='margin-right: 5px; vertical-align: bottom;' />&nbsp;".lang('create_node')."</span>", 'class' => 'create_node'),
+				array('data' => "<span><img src='".ASSET_PATH."gfx/add_node.png' style='margin-right: 5px; vertical-align: bottom;' />&nbsp;".lang('create_node')."</span>", 'class' => 'create_node'),
 				array('data' => "")
 				);
 		}
@@ -1287,7 +1329,6 @@ class Taxonomy_mcp {
 					$node_icon = "<img src='".ASSET_PATH."gfx/link.png' style='margin-right: 5px; vertical-align: bottom;' />";
 					$mask = '?URL=';
 					$edit_entry_url = "";
-					$edit_node_url = "";
 				}
 				else
 				{
@@ -1353,8 +1394,19 @@ class Taxonomy_mcp {
 	}
 	
 	
+	// fetch our simple (at this stage) settings 
+	private function fetch_taxonomy_preferences()
+	{
+		$taxonomy_prefs = '';
+		$query = $this->EE->db->get_where('exp_taxonomy_config',array('site_id' => $this->EE->config->item('site_id')));
+		foreach($query->result_array() as $row)
+		{
+			$taxonomy_prefs['asset_path'] = $row['asset_path'];											
+		}
+		return $taxonomy_prefs;
+	}
 	
-
+	
 }
 // END CLASS
 
