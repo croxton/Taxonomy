@@ -241,20 +241,28 @@ class Taxonomy_mcp {
 			$this->EE->session->set_flashdata('message_failure', $this->EE->lang->line('choose_tree'));
 			$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=add_tree');
 		}
+		//audiopleb change
+		$id_input = $this->EE->input->post('id');
+		$template_preferences_input = $this->EE->input->post('template_preferences');
+		$channel_preferences_input = $this->EE->input->post('channel_preferences');
+		$site_id_input = $this->EE->input->post('site_id');
+		$label_input = $this->EE->input->post('label');
 		
 		foreach($tree_names as $id => $tree)
 		{
-			if (isset($_POST['id'][$id]) && $_POST['id'][$id] != '')
+			
+			if (isset($id_input[$id]) && $id_input[$id] != '')
 			{
-				$data['id'] = $_POST['id'][$id]; 
+				$data['id'] = $id[$id]; 
 				$new = FALSE;
 			}
 			
-			if (isset($_POST['template_preferences'][$id]))
+			
+			if (isset($template_preferences_input[$id]))
 			{
 				if($new == TRUE)
 				{
-					$tp = $_POST['template_preferences'];
+					$tp = $template_preferences_input;
 					foreach($tp as $preference)
 					{
 						$template_preferences .= implode('|', $preference).'|';
@@ -262,7 +270,7 @@ class Taxonomy_mcp {
 				}
 				else
 				{
-					$template_preferences = implode('|', $_POST['template_preferences'][$id]);
+					$template_preferences = implode('|', $template_preferences_input[$id]);
 				}
 				
 			}
@@ -271,11 +279,11 @@ class Taxonomy_mcp {
 				$template_preferences = '1';
 			}
 			
-			if (isset($_POST['channel_preferences'][$id]))
+			if (isset($channel_preferences_input[$id]))
 			{
 				if($new == TRUE)
 				{
-					$cp = $_POST['channel_preferences'];
+					$cp = $channel_preferences_input;
 					foreach($cp as $preference)
 					{
 						$channel_preferences .= implode('|', $preference).'|';
@@ -283,7 +291,7 @@ class Taxonomy_mcp {
 				}
 				else
 				{
-				$channel_preferences = implode('|', $_POST['channel_preferences'][$id]);
+				$channel_preferences = implode('|', $channel_preferences_input[$id]);
 				}
 			}
 			else
@@ -293,9 +301,9 @@ class Taxonomy_mcp {
 
 						
 			$data = array(
-							'id'					=> $_POST['id'][$id],
-							'site_id'				=> $_POST['site_id'][$id],
-							'label'					=> $_POST['label'][$id],
+							'id'					=> $id_input[$id],
+							'site_id'				=> $site_id_input[$id],
+							'label'					=> $label_input[$id],
 							'template_preferences'	=> $template_preferences,
 							'channel_preferences' 	=> $channel_preferences
 							);
