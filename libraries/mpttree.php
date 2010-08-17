@@ -2101,60 +2101,8 @@ ORDER BY {$this->left_col} DESC) as parent";
 			$i++;
 		}
 		
-		
-		
-		
-		/*
-		
-		
-		round((`n`.`'.$this->right_col.'` - `n`.`'.$this->left_col.'` - 1) / 2, 0) AS childs
-		
-		
-		function tree2array($root = 1){
-		$node = $this->get_node($root);
-		if($node == false)
-			return false;
-		// query
-		$query = $this->EE->db->query('SELECT * FROM '.$this->tree_table.
-			' WHERE '.$this->left_col.' BETWEEN '.$node[$this->left_col].
-			' AND '.$node[$this->right_col].
-			' ORDER BY '.$this->left_col.' ASC');
-		$right = array();
-		$result = array();
-		$current =& $result;
-		$stack = array();
-		$stack[0] =& $result;
-		$lastlevel = 0;
-		foreach($query->result_array() as $row){
-			// go more shallow, if needed
-			if(count($right)){
-				while($right[count($right)-1] < $row[$this->right_col]){
-					array_pop($right);
-				}
-			}
-			// Go one level deeper?
-			if(count($right) > $lastlevel){
-				end($current);
-				$current[key($current)]['children'] = array();
-				$stack[count($right)] =& $current[key($current)]['children'];
-			}
-			// the stack contains all parents, current and maybe next level
-			$current =& $stack[count($right)];
-			// add the data
-			$current[] = $row;
-			// go one level deeper with the index
-			$lastlevel = count($right);
-			$right[] = $row[$this->right_col];
-			$current[$i]['depth'] = $depth;
-			$current[$i]['lastlevel'] = $lastlevel
-		}
 		return $result;
-	}
 		
-		
-		
-		*/
-		return $result;
 	}
 	
 	
@@ -2203,164 +2151,6 @@ ORDER BY {$this->left_col} DESC) as parent";
    	 	return $str;
     }
     
-
-    
-    /**
-	 * Returns all nodes from a tag pair and produces a nested list
-	 * @param $array The nested array of nodes
-	 * @param $tagdata The data between the tag
-	 * @return A multidimensional asociative array with the table rows,
-	 * but if no rows returned, empty array
-	 */
-    function mptree_cp_loop($array, $tagdata, $display_root = 'no', $depth = 10, $path = NULL, $entry_id = 0)
-	{
-		
-		if(!$array)
-      		return false;
-      		
-		
-		// print_r($array);
-		
-		$str = '';	
-		
-    	$str .= "<ul>\n";
-    	
-    	// echo $display_root.'<br />';
-		
-		$closing_ul = "</ul>\n";
-		
-    	foreach($array as $data)
-    	{
-    	
-	    	$active_parent = '';
-	    	
-	    	// flag active parents
-	    	if($path != '')
-			{
-				foreach($path as $parent_node)
-				{
-					if($data['node_id'] === $parent_node['node_id'])
-					{
-						$active_parent = ' active_parent';
-						// echo $data['node_id'].' == '.$parent_node['node_id'].'<br />';
-					}
-				}
-			
-			}
-			
-			$active = '';
-			if($data['entry_id'] == $entry_id)
-			{
-				$active = ' active';
-			}
-    		    		
-    		if(($data['level'] == 0) && $display_root =="no")
-    		{
-    		 $str = $this->EE->mpttree->mptree_cp_loop($data['children'], $tagdata, $display_root, $depth, $path, $entry_id);
-    		 $closing_ul = '';
-    		}
-    		
-    		else
-    		{
-
-	    		$template_group = 	'/'.$data['group_name']; 
-	    		$template_name = 	'/'.$data['template_name']; 
-	    		$url_title = 		'/'.$data['url_title'];
-	    		
-	    		// don't display /index
-	    		if($template_name == '/index')
-	    		{
-	    			$template_name = '';
-	    		}
-	    		
-	    		$node_url = 	$this->EE->functions->fetch_site_index().$template_group.$template_name.$url_title;
-	    		// if we're not using an index, get rid of double slashes
-				$node_url = $this->EE->functions->remove_double_slashes($node_url);
-	    		
-	    		$viewed_url = 	$this->EE->functions->fetch_site_index().'/'.$this->EE->uri->uri_string();
-	    		$viewed_url = 	$this->EE->functions->remove_double_slashes($viewed_url);
-	    		
-	    		// override template and entry slug with custom url if set
-	    		if($data['custom_url'] != '')
-	    		{
-	    			$node_url = $data['custom_url'];
-	    		}
-	    						
-	    		if($node_url == $viewed_url)
-	    		{
-	    			$active = ' active';
-	    		}
-	    		
-	    		$children = '';
-	    		$children_class = '';
-	    		
-	    		//print_r($array);
-	    		
-	    		if(isset($data['has_children']))
-	    		{
-	    			$children = 'yes';
-	    			$children_class = 'has_children';
-	    		}    		
-	    		
-	    		//echo $children;
-	        	
-	        	$variables = array(
-	        						'node_id' => $data['node_id'],
-	        						'node_title' => $data['label'], 
-	        						'node_url' => $node_url,
-	        						'node_active' => $active,
-	        						'node_active_parent' => $active_parent,
-	        						'node_lft' => $data['lft'],
-									'node_rgt' => $data['rgt'],
-									'node_entry_id' =>  $data['entry_id'],
-									'node_custom_url' => $data['custom_url'],
-									'node_extra' =>  $data['extra'],
-									'node_entry_title' => $data['title'],
-									'node_entry_url_title' => $data['url_title'],
-									'node_entry_status' =>  $data['status'],
-									'node_entry_entry_date' => 1269683831,
-									'node_entry_template_name' => $data['template_name'],
-									'node_entry_template_group_name' => $data['group_name'],
-									'node_has_children' => $children,
-									'node_next_child' => $data['lft']+1,
-									'node_level' => $data['level']
-	        						);
-	        	
-	        	// make sure each node has a unique class
-	        	if($data['entry_id'] == "")
-	        	{
-	        		$this->EE->load->helper('url');
-	        		$unique_class = url_title(strtolower($data['label']));
-	        	}
-	        	else
-	        	{
-	        		$unique_class = $data['url_title'];
-	        	}
-	        						
-				$str .= '   <li class="node_'.$unique_class.' level_'.$data['level'].' '.$children_class.$active_parent.$active.'">';
-				$str .= "";
-	        	$str .= $this->EE->functions->var_swap($tagdata, $variables);
-	        	
-	  			
-	        	if(isset($data['children']) && $data['level'] < $depth)
-	        	{
-		            $str .= $this->EE->mpttree->mptree_cp_loop($data['children'], $tagdata, $display_root, $depth, $path, $entry_id);
-		        }
-		        
-	        	$str .= "   </li>\n";
-        	}
-        	
-        	
-        } 
-           
-        $str .= $closing_ul;
-        
-   	 	return $str;
-    }
-    
-    
-    
-    
     
     /**
 	 * Converts the tree structure in the tree to an array.
@@ -2386,7 +2176,7 @@ ORDER BY {$this->left_col} DESC) as parent";
 			
 			if($root_entry_id)
 			{
-				$node = $this->get_node_by_entryid($root_entry_id);
+				$node = $this->get_node_by_entry_id($root_entry_id);
 			}
 			else
 			{
@@ -2500,7 +2290,7 @@ ORDER BY {$this->left_col} DESC) as parent";
 	
 
 	
-	function get_node_by_entryid($entry_id){
+	function get_node_by_entry_id($entry_id){
 		$query = $this->EE->db->get_where($this->tree_table,array('entry_id' => $entry_id),1);
 		$return = $query->num_rows() ? $query->row_array() : false;
 		return $return;
@@ -2669,6 +2459,188 @@ ORDER BY {$this->left_col} DESC) as parent";
 	}
 	
 	
+	
+	 /**
+	 * Returns all nodes from a tag pair and produces a nested list
+	 * @param $array The nested array of nodes
+	 * @param $tagdata The data between the tag
+	 * @param $options An array of various user defined options
+	 * @return A nested <ul> for building a navigation from nodes
+	 */
+	function build_list($array, $tagdata, $options)
+	{
+		
+		$options['depth'] 			= ($options['depth']) ? $options['depth'] : 100 ;
+		$options['display_root'] 	= ($options['display_root']) ? $options['display_root'] : "yes";
+		$options['path'] 			= ($options['path']) ? $options['path'] : NULL;
+		$options['entry_id'] 		= ($options['entry_id'] ) ? $options['entry_id'] : NULL;
+		$options['ul_css_id'] 		= ($options['ul_css_id'] ) ? $options['ul_css_id'] : NULL;
+		$options['ul_css_class'] 	= ($options['ul_css_class'] ) ? $options['ul_css_class'] : NULL;
+				
+		$str = '';
+		$ul_id = '';
+		$ul_class = '';
+		
+		if(!$array)
+      		return false;
+		
+		// apply the css id to th outermost <ul>
+		if($options['ul_css_id'])
+		{
+			$ul_id = ' id="'.$options['ul_css_id'].'"';			
+		}
+		
+		// apply the css class to th outermost <ul>
+		if($options['ul_css_class'])
+		{
+			$ul_class = ' class="'.$options['ul_css_class'].'"';
+		}
+		
+    	$str .= "<ul".$ul_id.$ul_class.">\n";
+    	
+    	// echo $display_root.'<br />';
+		
+		$closing_ul = "</ul>\n";
+		
+    	foreach($array as $data)
+    	{    	
+	    	$active_parent = '';
+	    	
+	    	// flag active parents
+	    	if($options['path'])
+			{
+				foreach($options['path'] as $parent_node)
+				{
+					if($data['node_id'] === $parent_node['node_id'])
+					{
+						$active_parent = 'active_parent';
+						// echo $data['node_id'].' == '.$parent_node['node_id'].'<br />';
+					}
+				}
+			
+			}
+			
+			$active = '';
+			if($data['entry_id'] == $options['entry_id'])
+			{
+				$active = 'active';
+			}
+    		    		
+    		if(($data['level'] == 0) && ($options['display_root'] =="no" && isset($data['children'])))
+    		{
+    		 $str = $this->EE->mpttree->build_list($data['children'], $tagdata, $options);
+    		 $closing_ul = '';
+    		}
+    		
+    		else
+    		{
+
+	    		$template_group = 	'/'.$data['group_name']; 
+	    		$template_name = 	'/'.$data['template_name']; 
+	    		$url_title = 		'/'.$data['url_title'];
+	    		
+	    		// don't display /index
+	    		if($template_name == '/index')
+	    		{
+	    			$template_name = '';
+	    		}
+	    		
+	    		$node_url = 	$this->EE->functions->fetch_site_index().$template_group.$template_name.$url_title;
+	    		// if we're not using an index, get rid of double slashes
+				$node_url = $this->EE->functions->remove_double_slashes($node_url);
+	    		
+	    		$viewed_url = 	$this->EE->functions->fetch_site_index().'/'.$this->EE->uri->uri_string();
+	    		$viewed_url = 	$this->EE->functions->remove_double_slashes($viewed_url);
+	    		
+	    		// override template and entry slug with custom url if set
+	    		if($data['custom_url'] != '')
+	    		{
+	    			$node_url = $data['custom_url'];
+	    		}
+	    						
+	    		if($node_url == $viewed_url)
+	    		{
+	    			$active = 'active';
+	    		}
+	    		
+	    		$children = '';
+	    		$children_class = '';
+	    		
+	    		//print_r($array);
+	    		
+	    		if(isset($data['has_children']))
+	    		{
+	    			$children = 'yes';
+	    			$children_class = 'has_children';
+	    		}    		
+	    		
+	    		//echo $children;
+	        	
+	        	$variables = array(
+	        						'node_id' => $data['node_id'],
+	        						'node_title' => $data['label'], 
+	        						'node_url' => $node_url,
+	        						'node_active' => $active,
+	        						'node_active_parent' => $active_parent,
+	        						'node_lft' => $data['lft'],
+									'node_rgt' => $data['rgt'],
+									'node_entry_id' =>  $data['entry_id'],
+									'node_custom_url' => $data['custom_url'],
+									'node_extra' =>  $data['extra'],
+									'node_entry_title' => $data['title'],
+									'node_entry_url_title' => $data['url_title'],
+									'node_entry_status' =>  $data['status'],
+									'node_entry_entry_date' => 1269683831,
+									'node_entry_template_name' => $data['template_name'],
+									'node_entry_template_group_name' => $data['group_name'],
+									'node_has_children' => $children,
+									'node_next_child' => $data['lft']+1,
+									'node_level' => $data['level']
+	        						);
+	        	
+	        	// make sure each node has a unique class
+	        	if($data['entry_id'] == "")
+	        	{
+	        		$this->EE->load->helper('url');
+	        		$unique_class = url_title(strtolower($data['label']));
+	        	}
+	        	else
+	        	{
+	        		$unique_class = $data['url_title'];
+	        	}
+	        	
+	        	$level = $data['level'];
+	        	
+	        	// build our node class and remove any extra spaces
+	        	$node_class = preg_replace('/\s\s+/', ' ', "node_$unique_class level_$level $children_class $active_parent $active");
+	        	
+	        	// get rid of any space on the end
+	        	$node_class = rtrim($node_class, " ");
+	        						
+				$str .= '<li class="'.$node_class.'">';
+				$str .= "";
+	        	$str .= $this->EE->functions->var_swap($tagdata, $variables);
+	        	
+	        	if(isset($data['children']) && $data['level'] < $options['depth'])
+	        	{
+	        		// reset css id and class if going deeper
+	        		$options['ul_css_id'] = NULL;
+	        		$options['ul_css_class'] = NULL;
+	        		
+	        		// recurse dammit
+		            $str .= $this->EE->mpttree->build_list($data['children'], $tagdata, $options);
+		        }
+		        
+	        	$str .= "   </li>\n";
+        	}
+        	
+        	
+        } 
+           
+        $str .= $closing_ul;
+        
+   	 	return $str;
+    }
 	
 	
 	

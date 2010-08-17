@@ -45,7 +45,7 @@ class Taxonomy {
 		
 		$delimiter = $this->EE->TMPL->fetch_param('delimiter');
 		
-		$here = $this->EE->mpttree->get_node_by_entryid($entry_id);
+		$here = $this->EE->mpttree->get_node_by_entry_id($entry_id);
 
 		$return_data = '';
 		
@@ -104,67 +104,50 @@ class Taxonomy {
 	{
 		
 		$tree = $this->EE->TMPL->fetch_param('tree_id');
+		$options = array();
 		
-		if ($this->EE->db->table_exists('exp_taxonomy_tree_'.$tree))
-		{
-			$str = $this->EE->TMPL->tagdata;; 
-			$depth = $this->EE->TMPL->fetch_param('depth');
-			
-			if($depth == ""){$depth = 100;}
-			
-			$display_root = $this->EE->TMPL->fetch_param('display_root');
-			
-			if($this->EE->TMPL->fetch_param('root_node_lft'))
-			{
-				$root = $this->EE->TMPL->fetch_param('root_node_lft');
-			}
-			else
-			{
-				$root = 1;
-			}
-			
-			if($this->EE->TMPL->fetch_param('root_node_entry_id'))
-			{
-				$root_entry_id = $this->EE->TMPL->fetch_param('root_node_entry_id');
-			}
-			else
-			{
-				$root_entry_id = NULL;
-			}
+		if ( ! $this->EE->db->table_exists('exp_taxonomy_tree_'.$tree))
+			return false;
 
-			$this->EE->load->library('MPTtree');
-			$this->EE->mpttree->set_opts(array( 'table' => 'exp_taxonomy_tree_'.$tree,
-												'left' => 'lft',
-												'right' => 'rgt',
-												'id' => 'node_id',
-												'title' => 'label'));
-			
-			$entry_id = $this->EE->TMPL->fetch_param('entry_id');
-			$here = $this->EE->mpttree->get_node_by_entryid($entry_id);
-			$path = array();
-			
-			if($here != '')
-			{
-				$path = $this->EE->mpttree->get_parents_crumbs($here['lft'],$here['rgt']);
-				$entry_id = $here['entry_id'];
-			}
-			
-			// @todo
-			if($root_entry_id)
-			{
-				$tree2array = $this->EE->mpttree->tree2array_v2($root, $root_entry_id);
-			}
-			else
-			{
-				$tree2array = $this->EE->mpttree->tree2array_v2($root);
-			}	
-				
-			return $this->EE->mpttree->mptree_cp_loop($tree2array, $str, $display_root, $depth, $path, $entry_id);
+		$this->EE->load->library('MPTtree');
+		$this->EE->mpttree->set_opts(array( 'table' => 'exp_taxonomy_tree_'.$tree,
+											'left' => 'lft',
+											'right' => 'rgt',
+											'id' => 'node_id',
+											'title' => 'label'));
+
+		$str = $this->EE->TMPL->tagdata;
+		
+		$options['depth'] 			= ($this->EE->TMPL->fetch_param('depth')) ? $this->EE->TMPL->fetch_param('depth') : 100 ;
+		$options['display_root'] 	= ($this->EE->TMPL->fetch_param('display_root')) ? $this->EE->TMPL->fetch_param('display_root') : "yes";
+		$options['root'] 			= ($this->EE->TMPL->fetch_param('root_node_lft')) ? $this->EE->TMPL->fetch_param('root_node_lft') : 1;
+		$options['root_entry_id'] 	= ($this->EE->TMPL->fetch_param('root_node_entry_id')) ? $this->EE->TMPL->fetch_param('root_node_entry_id') : NULL;
+		$options['entry_id'] 		= ($this->EE->TMPL->fetch_param('entry_id')) ? $this->EE->TMPL->fetch_param('entry_id') : NULL;
+		$options['ul_css_id'] 		= ($this->EE->TMPL->fetch_param('ul_css_id')) ? $this->EE->TMPL->fetch_param('ul_css_id') : NULL;
+		$options['ul_css_class'] 	= ($this->EE->TMPL->fetch_param('ul_css_class')) ? $this->EE->TMPL->fetch_param('ul_css_class') : NULL;
+
+		$path = array();
+
+		if($options['entry_id'])
+		{
+			$here = $this->EE->mpttree->get_node_by_entry_id($options['entry_id']);
+			$options['path'] = $this->EE->mpttree->get_parents_crumbs($here['lft'],$here['rgt']);
+			$entry_id = $here['entry_id'];
+		}
+		
+		// @todo
+		if($options['root_entry_id'])
+		{
+			$tree_array = $this->EE->mpttree->tree2array_v2($options['root'], $options['root_entry_id']);
 		}
 		else
 		{
-			return false;
+			$tree_array = $this->EE->mpttree->tree2array_v2($options['root']);
 		}
+		
+		return $this->EE->mpttree->build_list($tree_array, $str, $options);
+		
+		// return $this->EE->mpttree->mptree_cp_loop($tree_array, $str, $display_root, $depth, $path, $entry_id);
 	}
 
 
@@ -264,7 +247,7 @@ class Taxonomy {
 
 		$depth = $this->EE->TMPL->fetch_param('depth');	
 
-		$here = $this->EE->mpttree->get_node_by_entryid($entry_id);
+		$here = $this->EE->mpttree->get_node_by_entry_id($entry_id);
 
 		$immediate_children = array();
 		$child_entry_ids = '';
@@ -304,7 +287,7 @@ class Taxonomy {
 		$include_current = $this->EE->TMPL->fetch_param('include_current');
 		
 		// where are we
-		$here = $this->EE->mpttree->get_node_by_entryid($entry_id);
+		$here = $this->EE->mpttree->get_node_by_entry_id($entry_id);
 		
 		if($here =="")
 		{
