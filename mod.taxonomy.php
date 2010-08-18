@@ -134,6 +134,10 @@ class Taxonomy {
 			$options['path'] = $this->EE->mpttree->get_parents_crumbs($here['lft'],$here['rgt']);
 			$entry_id = $here['entry_id'];
 		}
+		else
+		{
+			$options['path'] = NULL;
+		}
 		
 		// @todo
 		if($options['root_entry_id'])
