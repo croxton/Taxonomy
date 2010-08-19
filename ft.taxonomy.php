@@ -308,7 +308,7 @@
 			{
 
 				// fetch the node
-				$node = $mpttree->get_node_by_entryid($this->settings['entry_id']);
+				$node = $mpttree->get_node_by_entry_id($this->settings['entry_id']);
 
 				// what is the existing parent value
 				$existing_parent = $mpttree->get_parent($node['lft'],$node['rgt']);
