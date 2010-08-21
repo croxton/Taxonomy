@@ -131,6 +131,11 @@ class Taxonomy {
 		if($options['entry_id'])
 		{
 			$here = $this->EE->mpttree->get_node_by_entry_id($options['entry_id']);
+			
+			// nothing to return
+			if(!$here)
+				return false;
+				
 			$options['path'] = $this->EE->mpttree->get_parents_crumbs($here['lft'],$here['rgt']);
 			$entry_id = $here['entry_id'];
 		}
