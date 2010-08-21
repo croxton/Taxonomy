@@ -127,17 +127,19 @@ class Taxonomy {
 		$options['ul_css_class'] 	= ($this->EE->TMPL->fetch_param('ul_css_class')) ? $this->EE->TMPL->fetch_param('ul_css_class') : NULL;
 
 		$path = array();
-
-		if($options['entry_id'])
+		
+		// if we're getting an entry_id, we need to get the path to the node
+		// so we can apply some extra css classes as we travel down the branches to
+		// the current node
+		if($options['entry_id'] && $options['entry_id'] != "{entry_id}")
 		{
 			$here = $this->EE->mpttree->get_node_by_entry_id($options['entry_id']);
-			
-			// nothing to return
-			if(!$here)
-				return false;
-				
-			$options['path'] = $this->EE->mpttree->get_parents_crumbs($here['lft'],$here['rgt']);
-			$entry_id = $here['entry_id'];
+			// is the node valid
+			if($here)
+			{
+				$options['path'] = $this->EE->mpttree->get_parents_crumbs($here['lft'],$here['rgt']);
+				$entry_id = $here['entry_id'];
+			}
 		}
 		else
 		{
