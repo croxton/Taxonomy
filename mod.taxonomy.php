@@ -125,9 +125,8 @@ class Taxonomy {
 		$options['entry_id'] 		= ($this->EE->TMPL->fetch_param('entry_id')) ? $this->EE->TMPL->fetch_param('entry_id') : NULL;
 		$options['ul_css_id'] 		= ($this->EE->TMPL->fetch_param('ul_css_id')) ? $this->EE->TMPL->fetch_param('ul_css_id') : NULL;
 		$options['ul_css_class'] 	= ($this->EE->TMPL->fetch_param('ul_css_class')) ? $this->EE->TMPL->fetch_param('ul_css_class') : NULL;
-
-		$path = array();
-		
+		$options['path'] 			= NULL;
+				
 		// if we're getting an entry_id, we need to get the path to the node
 		// so we can apply some extra css classes as we travel down the branches to
 		// the current node
@@ -138,27 +137,13 @@ class Taxonomy {
 			if($here)
 			{
 				$options['path'] = $this->EE->mpttree->get_parents_crumbs($here['lft'],$here['rgt']);
-				$entry_id = $here['entry_id'];
 			}
 		}
-		else
-		{
-			$options['path'] = NULL;
-		}
-		
-		// @todo
-		if($options['root_entry_id'])
-		{
-			$tree_array = $this->EE->mpttree->tree2array_v2($options['root'], $options['root_entry_id']);
-		}
-		else
-		{
-			$tree_array = $this->EE->mpttree->tree2array_v2($options['root']);
-		}
-		
+
+		$tree_array = $this->EE->mpttree->tree2array_v2($options['root'], $options['root_entry_id']);
+
 		return $this->EE->mpttree->build_list($tree_array, $str, $options);
 		
-		// return $this->EE->mpttree->mptree_cp_loop($tree_array, $str, $display_root, $depth, $path, $entry_id);
 	}
 
 
