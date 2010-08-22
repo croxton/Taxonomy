@@ -644,7 +644,7 @@ class Taxonomy_mcp {
 		// sort alphabetically
 		natcasesort($entries);
 		
-			// root doesn't exist, so stop the user here and have them enter one.
+		// root doesn't exist, so stop the user here and have them enter one.
 		if($root_array === false)
 		{
 			$this->EE->load->library('table');
@@ -653,6 +653,26 @@ class Taxonomy_mcp {
 			$vars['add_root_form_action'] = 'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=add_root';
 			$vars['templates'] = $templates['options'];
 			$vars['entries'] = $entries;
+			$vars['select_page_uri'] = NULL;
+			
+			
+			// logic for the 'use page_uri' checkbox
+			// get the site pages from the pages module
+			$site_pages = $this->EE->config->item('site_pages');
+			
+			// check pages exist
+			if($site_pages)
+			{	
+				$site_pages_checkbox_options = array(
+				    'name'        => 'use_page_uri',
+				    'id'          => 'use_page_uri',
+				    'value'       => '1',
+				    'checked'     => FALSE
+			    );
+
+			    $vars['select_page_uri'] = " ".form_checkbox($site_pages_checkbox_options)." ".lang('use_pages_module_uri');
+			}
+
 			return $this->EE->load->view('add_root_node', $vars, TRUE);
 		}
 
@@ -1360,12 +1380,27 @@ class Taxonomy_mcp {
 				
 				if($custom_url)
 				{
-					$visit_page_url = "<a href='".$custom_url."' target='_blank' title='".lang('visit')."'>Visit Page</a> ";
-					$selected_template_path = '';
-					$flat_tree[$i]['url_title'] = '';
+					
 					$node_icon = "<img src='".ASSET_PATH."gfx/link.png' style='margin-right: 5px; vertical-align: bottom;' />";
-					$mask = '?URL=';
-					$edit_entry_url = "";
+
+					
+	    			if($custom_url == "[page_uri]")
+	    			{
+	    				$site_id = $this->EE->config->item('site_id');
+	    				$custom_url = $site_url.$this->EE->mpttree->entry_id_to_page_uri($entry_id, $site_id);
+	    				$edit_entry_url = "<a href='".$edit_base."'>Edit Entry</a> ";
+	    				$visit_page_url = "<a href='".$custom_url."' target='_blank' title='".lang('visit').$custom_url."'>Visit Page</a> ";
+	    				
+	    			}
+	    			else
+	    			{
+						$visit_page_url = "<a href='".$custom_url."' target='_blank' title='".lang('visit')."'>Visit Page</a> ";
+						$selected_template_path = '';
+						$flat_tree[$i]['url_title'] = '';
+						$node_icon = "<img src='".ASSET_PATH."gfx/link.png' style='margin-right: 5px; vertical-align: bottom;' />";
+						$mask = '?URL=';
+						$edit_entry_url = "";
+					}
 				}
 				else
 				{

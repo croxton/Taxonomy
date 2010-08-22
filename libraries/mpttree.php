@@ -2554,21 +2554,11 @@ ORDER BY {$this->left_col} DESC) as parent";
 	    			
 	    			$node_url = $data['custom_url'];
 	    			
+	    			// if we've got a page_uri set, go fetch the pages uri
 	    			if($node_url == "[page_uri]")
 	    			{
 	    				$site_id = $this->EE->config->item('site_id');
-	    				$site_pages = $this->EE->config->item('site_pages');
-	    				$entry_id = $data['entry_id'];
-	    					    				
-	    				if ($site_pages !== FALSE && isset($site_pages[$site_id]['uris'][$entry_id]))
-						{
-							$node_url = $site_pages[$site_id]['uris'][$entry_id];
-						}
-						else
-						{
-							$node_url = '/404';
-						}
-						
+	    				$node_url = $this->entry_id_to_page_uri($data['entry_id'], $site_id);
 	    			}
 
 	    			// does the custom url start with http://, 
@@ -2658,7 +2648,6 @@ ORDER BY {$this->left_col} DESC) as parent";
 	        	$str .= "   </li>\n";
         	}
         	
-        	
         } 
            
         $str .= $closing_ul;
@@ -2667,13 +2656,24 @@ ORDER BY {$this->left_col} DESC) as parent";
     }
     
     
-    
-    function fetch_site_pages()
+    // returns a page_uri from an entry_id
+    function entry_id_to_page_uri($entry_id, $site_id = 1)
 	{
-
-		$pages = $this->EE->config->item('site_pages');
 		
-		return $pages;
+		$site_pages = $this->EE->config->item('site_pages');
+				    				
+		if ($site_pages !== FALSE && isset($site_pages[$site_id]['uris'][$entry_id]))
+		{
+			$node_url = $site_pages[$site_id]['uris'][$entry_id];
+		}
+		else
+		{
+			// not sure what else to do really?
+			$node_url = '/404';
+		}
+		
+		return $node_url;
+		
 	}
 	
 	

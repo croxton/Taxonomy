@@ -70,15 +70,27 @@ class Taxonomy {
 					$template_name = '';
 				}
 				
-				$node_url = 	$this->EE->functions->fetch_site_index().$template_group.$template_name.$url_title;
-				// if we're not using an index, get rid of double slashes
-				$node_url = $this->EE->functions->remove_double_slashes($node_url);
-				
+				$node_url = $this->EE->functions->fetch_site_index();
+
 				// override template and entry slug with custom url if set
-				if($crumb['custom_url'] != '')
+				if($crumb['custom_url'] == "[page_uri]")
+				{
+	    			$site_id = $this->EE->config->item('site_id');
+	    			$node_url .= $this->EE->mpttree->entry_id_to_page_uri($crumb['entry_id'], $site_id);
+				}
+				elseif($crumb['custom_url'] != "")
 				{
 					$node_url = $crumb['custom_url'];
 				}
+				else
+				{
+					$node_url .= $this->EE->functions->fetch_site_index().$template_group.$template_name.$url_title;
+				}
+				
+				
+				// if we're not using an index, get rid of double slashes
+				$node_url = $this->EE->functions->remove_double_slashes($node_url);
+				
 				
 				if($display_root =="no" && $depth == 0)
 				{
@@ -180,22 +192,28 @@ class Taxonomy {
 				$template_group = 	'/'.$node['group_name']; 
 				$template_name = 	'/'.$node['template_name']; 
 				$url_title = 		'/'.$node['url_title'];
-				
-				
+
 				// don't display /index
 				if($template_name == '/index')
 				{
 					$template_name = '';
 				}
-				
+
+				if($node['custom_url'])
+				{
+					$node_url = $node['custom_url'];
+
+					// if we've got a page_uri set, go fetch the pages uri
+	    			if($node_url == "[page_uri]")
+	    			{
+	    				$site_id = $this->EE->config->item('site_id');
+	    				$node_url = $this->EE->mpttree->entry_id_to_page_uri($node['entry_id'], $site_id);
+	    			}
+				}
+
 				$node_url = $this->EE->functions->fetch_site_index().$template_group.$template_name.$url_title;
 				// if we're not using an index, get rid of double slashes
 				$node_url = $this->EE->functions->remove_double_slashes($node_url);
-				
-				if($node['custom_url'] != '')
-				{
-					$node_url = $node['custom_url'];
-				}
 				
 				$entry[$tree][$node['entry_id']] =  $node_url;
 			}

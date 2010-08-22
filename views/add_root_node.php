@@ -1,3 +1,19 @@
+<script type="text/javascript">
+$(document).ready(function() {
+	$('input#use_page_uri').change(function () {
+	    if ($(this).attr("checked")) {
+	        //do the stuff that you would do when 'checked'
+			$('#custom_url').hide().val('[page_uri]');
+			$('#taxonomy_select_template').hide();
+	        return;
+	    }
+	    //Here do the stuff you want to do when 'unchecked'
+	    $('#taxonomy_select_template').show();
+	    $('#custom_url').show().val('');
+	});
+});
+</script>
+
 <?php
 		echo form_open($add_root_form_action);
 		
@@ -21,15 +37,15 @@
 		
 		$this->table->add_row(
 			lang('internal_url'),
-			form_dropdown('template_path', $templates, '').
-			" &nbsp; ".
+			'<div id="taxonomy_select_template" style="display: inline;">'.form_dropdown('template_path', $templates, '').
+			" &nbsp; </div>".
 			form_dropdown('entry_id', $entries, '')
 		);
 		
 		
 		$this->table->add_row(
 			lang('override_url'),
-			form_input('custom_url', set_value('', ''), 'id="custom_url", style="width: 60%;"')
+			form_input('custom_url', set_value('', ''), 'id="custom_url", style="width: 60%;"').$select_page_uri
 		);
 		$this->table->add_row(
 			'',

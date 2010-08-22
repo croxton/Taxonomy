@@ -289,14 +289,14 @@
 			}			
 			
 			
-			// @todo
+			// @todo add fetch title
 			$return .= '
 					<table class="mainTable" border="0" cellspacing="0" cellpadding="0" style="margin-top: 5px;">
 							<tr>
 								<th colspan="2">'.$this->EE->lang->line('node_properties').'</th>
 							</tr>
 							<tr>
-								<td style="width: 100px;">'.$this->EE->lang->line('node_label').'</td>
+								<td style="width: 100px;">'.$this->EE->lang->line('node_label').' -></td>
 								<td>'.$label.'</td>
 							</tr>
 							<tr>
