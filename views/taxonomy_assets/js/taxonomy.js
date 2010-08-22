@@ -117,6 +117,34 @@ $(document).ready(function() {
 			return false;
 	});	
 	
+	
+	
+	// handles inserting [page_uri] to url override from user clicking checkbox
+	
+	$('input#use_page_uri').change(function () {
+	    if ($(this).attr("checked")) {
+	        //do the stuff that you would do when 'checked'
+			// alert('checked');
+			$('#custom_url').hide().val('[page_uri]');
+			$('#taxonomy_select_template').hide();
+	        return;
+	    }
+	    //Here do the stuff you want to do when 'unchecked'
+	    //alert('unchecked');
+	    $('#taxonomy_select_template').show();
+	    $('#custom_url').show().val('');
+	});
+	
+	$("input#use_page_uri:checked").each( 
+	    function() { 
+	       	$('#taxonomy_select_template').hide();
+	       	$('#custom_url').hide();
+		} 
+	);
+
+	
+	
+	
 
 
 });

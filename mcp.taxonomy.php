@@ -658,6 +658,7 @@ class Taxonomy_mcp {
 
 		$vars['tree_table'] = $this->generate_edit_table();
 		$vars['add_node_table'] = $this->generate_add_node_form();
+
 		return $this->EE->load->view('edit_nodes', $vars, TRUE);
 
 	}
@@ -1123,15 +1124,42 @@ class Taxonomy_mcp {
 		
 		$this->EE->table->add_row(
 			lang('internal_url'),
-			''.form_dropdown('template_path', $templates['options'], $selected['template_path']).
-			" &nbsp; <div id='select_entry' style='display: inline;'>".
+			'<div id="taxonomy_select_template" style="display: inline;">'.form_dropdown('template_path', $templates['options'], $selected['template_path']).
+			" &nbsp; </div><div id='select_entry' style='display: inline;'>".
 			form_dropdown('entry_id', $entries_options, $selected['entry_id']).
 			"</div> <a href='#node_search' id='search_for_nodes' title='".lang('search_for_nodes')."'><img src='".ASSET_PATH."gfx/search.png' alt='".lang('search_for_nodes')."' /></a>"
 		);
 		
+		// logic for the 'use page_uri' checkbox
+		// get the site pages from the pages module
+		$site_pages = $this->EE->config->item('site_pages');
+		$select_page_uri = '';
+		
+		// check pages exist
+		if($site_pages)
+		{	
+			$checked = FALSE;
+		
+			if($selected['custom_url'] =="[page_uri]")
+			{
+				$checked = TRUE;
+			}
+		
+			$site_pages_checkbox_options = array(
+			    'name'        => 'use_page_uri',
+			    'id'          => 'use_page_uri',
+			    'value'       => '1',
+			    'checked'     => $checked
+		    );
+		    
+		    $select_page_uri = " ".form_checkbox($site_pages_checkbox_options)." ".lang('use_pages_module_uri');
+		
+		}
+		
 		$this->EE->table->add_row(
 			lang('override_url'),
-			form_input('custom_url', set_value($selected['custom_url'], $selected['custom_url']), 'id="custom_url", style="width: 60%;"')
+			form_input('custom_url', set_value($selected['custom_url'], $selected['custom_url']), 'id="custom_url", style="width: 60%;"').
+			$select_page_uri
 		);
 		
 		if($show_parent_select)
@@ -1325,7 +1353,7 @@ class Taxonomy_mcp {
 				
 				// @todo cleanup this mess...
 				$template = $flat_tree[$i]['template_path'];
-				$selected_template_path = $templates['options'][$template];
+				$selected_template_path = (isset($templates['options'][$template]) ? $templates['options'][$template] : NULL);
 				$custom_url = $flat_tree[$i]['custom_url'];
 				$edit_base = BASE.AMP.'C=content_publish'.AMP.'M=entry_form'.AMP.'channel_id='.$flat_tree[$i]['channel_id'].AMP.'entry_id='.$flat_tree[$i]['entry_id'];
 				$edit_node_url = "<a href='".$node_link_base.AMP.'method=edit_node'.AMP.'node_id='.$node_id.AMP.'tree='.$tree."'>Edit Node</a>";
@@ -1367,8 +1395,9 @@ class Taxonomy_mcp {
 		$r .= $this->EE->table->generate();
 		$this->EE->table->clear(); // reset the table
 		$r .= "</div>";
+
 		return $r;
-	
+
 	}
 	
 	
@@ -1414,6 +1443,10 @@ class Taxonomy_mcp {
 		}
 		return $taxonomy_prefs;
 	}
+	
+	
+	
+	
 	
 	
 }

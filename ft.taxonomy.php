@@ -63,6 +63,13 @@
 			{
 				$usertemplates = array("template_id" => explode('|',$usertemplates));
 			}
+			
+			// options for pages mode
+			$enable_pages_mode = FALSE;
+			$hide_template_select = FALSE;
+			$pages_option = NULL;
+			$page_uri_exisits = NULL;
+
 	
 			// Get Templates
 	        $this->EE->load->model('template_model');
@@ -89,7 +96,7 @@
 			$text_direction = ($this->settings['field_text_direction'] == 'rtl') ? 'rtl' : 'ltr';
 
 			// template dropdown
-			$template = form_dropdown($this->field_name.'[template]', $templates['options'], $data, 'dir="'.$text_direction.'" id="'.$this->field_id.'"' );
+			$template = form_dropdown($this->field_name.'[template]', $templates['options'], $data, 'dir="'.$text_direction.'" id="taxonomy_template_select_'.$this->field_id.'"' );
 
 			// node label
 			$label = form_input(array(
@@ -206,6 +213,15 @@
 
 					// replace active/selected template option with selected attribute
 					$template = str_replace('value="'.$row->template_path.'">', 'value="'.$row->template_path.'" selected="selected">', $template);
+					
+
+					// check for the value of custom url,
+					// if it contains [page_uri]
+					// set the checkbox for 'use page uri'
+					if($row->custom_url == "[page_uri]")
+					{
+						$page_uri_exisits = TRUE;
+					}
 
 				}
 
@@ -218,6 +234,61 @@
 			{
 				$return .= '<p id="taxonomy-crumb"><strong>'.lang('path_to_here').'</strong> '.$breadcrumb.'</p>';
 			}
+			
+			// if the settings for the field have enabled pages mode, 
+			// & the admin has opted to keep the template picker available
+			if(isset($this->settings['enable_pages_mode']) && !isset($this->settings['hide_template_select'])) 
+			{
+	
+				$pages_mode_checkbox_options = array(
+			    'name'        => $this->field_name.'[use_page_uri]',
+			    'id'          => $this->field_name.'_use_page_uri',
+			    'value'       => '1',
+			    'checked'     => $page_uri_exisits
+		    	);
+
+				$pages_option = form_checkbox($pages_mode_checkbox_options).' Use Page URI';
+				
+				
+				$return .= "
+				
+				<script type='text/javascript'>
+				$(document).ready(function() {
+				$('input#".$this->field_name."_use_page_uri').change(function () {
+					    if ($(this).attr('checked')) {
+					        //do the stuff that you would do when 'checked'
+							// alert('checked');
+							$('tr#taxonomy_template_select_row_".$this->field_id."').hide();
+					        return;
+					    }
+					    //Here do the stuff you want to do when 'unchecked'
+					    //alert('unchecked');
+					    $('tr#taxonomy_template_select_row_".$this->field_id."').show();
+					});
+					
+					$('input#".$this->field_name."_use_page_uri:checked').each( 
+					    function() { 
+					       	$('tr#taxonomy_template_select_row_".$this->field_id."').hide();
+						} 
+					);
+				});
+				</script>
+				";
+				
+				
+				
+				
+			}
+			
+			
+			// if we're hiding the template select, force taxonomy to insert the [page_uri]
+			if(isset($this->settings['hide_template_select']))
+			{
+				$hide_template_select = TRUE;
+				$return .= form_hidden($this->field_name.'[use_page_uri]', 1);
+			}			
+			
+			
 			// @todo
 			$return .= '
 					<table class="mainTable" border="0" cellspacing="0" cellpadding="0" style="margin-top: 5px;">
@@ -230,13 +301,20 @@
 							</tr>
 							<tr>
 								<td>'.$this->EE->lang->line('parent_node').'</td>
-								<td>'.$parent_node_options.'</td>
-							</tr>
-							<tr>
+								<td>'.$parent_node_options.' &nbsp; '.$pages_option.'</td>
+							</tr>';
+			
+			
+			
+			if(!isset($this->settings['hide_template_select']))
+			{
+				$return .= '<tr id="taxonomy_template_select_row_'.$this->field_id.'">
 								<td>'.$this->EE->lang->line('template').'</td>
 								<td>'.$template.'</td>
-							</tr>
-					</table>';
+							</tr>';
+			}
+			
+			$return .= '</table>';
 					
 			
 			return $return;
@@ -291,7 +369,8 @@
 							'node_id'			=> '',
 							'label'				=> htmlspecialchars($data['label'], ENT_COMPAT, 'UTF-8'),
 							'entry_id'			=> $this->settings['entry_id'],
-							'template_path'		=> $data['template']
+							'template_path'		=> (isset($data['template']) ? $data['template'] : NULL),
+							'custom_url'		=> (isset($data['use_page_uri']) ? '[page_uri]' : NULL)
 							);
 
 			$taxonomy_data = $this->EE->security->xss_clean($taxonomy_data);
@@ -353,7 +432,9 @@
 		public function save_settings($data)
 		{
 			return array(
-				'tree_id'	=> $this->EE->input->post('tree_id')
+				'tree_id'				=> $this->EE->input->post('tree_id'),
+				'enable_pages_mode'		=> ($this->EE->input->post('enable_pages_mode')) ? $this->EE->input->post('enable_pages_mode') : NULL,
+				'hide_template_select'	=> ($this->EE->input->post('hide_template_select')) ? $this->EE->input->post('hide_template_select') : NULL
 			);
 		}
 
@@ -366,6 +447,7 @@
 			//build the select options
 			$options = array();
 			
+			// give the options for which tree to associate with this field
 			foreach($query->result_array() as $row)
 			{
 				$options[$row['id']] = $row['label'];
@@ -375,10 +457,54 @@
 			{
 				$data['tree_id'] = '';
 			}
-			
+
  			$this->EE->table->add_row(
  				$this->EE->lang->line('select_tree'),
 				form_dropdown('tree_id', $options, $data['tree_id'])
+ 			);
+ 			
+ 			
+ 			// give the option to run under pages mode
+ 			$enable_pages_mode = NULL;
+ 			
+ 			if(isset($data['enable_pages_mode']))
+			{
+				$enable_pages_mode = TRUE;
+			}
+ 			
+ 			$pages_mode_checkbox_options = array(
+			    'name'        => 'enable_pages_mode',
+			    'id'          => 'enable_pages_mode',
+			    'value'       => '1',
+			    'checked'     => $enable_pages_mode
+		    );
+		     			
+ 			$this->EE->table->add_row(
+ 				$this->EE->lang->line('enable_pages_mode'),
+				form_checkbox($pages_mode_checkbox_options)
+ 			);
+ 			
+ 			
+ 			// give the option to hide template select
+ 			// essentially forces publishing via the pages module,
+ 			// or the taxonomy interface
+ 			$hide_template_select = NULL;
+ 			
+ 			if(isset($data['hide_template_select']))
+			{
+				$hide_template_select = TRUE;
+			}
+			 			
+ 			$hide_template_select_checkbox_options = array(
+			    'name'        => 'hide_template_select',
+			    'id'          => 'hide_template_select',
+			    'value'       => '1',
+			    'checked'     => $hide_template_select
+		    );
+		     			
+ 			$this->EE->table->add_row(
+ 				'&nbsp; <img src="'.PATH_CP_GBL_IMG.'cat_marker.gif" border="0"  width="18" height="14" alt="" title="" /> '.$this->EE->lang->line('hide_template_select'),
+				form_checkbox($hide_template_select_checkbox_options)
  			);
  			
  		}			

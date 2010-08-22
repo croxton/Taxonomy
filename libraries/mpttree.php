@@ -2469,7 +2469,6 @@ ORDER BY {$this->left_col} DESC) as parent";
 	 */
 	function build_list($array, $tagdata, $options)
 	{
-		
 		$options['depth'] 			= ($options['depth']) ? $options['depth'] : 100 ;
 		$options['display_root'] 	= ($options['display_root']) ? $options['display_root'] : "yes";
 		$options['path'] 			= ($options['path']) ? $options['path'] : NULL;
@@ -2550,10 +2549,28 @@ ORDER BY {$this->left_col} DESC) as parent";
 	    		$viewed_url = 	$this->EE->functions->fetch_site_index().'/'.$this->EE->uri->uri_string();
 
 	    		// override template and entry slug with custom url if set
-	    		if($data['custom_url'] != '')
+	    		if($data['custom_url'])
 	    		{
+	    			
 	    			$node_url = $data['custom_url'];
 	    			
+	    			if($node_url == "[page_uri]")
+	    			{
+	    				$site_id = $this->EE->config->item('site_id');
+	    				$site_pages = $this->EE->config->item('site_pages');
+	    				$entry_id = $data['entry_id'];
+	    					    				
+	    				if ($site_pages !== FALSE && isset($site_pages[$site_id]['uris'][$entry_id]))
+						{
+							$node_url = $site_pages[$site_id]['uris'][$entry_id];
+						}
+						else
+						{
+							$node_url = '/404';
+						}
+						
+	    			}
+
 	    			// does the custom url start with http://, 
 	    			// if not we add our site_index as it'll be a relative link
 	    			// and the nav tag will apply the $active css class to the node
@@ -2564,8 +2581,8 @@ ORDER BY {$this->left_col} DESC) as parent";
 	    		// get rid of double slashes
 				$node_url 	= $this->EE->functions->remove_double_slashes($node_url);
 				$viewed_url = $this->EE->functions->remove_double_slashes($viewed_url);
-	    						
-	    		if($node_url == $viewed_url)
+	    		
+	    		if($node_url === $viewed_url)
 	    		{
 	    			$active = 'active';
 	    		}
@@ -2648,6 +2665,16 @@ ORDER BY {$this->left_col} DESC) as parent";
         
    	 	return $str;
     }
+    
+    
+    
+    function fetch_site_pages()
+	{
+
+		$pages = $this->EE->config->item('site_pages');
+		
+		return $pages;
+	}
 	
 	
 	

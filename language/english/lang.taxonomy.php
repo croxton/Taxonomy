@@ -57,6 +57,9 @@ $lang = array(
 "taxonomy_config"				=> 'Module Configuration',
 "asset_path_config"				=> 'Location of the <strong>taxonomy_assets</strong> folder',
 "taxonomy_config_updated"		=> 'Taxonomy preferences have been updated',
+"use_pages_module_uri"			=> 'Use Pages Module URI',
+"enable_pages_mode"				=> 'Use \'Pages Module\' mode (gives option to use Page URI)',
+"hide_template_select"			=> 'Hide Template Select option',
 //
 ''=>''
 );

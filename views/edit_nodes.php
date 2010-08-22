@@ -33,3 +33,13 @@
 	<?=$tree_table?>
 
 	</div>
+	
+	<?
+		if(isset($site_pages))
+		{
+			foreach($site_pages as $key => $val)
+			{
+				echo $key. '->'.print_r($val).'<br />';
+			}
+		} 
+	?>
