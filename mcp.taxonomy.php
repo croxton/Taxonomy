@@ -676,7 +676,9 @@ class Taxonomy_mcp {
 		}
 		
 		/// FIX
-		$this->EE->cp->add_to_head("<script type='text/javascript' src='".ASSET_PATH."js/fancybox/jquery.fancybox-1.3.1.pack.js'></script>");
+		$this->EE->cp->add_to_head("<script type='text/javascript' src='".ASSET_PATH."js/fancybox/jquery.fancybox-1.3.1.pack.js'></script>
+		<script type='text/javascript' src='".ASSET_PATH."js/jquery.livequery.js'></script>
+		<script type='text/javascript' src='".ASSET_PATH."js/jquery.autocomplete.min.js'></script>");
 
 		$vars['tree_table'] = $this->generate_edit_table();
 		$vars['add_node_table'] = $this->generate_add_node_form();
@@ -848,7 +850,9 @@ class Taxonomy_mcp {
 		
 		$vars['add_node_table'] = $this->generate_add_node_form($selected);
 		
-		$this->EE->cp->add_to_head("<script type='text/javascript' src='".ASSET_PATH."js/fancybox/jquery.fancybox-1.3.1.pack.js'></script>");
+		$this->EE->cp->add_to_head("<script type='text/javascript' src='".ASSET_PATH."js/fancybox/jquery.fancybox-1.3.1.pack.js'></script>
+		<script type='text/javascript' src='".ASSET_PATH."js/jquery.livequery.js'></script>
+		<script type='text/javascript' src='".ASSET_PATH."js/jquery.autocomplete.min.js'></script>");
 
 		return $this->EE->load->view('edit_node', $vars, TRUE);							
 
@@ -1525,12 +1529,7 @@ class Taxonomy_mcp {
 		
 		$url = str_replace('&amp;','&',$url); 
 
-		$r = "
-		
-		<script type='text/javascript' src='".ASSET_PATH."js/jquery.livequery.js'></script>
-		<script type='text/javascript' src='".ASSET_PATH."js/jquery.autocomplete.min.js'></script>
-		
-		<script type='text/javascript'>
+		$r = "<script type='text/javascript'>
 
 			jQuery.fn.detectPageURI = function(){";
 		
