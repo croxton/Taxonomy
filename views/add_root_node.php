@@ -1,10 +1,3 @@
-<script type="text/javascript" src="<?=$asset_path?>js/jquery.livequery.js"></script>
-<script type="text/javascript" src="<?=$asset_path?>js/fancybox/jquery.fancybox-1.3.1.pack.js"></script>
-<script type="text/javascript" src="<?=$asset_path?>js/jquery.autocomplete.min.js"></script>
-
-<script type="text/javascript" src="<?=$asset_path?>js/taxonomy.js"></script>
-<link rel="stylesheet" type="text/css" href="<?=$asset_path?>css/taxonomy.css" />
-
 <?php
 		echo form_open($add_root_form_action);
 		
@@ -49,6 +42,6 @@
 		
 		print form_close();
 		
-		echo $select_page_uri_js;
+		echo $taxonomy_js;
 		
 ?>

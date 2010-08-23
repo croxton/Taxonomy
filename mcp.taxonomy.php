@@ -654,7 +654,7 @@ class Taxonomy_mcp {
 			$vars['templates'] = $templates['options'];
 			$vars['entries'] = $entries;
 			$vars['select_page_uri'] = NULL;
-			$vars['select_page_uri_js'] = $this->generate_check_entry_has_pages_uri_js();
+			$vars['taxonomy_js'] = $this->generate_taxonomy_js();
 			
 			
 			// logic for the 'use page_uri' checkbox
@@ -1207,7 +1207,7 @@ class Taxonomy_mcp {
 			$r .= '</div>';
 		}
 		
-		$r .= $this->generate_check_entry_has_pages_uri_js();
+		$r .= $this->generate_taxonomy_js();
 				
 		return $r;			
 	
@@ -1529,7 +1529,7 @@ class Taxonomy_mcp {
 	
 	
 	// generates the javascript for displaying hiding the 'Use Pages Module URI' checkbox.
-	private function generate_check_entry_has_pages_uri_js()
+	private function generate_taxonomy_js()
 	{	
 		$tree = $this->EE->input->get('tree');
 
@@ -1538,14 +1538,21 @@ class Taxonomy_mcp {
 		$url = str_replace('&amp;','&',$url); 
 
 		$r = "
+		
+		<script type='text/javascript' src='".ASSET_PATH."js/jquery.livequery.js'></script>
+		<script type='text/javascript' src='".ASSET_PATH."js/fancybox/jquery.fancybox-1.3.1.pack.js'></script>
+		<script type='text/javascript' src='".ASSET_PATH."js/jquery.autocomplete.min.js'></script>
+		
 		<script type='text/javascript'>
-		$(document).ready(function() {
 		
-			var url = '".$url."'
 		
-			$('#select_entry select').change(function () {
-
+			jQuery.fn.detectPageURI = function(){
+				
+				// alert('foo');
+			
 				$.fancybox.showActivity();
+				
+				var url = '".$url."';
 			    var node_entry_id = $(this).val();
 			    var ajax_url = url+node_entry_id;
 
@@ -1567,9 +1574,15 @@ class Taxonomy_mcp {
 				
 				// $('#taxonomy_us_page_uri').append('<p>' + data.page_uri + '</p>')
 
-			});
-		});
+			}
+
 		</script>
+		
+		
+		
+		<script type='text/javascript' src='".ASSET_PATH."js/taxonomy.js'></script>
+		<link rel='stylesheet' type='text/css' href='".ASSET_PATH."css/taxonomy.css' />
+		
 		";
 		
 		return $r;

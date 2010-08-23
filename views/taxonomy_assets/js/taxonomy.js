@@ -5,6 +5,7 @@ $(document).ready(function() {
 		id = formatted.split("|") ;
 		// $("<li>").html( !data ? "No match!" : "Selected: " + id[0]).appendTo("#node_search_results");
 		$("#select_entry select option[value='" + id[0] + "']").attr("selected","selected");
+		$('#select_entry select').detectPageURI();
 		// alert(id[0]);
 	}
 
@@ -120,6 +121,10 @@ $(document).ready(function() {
 	});	
 	
 	
+	$('#select_entry select').change(function() {
+				$(this).detectPageURI();
+			});
+	
 	
 	// handles inserting [page_uri] to url override from user clicking checkbox
 	
@@ -146,11 +151,6 @@ $(document).ready(function() {
 	       	$('#custom_url').hide();
 		} 
 	);
-
-	
-	
-	
-
 
 });
 
