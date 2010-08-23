@@ -60,6 +60,7 @@ $lang = array(
 "use_pages_module_uri"			=> 'Use Pages Module URI',
 "enable_pages_mode"				=> 'Use \'Pages Module\' mode (gives option to use Page URI)',
 "hide_template_select"			=> 'Hide Template Select option',
+"fetch_title"					=> 'Fetch the Title',
 //
 ''=>''
 );

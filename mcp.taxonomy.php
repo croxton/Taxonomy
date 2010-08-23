@@ -546,13 +546,11 @@ class Taxonomy_mcp {
 		$tree = $this->EE->input->get('tree');
 		
 		$this->validate_and_initialise_tree($tree);
-
-		$vars['asset_path'] = ASSET_PATH;
 		
 		$this->EE->db->where_in('id', $tree);
 		$query = $this->EE->db->get('taxonomy_trees');
 		
-		// no results?	
+		// no results?
 		if ($query->num_rows() == 0)
 		{
 			$this->EE->session->set_flashdata('message_failure', $this->EE->lang->line('no_templates_assigned'));
@@ -758,7 +756,6 @@ class Taxonomy_mcp {
 		
 		$this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=edit_nodes'.AMP.'tree='.$tree.AMP.time());
 			
-	
 	}
 
 	// delete a single node, except the root...
@@ -805,14 +802,7 @@ class Taxonomy_mcp {
 		$resp['data'] .= $this->generate_edit_table();
 				
 		$this->EE->output->send_ajax_response($resp);
-		
-		
-		
-		
-		
-		
-		
-		
+
 		// $this->EE->functions->redirect(BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=edit_nodes'.AMP.'tree='.$tree.AMP.'deleted=true');
 		
 	}
@@ -1320,7 +1310,6 @@ class Taxonomy_mcp {
 					$spacer .= $indent; 
 				}
 				
-				
 				// get the mess um.. messsy?
 				$node_label = $flat_tree[$i]['label'];
 				$node_id 	= $flat_tree[$i]['node_id'];
@@ -1383,10 +1372,7 @@ class Taxonomy_mcp {
 				
 				if($custom_url)
 				{
-					
-					
 
-					
 	    			if($custom_url == "[page_uri]")
 	    			{
 	    				$site_id = $this->EE->config->item('site_id');
@@ -1434,15 +1420,12 @@ class Taxonomy_mcp {
 		$r .= $this->EE->table->generate();
 		$this->EE->table->clear(); // reset the table
 		$r .= "</div>";
-		
 
 		return $r;
 
 	}
 	
-	
-	
-	
+
 	// if a tree id is not passed via a get or the tree id doesn't exist, thrown an error
 	// set opts on mpttree
 	private function validate_and_initialise_tree($tree_id = NULL)
@@ -1484,9 +1467,7 @@ class Taxonomy_mcp {
 		return $taxonomy_prefs;
 	}
 	
-	
-	
-	
+
 	// when selecting the entry from the main module interface, the select pulldown
 	// triggers an ajax call to this method, and here we check that a page uri 
 	// exists before offering the pages options. 
@@ -1528,10 +1509,12 @@ class Taxonomy_mcp {
 	}
 	
 	
-	// generates the javascript for displaying hiding the 'Use Pages Module URI' checkbox.
+	// generates the javascript
+	// for edit nodes, edit node and add root node
 	private function generate_taxonomy_js()
 	{	
 		$tree = $this->EE->input->get('tree');
+		$site_pages = $this->EE->config->item('site_pages');
 
 		$url = BASE.AMP."C=addons_modules".AMP."M=show_module_cp".AMP."module=taxonomy".AMP."method=check_entry_has_pages_uri".AMP."tree=".$tree.AMP."node_entry_id=";
 		
@@ -1544,13 +1527,14 @@ class Taxonomy_mcp {
 		<script type='text/javascript' src='".ASSET_PATH."js/jquery.autocomplete.min.js'></script>
 		
 		<script type='text/javascript'>
+
+			jQuery.fn.detectPageURI = function(){";
 		
-		
-			jQuery.fn.detectPageURI = function(){
-				
-				// alert('foo');
-			
-				$.fancybox.showActivity();
+		// so badly need to clean up all this...
+		// if no pages exist, kill the ajax calls on select entry change
+		if ($site_pages !== FALSE)
+		{
+			$r .= "$.fancybox.showActivity();
 				
 				var url = '".$url."';
 			    var node_entry_id = $(this).val();
@@ -1570,23 +1554,17 @@ class Taxonomy_mcp {
 			    	}
 
 				  $.fancybox.hideActivity();
-				});
-				
-				// $('#taxonomy_us_page_uri').append('<p>' + data.page_uri + '</p>')
-
-			}
-
-		</script>
+				 
+				  
+				});";
+		}
 		
-		
-		
+		$r .= "}</script>
 		<script type='text/javascript' src='".ASSET_PATH."js/taxonomy.js'></script>
 		<link rel='stylesheet' type='text/css' href='".ASSET_PATH."css/taxonomy.css' />
-		
 		";
 		
 		return $r;
-	
 	
 	}
 	

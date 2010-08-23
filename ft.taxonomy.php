@@ -101,7 +101,7 @@
 			// node label
 			$label = form_input(array(
 									'name'	=> $this->field_name.'[label]',
-									'id'	=> $this->field_id,
+									'id' 	=>'taxonomy_label_'.$this->field_id,
 									'value'	=> $data
 								));
 
@@ -156,7 +156,7 @@
 					
 					$label = form_input(array(
 											'name'	=> $this->field_name.'[label]',
-											'id'	=> $this->field_id,
+											'id'	=> 'taxonomy_label_'.$this->field_id,
 											'value'	=> $row->label
 										));
 
@@ -271,8 +271,19 @@
 					       	$('tr#taxonomy_template_select_row_".$this->field_id."').hide();
 						} 
 					);
+					
+					
+					// set the taxonomy label from the title
+					$('.taxonomy_fetch_title').click(function() {
+						var titleval = $('input#title').val();
+						$('#taxonomy_label_".$this->field_id."').val(titleval);
+					});
+					
 				});
 				</script>
+				
+				
+				
 				";
 				
 				
@@ -296,7 +307,7 @@
 								<th colspan="2">'.$this->EE->lang->line('node_properties').'</th>
 							</tr>
 							<tr>
-								<td style="width: 100px;">'.$this->EE->lang->line('node_label').' -></td>
+								<td style="width: 140px;">'.$this->EE->lang->line('node_label').' [<span class="taxonomy_fetch_title" title="'.$this->EE->lang->line('fetch_title').'">+</span>]</td>
 								<td>'.$label.'</td>
 							</tr>
 							<tr>
