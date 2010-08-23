@@ -847,6 +847,8 @@ class Taxonomy_mcp {
 		$selected['custom_url'] 	= $node['custom_url'];
 		
 		$vars['add_node_table'] = $this->generate_add_node_form($selected);
+		
+		$this->EE->cp->add_to_head("<script type='text/javascript' src='".ASSET_PATH."js/fancybox/jquery.fancybox-1.3.1.pack.js'></script>");
 
 		return $this->EE->load->view('edit_node', $vars, TRUE);							
 
