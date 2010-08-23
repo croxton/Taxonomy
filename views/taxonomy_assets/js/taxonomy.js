@@ -33,6 +33,8 @@ $(document).ready(function() {
 
 	});	
 	
+	
+	
 	$("th.create_node").livequery('click', function() { 
 		$(this).parent().parent().next().toggle();
     });
@@ -121,6 +123,8 @@ $(document).ready(function() {
 	
 	// handles inserting [page_uri] to url override from user clicking checkbox
 	
+	$('#taxonomy_us_page_uri').hide();
+	
 	$('input#use_page_uri').change(function () {
 	    if ($(this).attr("checked")) {
 	        //do the stuff that you would do when 'checked'
@@ -137,6 +141,7 @@ $(document).ready(function() {
 	
 	$("input#use_page_uri:checked").each( 
 	    function() { 
+	    	$('#taxonomy_us_page_uri').show();
 	       	$('#taxonomy_select_template').hide();
 	       	$('#custom_url').hide();
 		} 

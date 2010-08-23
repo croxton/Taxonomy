@@ -654,6 +654,7 @@ class Taxonomy_mcp {
 			$vars['templates'] = $templates['options'];
 			$vars['entries'] = $entries;
 			$vars['select_page_uri'] = NULL;
+			$vars['select_page_uri_js'] = $this->generate_check_entry_has_pages_uri_js();
 			
 			
 			// logic for the 'use page_uri' checkbox
@@ -670,7 +671,7 @@ class Taxonomy_mcp {
 				    'checked'     => FALSE
 			    );
 
-			    $vars['select_page_uri'] = " ".form_checkbox($site_pages_checkbox_options)." ".lang('use_pages_module_uri');
+			    $vars['select_page_uri'] = "<div id='taxonomy_us_page_uri' class='js_hide'>".form_checkbox($site_pages_checkbox_options)." ".lang('use_pages_module_uri')."</div>";
 			}
 
 			return $this->EE->load->view('add_root_node', $vars, TRUE);
@@ -1172,7 +1173,7 @@ class Taxonomy_mcp {
 			    'checked'     => $checked
 		    );
 		    
-		    $select_page_uri = " ".form_checkbox($site_pages_checkbox_options)." ".lang('use_pages_module_uri');
+		    $select_page_uri = "<div id='taxonomy_us_page_uri' class='js_hide'>".form_checkbox($site_pages_checkbox_options)." ".lang('use_pages_module_uri')."</div>";
 		
 		}
 		
@@ -1206,6 +1207,8 @@ class Taxonomy_mcp {
 			$r .= '</div>';
 		}
 		
+		$r .= $this->generate_check_entry_has_pages_uri_js();
+				
 		return $r;			
 	
 	}
@@ -1381,7 +1384,7 @@ class Taxonomy_mcp {
 				if($custom_url)
 				{
 					
-					$node_icon = "<img src='".ASSET_PATH."gfx/link.png' style='margin-right: 5px; vertical-align: bottom;' />";
+					
 
 					
 	    			if($custom_url == "[page_uri]")
@@ -1390,7 +1393,7 @@ class Taxonomy_mcp {
 	    				$custom_url = $site_url.$this->EE->mpttree->entry_id_to_page_uri($entry_id, $site_id);
 	    				$edit_entry_url = "<a href='".$edit_base."'>Edit Entry</a> ";
 	    				$visit_page_url = "<a href='".$custom_url."' target='_blank' title='".lang('visit').$custom_url."'>Visit Page</a> ";
-	    				
+	    				$node_icon = "<img src='".ASSET_PATH."gfx/link_pages_module.png' style='margin-right: 5px; vertical-align: bottom;' />";
 	    			}
 	    			else
 	    			{
@@ -1400,6 +1403,7 @@ class Taxonomy_mcp {
 						$node_icon = "<img src='".ASSET_PATH."gfx/link.png' style='margin-right: 5px; vertical-align: bottom;' />";
 						$mask = '?URL=';
 						$edit_entry_url = "";
+						$node_icon = "<img src='".ASSET_PATH."gfx/link.png' style='margin-right: 5px; vertical-align: bottom;' />";
 					}
 				}
 				else
@@ -1430,6 +1434,7 @@ class Taxonomy_mcp {
 		$r .= $this->EE->table->generate();
 		$this->EE->table->clear(); // reset the table
 		$r .= "</div>";
+		
 
 		return $r;
 
@@ -1477,6 +1482,99 @@ class Taxonomy_mcp {
 			$taxonomy_prefs['asset_path'] = $row['asset_path'];											
 		}
 		return $taxonomy_prefs;
+	}
+	
+	
+	
+	
+	// when selecting the entry from the main module interface, the select pulldown
+	// triggers an ajax call to this method, and here we check that a page uri 
+	// exists before offering the pages options. 
+	function check_entry_has_pages_uri()
+	{
+		if (! $this->EE->cp->allowed_group('can_access_content'))
+		{
+			show_error($this->EE->lang->line('unauthorized_access'));
+		}
+
+		$tree = $this->EE->input->get('tree');
+		
+		$this->validate_and_initialise_tree($tree);	
+		
+		$entry_id = $this->EE->input->get('node_entry_id');
+		
+		if($entry_id)
+		{
+			$site_id 		= $this->EE->config->item('site_id');
+			$node_uri 		= $this->EE->mpttree->entry_id_to_page_uri($entry_id, $site_id);
+
+			$response = $node_uri;
+			
+			if($node_uri == "/404")
+			{
+				$response = FALSE;
+			}
+			
+		}
+		else
+		{
+			$response = FALSE;
+		}
+		
+		$resp['page_uri'] = $response;
+				
+		$this->EE->output->send_ajax_response($resp);							
+									
+	}
+	
+	
+	// generates the javascript for displaying hiding the 'Use Pages Module URI' checkbox.
+	private function generate_check_entry_has_pages_uri_js()
+	{	
+		$tree = $this->EE->input->get('tree');
+
+		$url = BASE.AMP."C=addons_modules".AMP."M=show_module_cp".AMP."module=taxonomy".AMP."method=check_entry_has_pages_uri".AMP."tree=".$tree.AMP."node_entry_id=";
+		
+		$url = str_replace('&amp;','&',$url); 
+
+		$r = "
+		<script type='text/javascript'>
+		$(document).ready(function() {
+		
+			var url = '".$url."'
+		
+			$('#select_entry select').change(function () {
+
+				$.fancybox.showActivity();
+			    var node_entry_id = $(this).val();
+			    var ajax_url = url+node_entry_id;
+
+			    $.getJSON(ajax_url, function(data) {
+			    	
+			    	if(data.page_uri != null){
+			    		$('#taxonomy_us_page_uri').fadeIn();
+			    	}
+			    	else
+			    	{
+			    		$('#taxonomy_us_page_uri').fadeOut();
+			    		$('#taxonomy_us_page_uri input').attr('checked', false);
+			    		$('#taxonomy_select_template').show();
+	       				$('#custom_url').show().val('');
+			    	}
+
+				  $.fancybox.hideActivity();
+				});
+				
+				// $('#taxonomy_us_page_uri').append('<p>' + data.page_uri + '</p>')
+
+			});
+		});
+		</script>
+		";
+		
+		return $r;
+	
+	
 	}
 	
 	

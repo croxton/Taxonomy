@@ -1,18 +1,9 @@
-<script type="text/javascript">
-$(document).ready(function() {
-	$('input#use_page_uri').change(function () {
-	    if ($(this).attr("checked")) {
-	        //do the stuff that you would do when 'checked'
-			$('#custom_url').hide().val('[page_uri]');
-			$('#taxonomy_select_template').hide();
-	        return;
-	    }
-	    //Here do the stuff you want to do when 'unchecked'
-	    $('#taxonomy_select_template').show();
-	    $('#custom_url').show().val('');
-	});
-});
-</script>
+<script type="text/javascript" src="<?=$asset_path?>js/jquery.livequery.js"></script>
+<script type="text/javascript" src="<?=$asset_path?>js/fancybox/jquery.fancybox-1.3.1.pack.js"></script>
+<script type="text/javascript" src="<?=$asset_path?>js/jquery.autocomplete.min.js"></script>
+
+<script type="text/javascript" src="<?=$asset_path?>js/taxonomy.js"></script>
+<link rel="stylesheet" type="text/css" href="<?=$asset_path?>css/taxonomy.css" />
 
 <?php
 		echo form_open($add_root_form_action);
@@ -38,8 +29,8 @@ $(document).ready(function() {
 		$this->table->add_row(
 			lang('internal_url'),
 			'<div id="taxonomy_select_template" style="display: inline;">'.form_dropdown('template_path', $templates, '').
-			" &nbsp; </div>".
-			form_dropdown('entry_id', $entries, '')
+			" &nbsp; </div><div id='select_entry' style='display: inline;'>".
+			form_dropdown('entry_id', $entries, '')."</div>"
 		);
 		
 		
@@ -57,5 +48,7 @@ $(document).ready(function() {
 		$this->table->clear(); // reset the table
 		
 		print form_close();
+		
+		echo $select_page_uri_js;
 		
 ?>

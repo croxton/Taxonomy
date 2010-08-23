@@ -2657,7 +2657,7 @@ ORDER BY {$this->left_col} DESC) as parent";
     
     
     // returns a page_uri from an entry_id
-    function entry_id_to_page_uri($entry_id, $site_id = 1)
+    function entry_id_to_page_uri($entry_id, $site_id = '1')
 	{
 		
 		$site_pages = $this->EE->config->item('site_pages');
@@ -2669,7 +2669,7 @@ ORDER BY {$this->left_col} DESC) as parent";
 		else
 		{
 			// not sure what else to do really?
-			$node_url = '/404';
+			$node_url = NULL;
 		}
 		
 		return $node_url;
