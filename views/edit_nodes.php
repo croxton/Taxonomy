@@ -1,6 +1,5 @@
 
 
-
 	<!-- Little table for the entry search fancybox -->
 	<div style='display: none;'>
 		<div id='node_search'>	

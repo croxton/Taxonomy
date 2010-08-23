@@ -674,6 +674,9 @@ class Taxonomy_mcp {
 
 			return $this->EE->load->view('add_root_node', $vars, TRUE);
 		}
+		
+		/// FIX
+		$this->EE->cp->add_to_head("");
 
 		$vars['tree_table'] = $this->generate_edit_table();
 		$vars['add_node_table'] = $this->generate_add_node_form();
@@ -1534,7 +1537,7 @@ class Taxonomy_mcp {
 		// if no pages exist, kill the ajax calls on select entry change
 		if ($site_pages !== FALSE)
 		{
-			$r .= "$.fancybox.showActivity();
+			$r .= "//$.fancybox.showActivity();
 				
 				var url = '".$url."';
 			    var node_entry_id = $(this).val();
@@ -1553,7 +1556,7 @@ class Taxonomy_mcp {
 	       				$('#custom_url').show().val('');
 			    	}
 
-				  $.fancybox.hideActivity();
+				  // $.fancybox.hideActivity();
 				 
 				  
 				});";

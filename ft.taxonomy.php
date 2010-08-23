@@ -282,16 +282,17 @@
 				});
 				</script>
 				
-				
+				<style type='text/css'>
+					
+					.taxonomy_fetch_title { padding: 0 2px;}
+					.taxonomy_fetch_title:hover {cursor: pointer;}
+					
+				</style>
 				
 				";
 				
-				
-				
-				
 			}
-			
-			
+
 			// if we're hiding the template select, force taxonomy to insert the [page_uri]
 			if(isset($this->settings['hide_template_select']))
 			{
