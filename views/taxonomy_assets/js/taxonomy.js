@@ -18,17 +18,17 @@ $(document).ready(function() {
 	
 	$("#edit_nodes a.fancypants").livequery('click', function() { 
 	
-		// $.fancybox.showActivity();
+		 $.fancybox.showActivity();
 		var xurl = $(this).attr("href");
 		
 		$.getJSON(xurl,
         function(data){
             $("#edit_nodes").html(data.data);
             // alert('foo');
-            
+            $.fancybox.hideActivity();
          
         });
-		// $.fancybox.hideActivity();
+		 
 		return false;
 			// alert('foo');
 

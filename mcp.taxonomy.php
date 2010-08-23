@@ -676,7 +676,7 @@ class Taxonomy_mcp {
 		}
 		
 		/// FIX
-		$this->EE->cp->add_to_head("");
+		$this->EE->cp->add_to_head("<script type='text/javascript' src='".ASSET_PATH."js/fancybox/jquery.fancybox-1.3.1.pack.js'></script>");
 
 		$vars['tree_table'] = $this->generate_edit_table();
 		$vars['add_node_table'] = $this->generate_add_node_form();
@@ -1526,7 +1526,6 @@ class Taxonomy_mcp {
 		$r = "
 		
 		<script type='text/javascript' src='".ASSET_PATH."js/jquery.livequery.js'></script>
-		<script type='text/javascript' src='".ASSET_PATH."js/fancybox/jquery.fancybox-1.3.1.pack.js'></script>
 		<script type='text/javascript' src='".ASSET_PATH."js/jquery.autocomplete.min.js'></script>
 		
 		<script type='text/javascript'>
@@ -1537,7 +1536,7 @@ class Taxonomy_mcp {
 		// if no pages exist, kill the ajax calls on select entry change
 		if ($site_pages !== FALSE)
 		{
-			$r .= "//$.fancybox.showActivity();
+			$r .= "$.fancybox.showActivity();
 				
 				var url = '".$url."';
 			    var node_entry_id = $(this).val();
@@ -1556,7 +1555,7 @@ class Taxonomy_mcp {
 	       				$('#custom_url').show().val('');
 			    	}
 
-				  // $.fancybox.hideActivity();
+				  $.fancybox.hideActivity();
 				 
 				  
 				});";
