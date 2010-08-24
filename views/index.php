@@ -1,5 +1,3 @@
-
-<p>Write whatever</p>
 <?php if (count($trees) > 0): ?>
 <?=form_open($action_url, '', $form_hidden)?>
 
