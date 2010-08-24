@@ -3,7 +3,7 @@
 		
 		$this->table->set_template($cp_table_template);
 		$this->table->set_heading(
-			array('data' => "&nbsp;<img src='".$asset_path."gfx/add_node.png' style='margin-right: 5px; vertical-align: bottom;' />&nbsp;".lang('insert_a_root'), 'class' => 'create_node_new', 'style' => 'width:30%'),
+			array('data' => "&nbsp;<img src='".ASSET_PATH."gfx/add_node.png' style='margin-right: 5px; vertical-align: bottom;' />&nbsp;".lang('insert_a_root'), 'class' => 'create_node_new', 'style' => 'width:30%'),
 				array('data' => "", 'class' => 'create_node_new', 'style' => 'width:70%')
 		);
 	
@@ -41,7 +41,5 @@
 		$this->table->clear(); // reset the table
 		
 		print form_close();
-		
-		echo $taxonomy_js;
-		
+				
 ?>

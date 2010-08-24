@@ -17,7 +17,7 @@ $(document).ready(function() {
 	
 	
 	$("#edit_nodes a.fancypants").livequery('click', function() { 
-	
+		
 		 $.fancybox.showActivity();
 		var xurl = $(this).attr("href");
 		
@@ -26,7 +26,7 @@ $(document).ready(function() {
             $("#edit_nodes").html(data.data);
             // alert('foo');
             $.fancybox.hideActivity();
-         
+         	$('#taxonomy_us_page_uri').hide();
         });
 		 
 		return false;
@@ -96,7 +96,7 @@ $(document).ready(function() {
 		          	// alert(data.some_message);
 		            $("#edit_nodes").html(data.data);
 		            $.fancybox.hideActivity();
-		         
+		         	$('#taxonomy_us_page_uri').hide();
 		        });
 		    }	
 			return false;
@@ -114,14 +114,14 @@ $(document).ready(function() {
 		          	// alert(data.some_message);
 		            $("#edit_nodes").html(data.data);
 		            $.fancybox.hideActivity();
-		         
+		         	$('#taxonomy_us_page_uri').hide();
 		        });
 		    }	
 			return false;
 	});	
 	
 	
-	$('#select_entry select').change(function() {
+	$('#select_entry select').livequery('change', function() {
 				$(this).detectPageURI();
 			});
 	
@@ -129,6 +129,7 @@ $(document).ready(function() {
 	// handles inserting [page_uri] to url override from user clicking checkbox
 	
 	$('#taxonomy_us_page_uri').hide();
+	
 	
 	$('input#use_page_uri').change(function () {
 	    if ($(this).attr("checked")) {

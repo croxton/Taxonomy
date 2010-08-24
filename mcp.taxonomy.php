@@ -547,6 +547,8 @@ class Taxonomy_mcp {
 		
 		$this->validate_and_initialise_tree($tree);
 		
+		$vars = '';
+		
 		$this->EE->db->where_in('id', $tree);
 		$query = $this->EE->db->get('taxonomy_trees');
 		
@@ -638,6 +640,8 @@ class Taxonomy_mcp {
 		}
 
 		$root_array = $this->EE->mpttree->get_root();
+		
+		$this->EE->cp->add_to_head($this->generate_taxonomy_js());
 
 		// sort alphabetically
 		natcasesort($entries);
@@ -651,9 +655,7 @@ class Taxonomy_mcp {
 			$vars['add_root_form_action'] = 'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=add_root';
 			$vars['templates'] = $templates['options'];
 			$vars['entries'] = $entries;
-			$vars['select_page_uri'] = NULL;
-			$vars['taxonomy_js'] = $this->generate_taxonomy_js();
-			
+			$vars['select_page_uri'] = NULL;			
 			
 			// logic for the 'use page_uri' checkbox
 			// get the site pages from the pages module
@@ -675,13 +677,10 @@ class Taxonomy_mcp {
 			return $this->EE->load->view('add_root_node', $vars, TRUE);
 		}
 		
-		/// FIX
-		$this->EE->cp->add_to_head("<script type='text/javascript' src='".ASSET_PATH."js/fancybox/jquery.fancybox-1.3.1.pack.js'></script>
-		<script type='text/javascript' src='".ASSET_PATH."js/jquery.livequery.js'></script>
-		<script type='text/javascript' src='".ASSET_PATH."js/jquery.autocomplete.min.js'></script>");
-
 		$vars['tree_table'] = $this->generate_edit_table();
 		$vars['add_node_table'] = $this->generate_add_node_form();
+		
+		
 
 		return $this->EE->load->view('edit_nodes', $vars, TRUE);
 
@@ -850,9 +849,7 @@ class Taxonomy_mcp {
 		
 		$vars['add_node_table'] = $this->generate_add_node_form($selected);
 		
-		$this->EE->cp->add_to_head("<script type='text/javascript' src='".ASSET_PATH."js/fancybox/jquery.fancybox-1.3.1.pack.js'></script>
-		<script type='text/javascript' src='".ASSET_PATH."js/jquery.livequery.js'></script>
-		<script type='text/javascript' src='".ASSET_PATH."js/jquery.autocomplete.min.js'></script>");
+		$this->EE->cp->add_to_head($this->generate_taxonomy_js());
 
 		return $this->EE->load->view('edit_node', $vars, TRUE);							
 
@@ -1206,7 +1203,6 @@ class Taxonomy_mcp {
 			$r .= '</div>';
 		}
 		
-		$r .= $this->generate_taxonomy_js();
 				
 		return $r;			
 	
@@ -1529,15 +1525,14 @@ class Taxonomy_mcp {
 		
 		$url = str_replace('&amp;','&',$url); 
 
-		$r = "<script type='text/javascript'>
+		$r = "<script type='text/javascript' src='".ASSET_PATH."js/fancybox/jquery.fancybox-1.3.1.pack.js'></script>
+		<script type='text/javascript' src='".ASSET_PATH."js/jquery.livequery.js'></script>
+		<script type='text/javascript' src='".ASSET_PATH."js/jquery.autocomplete.min.js'></script>
+		<script type='text/javascript'>
 
-			jQuery.fn.detectPageURI = function(){";
-		
-		// so badly need to clean up all this...
-		// if no pages exist, kill the ajax calls on select entry change
-		if ($site_pages !== FALSE)
-		{
-			$r .= "$.fancybox.showActivity();
+			jQuery.fn.detectPageURI = function(){
+			
+			$.fancybox.showActivity();
 				
 				var url = '".$url."';
 			    var node_entry_id = $(this).val();
@@ -1545,7 +1540,7 @@ class Taxonomy_mcp {
 
 			    $.getJSON(ajax_url, function(data) {
 			    	
-			    	if(data.page_uri != null){
+			    	if(data.page_uri != null && data.page_uri != false){
 			    		$('#taxonomy_us_page_uri').fadeIn();
 			    	}
 			    	else
@@ -1559,22 +1554,19 @@ class Taxonomy_mcp {
 				  $.fancybox.hideActivity();
 				 
 				  
-				});";
-		}
-		
-		$r .= "}</script>
+				});
+			}
+
+			
+		</script>
 		<script type='text/javascript' src='".ASSET_PATH."js/taxonomy.js'></script>
 		<link rel='stylesheet' type='text/css' href='".ASSET_PATH."css/taxonomy.css' />
 		";
-		
+	
 		return $r;
 	
 	}
-	
-	
-	
-	
-	
+
 	
 }
 // END CLASS
