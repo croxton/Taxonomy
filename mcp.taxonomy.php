@@ -1035,10 +1035,10 @@ class Taxonomy_mcp {
 			$channels_needed[$channel['channel_id']] = $channel['channel_title'];
 		}
 
-		// print_r($channels_needed);
 
 		$entries = $this->EE->channel_entries_model->get_entries($userchannels, $fields_needed);
-		
+
+		$flat_tree = $this->EE->mpttree->get_flat_tree_v2(1);
 		
 		
 		
@@ -1068,7 +1068,7 @@ class Taxonomy_mcp {
 		}
 		
 		// sort alphabetically
-		natcasesort($entries_options);								
+		natcasesort($entries_options);				
 										
 		$root_array = $this->EE->mpttree->get_root();
 		$root_node = $root_array['node_id'];
@@ -1081,7 +1081,7 @@ class Taxonomy_mcp {
 			return $this->EE->load->view('add_root_node', $vars, TRUE);
 		}
 		
-		$flat_tree = $this->EE->mpttree->get_flat_tree_v2(1);
+		
 		
 		$this->EE->load->library('table');
 		
@@ -1119,31 +1119,66 @@ class Taxonomy_mcp {
 			form_input('label', set_value($selected['label'], $selected['label']), 'id="label", style="width: 60%;"')
 		);
 		
+		// we wan't to disable entries that already exist in the tree, so
+		// need to build an array of the entried in use, as well as build the
+		// select parent options
+		$entries_already_in_tree = array();
+
+		$select_parent_options = "<select name='parent_node_lft'>\n";
+		foreach ($flat_tree as $value)
+		{
+			$select_parent_options .= "<option value='".$value['lft']."'>".str_repeat('-&nbsp;', $value['level']).$value['label']."</option>\n";
+			// build the array of entries in use
+			$entries_already_in_tree[] = $value['entry_id'];
+		}
+		$select_parent_options .= "</select>\n";
 		
+		// do we show the select parent option?
 		if($show_parent_select)
-			{
-			
-			$select_parent_options = "<select name='parent_node_lft'>\n";
-			
-			foreach ($flat_tree as $value)
-			{
-				$select_parent_options .= "<option value='".$value['lft']."'>".str_repeat('-&nbsp;', $value['level']).$value['label']."</option>\n";
-			}
-			
-			$select_parent_options .= "</select>\n";
-			
+		{	
 			$this->EE->table->add_row(
 				lang('parent_node'),
 				$select_parent_options
 			);
 		}
+
+		// build our select entry options
+		// we want existing entries already in the tree to be disabled
+		// multiple nodes with the same entry id in one tree == barney rubble
+		$select_entry_options = "<select name='entry_id'>\n";
+		foreach($entries_options as $entry_id => $entry_label)
+		{
+			
+			$option_selected = NULL;
+			$option_disabled = NULL;
+			
+			// echo $entry_id."==".$selected['entry_id']."<br />";
+			
+			// add selected to selected entry
+			if($entry_id == $selected['entry_id'])
+			{
+				$option_selected = " selected = 'selected'";
+			}
+			
+			// disable the options for entries that exist in the tree, 
+			// and isn't the already selected entry for the current node
+			if((in_array($entry_id, $entries_already_in_tree)) && $entry_id != $selected['entry_id'])
+			{
+				$option_disabled = " disabled = 'disabled'";
+			}
+			
+			$select_entry_options .= "<option value='".$entry_id."'".$option_selected.$option_disabled.">".$entry_label."</option>\n";
+
+		}
+		$select_entry_options .= "</select>\n";	
+		// phew
+
 		// add properties
-		
 		$this->EE->table->add_row(
 			lang('internal_url'),
 			'<div id="taxonomy_select_template" style="display: inline;">'.form_dropdown('template_path', $templates['options'], $selected['template_path']).
 			" &nbsp; </div><div id='select_entry' style='display: inline;'>".
-			form_dropdown('entry_id', $entries_options, $selected['entry_id']).
+			$select_entry_options.
 			"</div> <a href='#node_search' id='search_for_nodes' title='".lang('search_for_nodes')."'><img src='".ASSET_PATH."gfx/search.png' alt='".lang('search_for_nodes')."' /></a>"
 		);
 		
@@ -1528,37 +1563,44 @@ class Taxonomy_mcp {
 		$r = "<script type='text/javascript' src='".ASSET_PATH."js/fancybox/jquery.fancybox-1.3.1.pack.js'></script>
 		<script type='text/javascript' src='".ASSET_PATH."js/jquery.livequery.js'></script>
 		<script type='text/javascript' src='".ASSET_PATH."js/jquery.autocomplete.min.js'></script>
-		<script type='text/javascript'>
-
-			jQuery.fn.detectPageURI = function(){
+		<script type='text/javascript'>";
+		
+		// check pages exist
+			if($site_pages)
+			{
+			$r .= "jQuery.fn.detectPageURI = function(){
 			
-			$.fancybox.showActivity();
-				
-				var url = '".$url."';
-			    var node_entry_id = $(this).val();
-			    var ajax_url = url+node_entry_id;
-
-			    $.getJSON(ajax_url, function(data) {
-			    	
-			    	if(data.page_uri != null && data.page_uri != false){
-			    		$('#taxonomy_us_page_uri').fadeIn();
-			    	}
-			    	else
-			    	{
-			    		$('#taxonomy_us_page_uri').fadeOut();
-			    		$('#taxonomy_us_page_uri input').attr('checked', false);
-			    		$('#taxonomy_select_template').show();
-	       				$('#custom_url').show().val('');
-			    	}
-
-				  $.fancybox.hideActivity();
-				 
-				  
-				});
+					$.fancybox.showActivity();
+					
+					var url = '".$url."';
+				    var node_entry_id = $(this).val();
+				    var ajax_url = url+node_entry_id;
+	
+				    $.getJSON(ajax_url, function(data) {
+				    	
+				    	if(data.page_uri != null && data.page_uri != false){
+				    		$('#taxonomy_us_page_uri').fadeIn();
+				    	}
+				    	else
+				    	{
+				    		$('#taxonomy_us_page_uri').fadeOut();
+				    		$('#taxonomy_us_page_uri input').attr('checked', false);
+				    		$('#taxonomy_select_template').show();
+		       				$('#custom_url').show().val('');
+				    	}
+	
+					  $.fancybox.hideActivity();
+					 
+					  
+					});
+				}";
 			}
-
+			else
+			{
+				$r .= "jQuery.fn.detectPageURI = function(){}";
+			}
 			
-		</script>
+		$r .= "</script>
 		<script type='text/javascript' src='".ASSET_PATH."js/taxonomy.js'></script>
 		<link rel='stylesheet' type='text/css' href='".ASSET_PATH."css/taxonomy.css' />
 		";

@@ -84,7 +84,7 @@ class Taxonomy {
 				}
 				else
 				{
-					$node_url .= $this->EE->functions->fetch_site_index().$template_group.$template_name.$url_title;
+					$node_url .= $template_group.$template_name.$url_title;
 				}
 				
 				
