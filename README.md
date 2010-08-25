@@ -10,9 +10,9 @@ Taxonomy lets you build navigation trees to unlimited depths which comprise of a
 2. Build links in your tree from entries using page uris from the EE Pages Module (NEW!)
 3. Or enter a url override to build nodes in your tree that link to anywhere you like!
 
-To get a quick overview of the module, please [checkout the screencast](http://iain.co.nz/taxonomy/taxonomy.mov).
+To get a quick overview of the module, please [checkout the screencast](http://iain.co.nz/taxonomy/taxonomy.mov) and be sure to check out the [Quick Start Guide](http://iain.co.nz/taxonomy/quick_start/).
 
-Taxonomy also allows you to create as many trees as you need to handle multiple menus
+Taxonomy also allows you to create as many trees as you need to handle multiple menus.
 
 ### Documentation
 Docs can be found at [http://iain.co.nz/taxonomy/](http://iain.co.nz/taxonomy/)
