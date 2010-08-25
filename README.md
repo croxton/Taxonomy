@@ -4,13 +4,15 @@
 
 The Taxonomy Module is a navigation/breadcrumb building tool for 'page' sections of your site. The module uses nested sets to control hierarchy and utilises the MPTtree library from the CodeIgniter community.
 
-Unlike the Pages Module, Taxonomy uri's are built using regular template_group/url_title or template_group/template/url_title paths Ñ so for example, the uri /page/copyright/ could represent something 10 levels deep in the Taxonomy module.
+Taxonomy lets you build navigation trees to unlimited depths which comprise of any of the following types of links:
 
-The module's primary purpose is *not* to give you an overview of your entire site. Instead, it is intended for building menus/breadcrumbs for 'page' sections of your site that need hierarchy beyond simple page lists.
+1. Build links in your tree which use regular template_group/url_title or template_group/template/url_title paths
+2. Build links in your tree from entries using page uris from the EE Pages Module (NEW!)
+3. Or enter a url override to build nodes in your tree that link to anywhere you like!
 
 To get a quick overview of the module, please [checkout the screencast](http://iain.co.nz/taxonomy/taxonomy.mov).
 
-Taxonomy also allows you to create multiple trees to handle multiple menus
+Taxonomy also allows you to create as many trees as you need to handle multiple menus
 
 ### Documentation
 Docs can be found at [http://iain.co.nz/taxonomy/](http://iain.co.nz/taxonomy/)
