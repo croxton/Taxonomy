@@ -1039,25 +1039,6 @@ class Taxonomy_mcp {
 		$entries = $this->EE->channel_entries_model->get_entries($userchannels, $fields_needed);
 
 		$flat_tree = $this->EE->mpttree->get_flat_tree_v2(1);
-		
-		
-		
-		// build the index for autocomplete
-		$entry_list = '';
-		foreach($entries->result_array() as $key => $entry)
-		{
-			// print_r($entry);
-			$entry_list .= "{ id:'".$entry['entry_id']."', entry:'".addslashes($entry['title'])."'}, ";
-		}
-		$entry_list .= "{ id: '', entry: ''} ";
-		
-		
-		// set the autocomplete js
-		$r .= "
-		<script type='text/javascript'>
-			var entries = [$entry_list];
-		</script>
-		";
 
 		$entries_options = array();
 		// give a null value option for entries select
@@ -1172,6 +1153,24 @@ class Taxonomy_mcp {
 		}
 		$select_entry_options .= "</select>\n";	
 		// phew
+		
+
+		// build the index for autocomplete
+		// filter out already selected entries with $entries_already_in_tree
+		$entry_list = '';
+		foreach($entries->result_array() as $key => $entry)
+		{
+			// print_r($entry);
+			if(!in_array($entry['entry_id'], $entries_already_in_tree))
+			{
+				$entry_list .= "{ id:'".$entry['entry_id']."', entry:'".addslashes($entry['title'])."'}, ";
+			}
+		}
+		$entry_list .= "{ id: '', entry: ''} ";
+
+		// add the js to the head
+		$this->EE->cp->add_to_head("<script type='text/javascript'>var entries = [$entry_list];</script>");
+		
 
 		// add properties
 		$this->EE->table->add_row(

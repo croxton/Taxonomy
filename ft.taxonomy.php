@@ -15,7 +15,7 @@
 	{
 		var $info = array(
 			'name'		=> 'Taxonomy',
-			'version'	=> '0.31'
+			'version'	=> '0.4'
 		);
 
 		public function Taxonomy_ft()
