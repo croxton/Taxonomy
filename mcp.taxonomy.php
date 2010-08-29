@@ -1143,7 +1143,7 @@ class Taxonomy_mcp {
 			
 			// disable the options for entries that exist in the tree, 
 			// and isn't the already selected entry for the current node
-			if((in_array($entry_id, $entries_already_in_tree)) && $entry_id != $selected['entry_id'])
+			if(((in_array($entry_id, $entries_already_in_tree)) && $entry_id != $selected['entry_id']) && $entry_id != '')
 			{
 				$option_disabled = " disabled = 'disabled'";
 			}
