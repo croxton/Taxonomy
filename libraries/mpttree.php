@@ -2206,7 +2206,8 @@ ORDER BY {$this->left_col} DESC) as parent";
 				exp_templates.group_id, 
 				exp_templates.template_name, 
 				exp_template_groups.group_id, 
-				exp_template_groups.group_name 
+				exp_template_groups.group_name,
+				exp_template_groups.is_site_default
 				
 				FROM '.$this->tree_table.
 					' 	
@@ -2475,6 +2476,8 @@ ORDER BY {$this->left_col} DESC) as parent";
 		$options['entry_id'] 		= ($options['entry_id'] ) ? $options['entry_id'] : NULL;
 		$options['ul_css_id'] 		= ($options['ul_css_id'] ) ? $options['ul_css_id'] : NULL;
 		$options['ul_css_class'] 	= ($options['ul_css_class'] ) ? $options['ul_css_class'] : NULL;
+		// hide default template group
+		$options['hide_dt_group'] 		= ($options['hide_dt_group'] ) ? $options['hide_dt_group'] : NULL;
 				
 		$str = '';
 		$ul_id = '';
@@ -2502,7 +2505,9 @@ ORDER BY {$this->left_col} DESC) as parent";
 		$closing_ul = "</ul>\n";
 		
     	foreach($array as $data)
-    	{    	
+    	{    
+    	
+    		// print_r($data);	
 	    	$active_parent = '';
 	    	
 	    	// flag active parents
@@ -2533,8 +2538,16 @@ ORDER BY {$this->left_col} DESC) as parent";
     		
     		else
     		{
+				// remove default template group segments
+				if($data['is_site_default'] == 'y' && $options['hide_dt_group'] == "yes")
+				{
+					$template_group = '';
+				}
+				else
+				{
+	    			$template_group = '/'.$data['group_name'];
+	    		}
 
-	    		$template_group = 	'/'.$data['group_name']; 
 	    		$template_name = 	'/'.$data['template_name']; 
 	    		$url_title = 		'/'.$data['url_title'];
 	    		

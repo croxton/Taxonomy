@@ -137,6 +137,7 @@ class Taxonomy {
 		$options['entry_id'] 		= ($this->EE->TMPL->fetch_param('entry_id')) ? $this->EE->TMPL->fetch_param('entry_id') : NULL;
 		$options['ul_css_id'] 		= ($this->EE->TMPL->fetch_param('ul_css_id')) ? $this->EE->TMPL->fetch_param('ul_css_id') : NULL;
 		$options['ul_css_class'] 	= ($this->EE->TMPL->fetch_param('ul_css_class')) ? $this->EE->TMPL->fetch_param('ul_css_class') : NULL;
+		$options['hide_dt_group'] 	= ($this->EE->TMPL->fetch_param('hide_dt_group')) ? $this->EE->TMPL->fetch_param('hide_dt_group') : NULL;
 		$options['path'] 			= NULL;
 				
 		// if we're getting an entry_id, we need to get the path to the node
