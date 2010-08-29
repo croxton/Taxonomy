@@ -2358,7 +2358,8 @@ ORDER BY {$this->left_col} DESC) as parent";
 				exp_templates.group_id, 
 				exp_templates.template_name, 
 				exp_template_groups.group_id, 
-				exp_template_groups.group_name
+				exp_template_groups.group_name,
+				exp_template_groups.is_site_default
 				
 				FROM '.$this->tree_table.
 		
@@ -2439,7 +2440,8 @@ ORDER BY {$this->left_col} DESC) as parent";
 				exp_templates.group_id, 
 				exp_templates.template_name, 
 				exp_template_groups.group_id, 
-				exp_template_groups.group_name
+				exp_template_groups.group_name,
+				exp_template_groups.is_site_default
 				
 				FROM '.$this->tree_table.'
 		

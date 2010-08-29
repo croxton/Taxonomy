@@ -45,6 +45,9 @@ class Taxonomy {
 		
 		$delimiter = $this->EE->TMPL->fetch_param('delimiter');
 		
+		$hide_dt_group 	= ($this->EE->TMPL->fetch_param('hide_dt_group')) ? $this->EE->TMPL->fetch_param('hide_dt_group') : NULL;
+
+		
 		$here = $this->EE->mpttree->get_node_by_entry_id($entry_id);
 
 		$return_data = '';
@@ -59,8 +62,15 @@ class Taxonomy {
 				
 			foreach($path as $crumb)
 			{
-			
-				$template_group = 	'/'.$crumb['group_name']; 
+				// remove default template group segments
+				if($crumb['is_site_default'] == 'y' && $hide_dt_group == "yes")
+				{
+					$template_group = '';
+				}
+				else
+				{
+	    			$template_group = '/'.$crumb['group_name'];
+	    		}
 				$template_name = 	'/'.$crumb['template_name']; 
 				$url_title = 		'/'.$crumb['url_title'];
 				
@@ -181,16 +191,26 @@ class Taxonomy {
 											'title' => 'label'));
 			
 			$tree_array = $this->EE->mpttree->build_session_path_array();
-	
+
 			$entry = array();
 			$url_title = '';
 			$node_url = '';
 			$template_group = '';
 			$template_name = '';
+			
+			$hide_dt_group 	= ($this->EE->TMPL->fetch_param('hide_dt_group')) ? $this->EE->TMPL->fetch_param('hide_dt_group') : NULL;
 
 			foreach($tree_array as $node)
 			{
-				$template_group = 	'/'.$node['group_name']; 
+				// remove default template group segments
+				if($node['is_site_default'] == 'y' && $hide_dt_group == "yes")
+				{
+					$template_group = '';
+				}
+				else
+				{
+	    			$template_group = '/'.$node['group_name'];
+	    		}
 				$template_name = 	'/'.$node['template_name']; 
 				$url_title = 		'/'.$node['url_title'];
 
