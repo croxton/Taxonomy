@@ -219,6 +219,8 @@ class Taxonomy {
 				{
 					$template_name = '';
 				}
+				
+				$node_url = $this->EE->functions->fetch_site_index().$template_group.$template_name.$url_title;
 
 				if($node['custom_url'])
 				{
@@ -228,11 +230,11 @@ class Taxonomy {
 	    			if($node_url == "[page_uri]")
 	    			{
 	    				$site_id = $this->EE->config->item('site_id');
-	    				$node_url = $this->EE->mpttree->entry_id_to_page_uri($node['entry_id'], $site_id);
+	    				$node_url = $this->EE->functions->fetch_site_index().$this->EE->mpttree->entry_id_to_page_uri($node['entry_id'], $site_id);
 	    			}
 				}
 
-				$node_url = $this->EE->functions->fetch_site_index().$template_group.$template_name.$url_title;
+				
 				// if we're not using an index, get rid of double slashes
 				$node_url = $this->EE->functions->remove_double_slashes($node_url);
 				
