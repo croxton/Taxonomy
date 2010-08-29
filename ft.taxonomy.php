@@ -275,7 +275,10 @@
 					
 					// set the taxonomy label from the title
 					$('.taxonomy_fetch_title').click(function() {
+						
 						var titleval = $('input#title').val();
+						alert('test');
+						
 						$('#taxonomy_label_".$this->field_id."').val(titleval);
 					});
 					
@@ -284,7 +287,7 @@
 				
 				<style type='text/css'>
 					
-					.taxonomy_fetch_title { padding: 0 2px;}
+					.taxonomy_fetch_title { padding: 0 2px; color: green}
 					.taxonomy_fetch_title:hover {cursor: pointer;}
 					
 				</style>
@@ -292,6 +295,27 @@
 				";
 				
 			}
+			
+			$return .= "<script type='text/javascript'>
+				$(document).ready(function() {
+				
+					// set the taxonomy label from the title
+					$('.taxonomy_fetch_title').click(function() {
+						
+						var titleval = $('input#title').val();
+						
+						$('#taxonomy_label_".$this->field_id."').val(titleval);
+					});
+					
+				});
+				</script>
+				
+				<style type='text/css'>
+					
+					.taxonomy_fetch_title { padding: 0 2px; color: green}
+					.taxonomy_fetch_title:hover {cursor: pointer;}
+					
+				</style>";
 
 			// if we're hiding the template select, force taxonomy to insert the [page_uri]
 			if(isset($this->settings['hide_template_select']))
