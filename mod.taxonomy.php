@@ -144,6 +144,7 @@ class Taxonomy {
 		$options['display_root'] 	= ($this->EE->TMPL->fetch_param('display_root')) ? $this->EE->TMPL->fetch_param('display_root') : "yes";
 		$options['root'] 			= ($this->EE->TMPL->fetch_param('root_node_lft')) ? $this->EE->TMPL->fetch_param('root_node_lft') : 1;
 		$options['root_entry_id'] 	= ($this->EE->TMPL->fetch_param('root_node_entry_id')) ? $this->EE->TMPL->fetch_param('root_node_entry_id') : NULL;
+		$options['root_node_id'] 	= ($this->EE->TMPL->fetch_param('root_node_id')) ? $this->EE->TMPL->fetch_param('root_node_id') : NULL;
 		$options['entry_id'] 		= ($this->EE->TMPL->fetch_param('entry_id')) ? $this->EE->TMPL->fetch_param('entry_id') : NULL;
 		$options['ul_css_id'] 		= ($this->EE->TMPL->fetch_param('ul_css_id')) ? $this->EE->TMPL->fetch_param('ul_css_id') : NULL;
 		$options['ul_css_class'] 	= ($this->EE->TMPL->fetch_param('ul_css_class')) ? $this->EE->TMPL->fetch_param('ul_css_class') : NULL;
@@ -163,7 +164,7 @@ class Taxonomy {
 			}
 		}
 
-		$tree_array = $this->EE->mpttree->tree2array_v2($options['root'], $options['root_entry_id']);
+		$tree_array = $this->EE->mpttree->tree2array_v2($options['root'], $options['root_entry_id'], $options['root_node_id']);
 
 		return $this->EE->mpttree->build_list($tree_array, $str, $options);
 		

@@ -2168,15 +2168,21 @@ ORDER BY {$this->left_col} DESC) as parent";
 	 *      )
 	 * )
 	 * @endcode
-	 * @param $root The node that shall be root in the tree (local scope)
+	 * @param $root The node lft value that shall be root in the tree (local scope)
+	 * @param $root_entry_id The node that shall be root in the tree that contains the EE entry_id
+	 * @param $root_node_id The node that shall be root in the tree that contains the EE entry_id
 	 * @return A recursive array, false if the root node was not found
 	 */
-		function tree2array_v2($root = 1, $root_entry_id = NULL)
+		function tree2array_v2($root = 1, $root_entry_id = NULL, $root_node_id = NULL)
 		{
 			
 			if($root_entry_id)
 			{
 				$node = $this->get_node_by_entry_id($root_entry_id);
+			}
+			elseif($root_node_id)
+			{
+				$node = $this->get_node_by_nodeid($root_node_id);
 			}
 			else
 			{
@@ -2184,6 +2190,9 @@ ORDER BY {$this->left_col} DESC) as parent";
 			}
 			if($node == false)
 				return false;
+				
+				
+				
 			// query
 			$query = 'SELECT 
 				'.$this->tree_table.'.node_id,
