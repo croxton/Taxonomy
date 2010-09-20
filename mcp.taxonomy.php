@@ -1097,7 +1097,7 @@ class Taxonomy_mcp {
 			form_hidden('tree', $tree, '').
 			form_hidden('id', $selected['node_id'], '').
 			// form_hidden('extra', '', '').
-			form_input('label', set_value($selected['label'], $selected['label']), 'id="label", style="width: 60%;"')
+			form_input('label', set_value($selected['label'], htmlspecialchars_decode($selected['label'])), 'id="label", style="width: 60%;"')
 		);
 		
 		// we wan't to disable entries that already exist in the tree, so
