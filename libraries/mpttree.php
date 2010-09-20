@@ -2170,7 +2170,7 @@ ORDER BY {$this->left_col} DESC) as parent";
 	 * @endcode
 	 * @param $root The node lft value that shall be root in the tree (local scope)
 	 * @param $root_entry_id The node that shall be root in the tree that contains the EE entry_id
-	 * @param $root_node_id The node that shall be root in the tree that contains the EE entry_id
+	 * @param $root_node_id The node that shall be root in the tree that contains the node_id
 	 * @return A recursive array, false if the root node was not found
 	 */
 		function tree2array_v2($root = 1, $root_entry_id = NULL, $root_node_id = NULL)
@@ -2628,7 +2628,7 @@ ORDER BY {$this->left_col} DESC) as parent";
 									'node_entry_title' => $data['title'],
 									'node_entry_url_title' => $data['url_title'],
 									'node_entry_status' =>  $data['status'],
-									'node_entry_entry_date' => 1269683831,
+									'node_entry_entry_date' => $data['entry_date'],
 									'node_entry_template_name' => $data['template_name'],
 									'node_entry_template_group_name' => $data['group_name'],
 									'node_has_children' => $children,

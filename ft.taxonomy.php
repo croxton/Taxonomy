@@ -21,7 +21,7 @@
 		public function Taxonomy_ft()
 		{
 			parent::EE_Fieldtype();
-			require PATH_THIRD.'taxonomy/libraries/mpttree.php';
+			include_once PATH_THIRD.'taxonomy/libraries/mpttree.php';
 			$this->EE->lang->loadfile('taxonomy');
 		}	
 
@@ -102,7 +102,7 @@
 			$label = form_input(array(
 									'name'	=> $this->field_name.'[label]',
 									'id' 	=>'taxonomy_label_'.$this->field_id,
-									'value'	=> $data
+									'value'	=> ''
 								));
 
 			// fetch the nodes
@@ -157,7 +157,7 @@
 					$label = form_input(array(
 											'name'	=> $this->field_name.'[label]',
 											'id'	=> 'taxonomy_label_'.$this->field_id,
-											'value'	=> $row->label
+											'value'	=> htmlspecialchars_decode($row->label)
 										));
 
 					// rebuilt the select parent entry select menu
@@ -221,6 +221,11 @@
 					if($row->custom_url == "[page_uri]")
 					{
 						$page_uri_exisits = TRUE;
+					}
+					
+					if($row->custom_url && $row->custom_url != "[page_uri]")
+					{
+						$custom_url = $row->custom_url;
 					}
 
 				}
@@ -330,19 +335,43 @@
 					<table class="mainTable" border="0" cellspacing="0" cellpadding="0" style="margin-top: 5px;">
 							<tr>
 								<th colspan="2">'.$this->EE->lang->line('node_properties').'</th>
-							</tr>
-							<tr>
-								<td style="width: 140px;">'.$this->EE->lang->line('node_label').' [<span class="taxonomy_fetch_title" title="'.$this->EE->lang->line('fetch_title').'">+</span>]</td>
-								<td>'.$label.'</td>
-							</tr>
-							<tr>
-								<td>'.$this->EE->lang->line('parent_node').'</td>
-								<td>'.$parent_node_options.' &nbsp; '.$pages_option.'</td>
 							</tr>';
 			
 			
 			
-			if(!isset($this->settings['hide_template_select']))
+			$return .= '	<tr>
+								<td style="width: 140px;">'.$this->EE->lang->line('node_label').' [<span class="taxonomy_fetch_title" title="'.$this->EE->lang->line('fetch_title').'">+</span>]</td>
+								<td>'.$label.'</td>
+							</tr>';
+			
+			// if we don't have a custom uri in the tree for this node
+			// and it's not a pages module association
+
+			$return .= '	<tr>
+								<td>'.$this->EE->lang->line('parent_node').'</td>
+								<td>'.$parent_node_options.' &nbsp; '.$pages_option.'</td>
+							</tr>';
+
+			if(isset($custom_url))
+			{
+			
+			$custom_url_input = form_input(array(
+									'name'	=> $this->field_name.'[override_url]',
+									'id'	=> 'taxonomy_override_url_'.$this->field_id,
+									'value'	=> $custom_url,
+									'readonly' => 'readonly',
+									'style' => 'opacity: 0.5;'
+								));
+			
+			$return .= '	<tr>
+								<td style="width: 140px;">'.$this->EE->lang->line('override_url').'</td>
+								<td>'.$custom_url_input.'</td>
+							</tr>';
+			
+			}
+			
+			
+			if(!isset($this->settings['hide_template_select']) && !isset($custom_url))
 			{
 				$return .= '<tr id="taxonomy_template_select_row_'.$this->field_id.'">
 								<td>'.$this->EE->lang->line('template').'</td>
@@ -396,7 +425,13 @@
 			{
 				// need to think about this @todo
 				return NULL;
-			}	
+			}
+			
+			if(!isset($data['override_url']))
+			{
+				$data['override_url'] = '';
+			}
+			
 
 			$parent_node_lft = $data['parent_node_lft'];
 			
@@ -406,7 +441,7 @@
 							'label'				=> htmlspecialchars($data['label'], ENT_COMPAT, 'UTF-8'),
 							'entry_id'			=> $this->settings['entry_id'],
 							'template_path'		=> (isset($data['template']) ? $data['template'] : NULL),
-							'custom_url'		=> (isset($data['use_page_uri']) ? '[page_uri]' : NULL)
+							'custom_url'		=> (isset($data['use_page_uri']) ? '[page_uri]' : $data['override_url'])
 							);
 
 			$taxonomy_data = $this->EE->security->xss_clean($taxonomy_data);
