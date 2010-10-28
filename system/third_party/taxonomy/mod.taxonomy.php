@@ -253,7 +253,7 @@ class Taxonomy {
 				
 		$tree_key = $this->EE->session->cache['taxonomy']['templates_to_entries'][$tree];
 		
-		$entry_id = $this->EE->TMPL->fetch_param('entry_id');
+		$entry_id = $this->EE->TMPL->fetch_param('entry_id') ? $this->EE->TMPL->fetch_param('entry_id') : '';
 		
 		
 		if(array_key_exists($entry_id, $tree_key[0][$tree]))
