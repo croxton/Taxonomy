@@ -21,7 +21,7 @@
 		public function Taxonomy_ft()
 		{
 			parent::EE_Fieldtype();
-			include_once PATH_THIRD.'taxonomy/libraries/mpttree.php';
+			include_once PATH_THIRD.'taxonomy/libraries/MPTtree.php';
 			$this->EE->lang->loadfile('taxonomy');
 		}	
 
