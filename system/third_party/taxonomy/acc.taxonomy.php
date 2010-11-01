@@ -47,7 +47,7 @@ class Taxonomy_acc {
 				var taxonomy_menu = "<li class=\'parent\'><a class=\'first_level\' href=\'#\'>Taxonomy</a><ul>" + trees + "<li class=\'nav_divider\'></li><li><a href=\''.$this->base.'\'>Overview</a></li><li class=\'bubble_footer\'></li></ul></li>";
 					
 					// if you wand the menu to appear elsewhere, edit the selector here
-					$("ul#navigationTabs li.parent:nth-child(3)").before(taxonomy_menu);
+					$("ul#navigationTabs > li.parent:nth-child(3)").before(taxonomy_menu);
 				});
 			
 			</script>
