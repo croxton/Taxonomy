@@ -21,7 +21,7 @@ class Taxonomy_acc {
 	{
 
 		$r 					= '';
-		$this->sections[] = '<script type="text/javascript" charset="utf-8">$("#accessoryTabs a.taxonomy_menu").parent().remove();</script>';
+		$this->sections[] = '<script type="text/javascript" charset="utf-8">$("#accessoryTabs a.taxonomy_acc").parent().remove();</script>';
 
 		$installed_modules 	= $this->EE->cp->get_installed_modules();
 		
@@ -46,7 +46,7 @@ class Taxonomy_acc {
 
 				var taxonomy_menu = "<li class=\'parent\'><a class=\'first_level\' href=\'#\'>Taxonomy</a><ul>" + trees + "<li class=\'nav_divider\'></li><li><a href=\''.$this->base.'\'>Overview</a></li><li class=\'bubble_footer\'></li></ul></li>";
 					
-					// if you wand the menu to appear elsewhere, edit the selector here
+					// if you want the menu to appear elsewhere, edit the selector here
 					$("ul#navigationTabs > li.parent:nth-child(3)").before(taxonomy_menu);
 				});
 			
