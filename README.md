@@ -1,13 +1,5 @@
 # Taxonomy Module for ExpressionEngine 2.0
 
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post" style="float:right;">
-<input type="hidden" name="cmd" value="_s-xclick">
-<input type="hidden" name="hosted_button_id" value="2X69G2Q7MECKG">
-<input type="image" src="https://www.paypal.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
-</form>
-
-
 ### Overview
 
 The Taxonomy Module is a navigation/breadcrumb building tool for 'page' sections of your site. The module uses nested sets to control hierarchy and utilises the MPTtree library from the CodeIgniter community.
