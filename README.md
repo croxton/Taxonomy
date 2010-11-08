@@ -19,6 +19,12 @@ Taxonomy also allows you to create as many trees as you need to handle multiple 
 ### Documentation
 Docs can be found at [http://iain.co.nz/taxonomy/](http://iain.co.nz/taxonomy/)
 
+### Donations
+
+You can use all my code without paying anything! Having said that, a lot of work has gone into creating this module. If my code saves you some time and trouble, and you feel like making a small donation to support my future development efforts, it would be very much appreciated.
+
+[Make a donation via PayPal](http://iain.co.nz/donate/)
+
 ### License / Disclaimer
 
 Copyright (c) 2010 Iain Urquhart - shout@iain.co.nz
