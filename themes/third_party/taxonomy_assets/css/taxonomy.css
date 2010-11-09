@@ -187,6 +187,9 @@ ol#taxonomy-list .item-options a,
 	padding: 3px 5px;
 	margin-left: 5px;
 	-webkit-background-clip: padding-box;}
+	
+#taxonomy-list-container a.delete_branch:hover,
+#taxonomy-list-container a.delete_node:hover {color: red;}
 
 ol#taxonomy-list .item-options a:hover {
 

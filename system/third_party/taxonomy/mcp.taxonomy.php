@@ -444,6 +444,8 @@ class Taxonomy_mcp
 		$vars['update_action'] = BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy'.AMP.'method=reorder_nodes'.AMP.'tree_id='.$tree_id;
 		$vars['ajax_update_action'] = str_replace("&amp;", "&", $vars['update_action']);
 		
+		$vars['theme_base'] = $this->theme_base;
+		
 		$vars['title_extra'] = $tree_settings['label'];
 
 		// add our css/js
@@ -465,9 +467,7 @@ class Taxonomy_mcp
 		
 		// pass in the last updated timestamp
 		$vars['last_updated'] = $tree_settings['last_updated'];
-		
-		
-		
+	
 		return $this->content_wrapper('edit_nodes', 'edit_tree', $vars);
 	}
 	
