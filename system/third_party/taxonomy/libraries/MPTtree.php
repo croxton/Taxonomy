@@ -2663,7 +2663,7 @@ ORDER BY {$this->left_col} DESC) as parent";
 			}
 			
 			$active = '';
-			if($data['entry_id'] == $options['entry_id'])
+			if($data['entry_id'] == $options['entry_id'] && $data['entry_id'] != '' && $options['entry_id'] != '')
 			{
 				$active = 'active';
 			}
@@ -2711,9 +2711,9 @@ ORDER BY {$this->left_col} DESC) as parent";
 	    			
 	    		}
 	    		
-	    		// get rid of double slashes
-				$node_url 	= $this->EE->functions->remove_double_slashes($node_url);
-				$viewed_url = $this->EE->functions->remove_double_slashes($viewed_url);
+	    		// get rid of double slashes, and trailing slash
+				$node_url 	= rtrim($this->EE->functions->remove_double_slashes($node_url), '/');
+				$viewed_url = rtrim($this->EE->functions->remove_double_slashes($viewed_url), '/');
 	    		
 	    		if($node_url === $viewed_url)
 	    		{
