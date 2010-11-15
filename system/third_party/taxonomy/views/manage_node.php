@@ -1,5 +1,5 @@
 <div id="taxonomy-add-node">
-<?
+<?php
 	// print_r($current_node);
 	// fetch the current values if editing a node
 	$label	 		= (isset($current_node['label'])) ? htmlspecialchars_decode($current_node['label']) : '';
