@@ -148,7 +148,25 @@ class Taxonomy {
 		$options['ul_css_class'] 	= ($this->EE->TMPL->fetch_param('ul_css_class')) ? $this->EE->TMPL->fetch_param('ul_css_class') : NULL;
 		$options['hide_dt_group'] 	= ($this->EE->TMPL->fetch_param('hide_dt_group')) ? $this->EE->TMPL->fetch_param('hide_dt_group') : NULL;
 		$options['path'] 			= NULL;
-				
+		$options['url_title']  		= ($this->EE->TMPL->fetch_param('url_title')) ? $this->EE->TMPL->fetch_param('url_title') : NULL;
+
+		// if we've got a url title, set the root_entry_id var by
+		// doing a quick lookup for that entry - added by Todd Perkins
+		if($options['url_title'])
+        {
+            // get the url title from db
+            $this->EE->db->where('url_title', $options['url_title']);
+            $this->EE->db->limit(1);
+            $entry = $this->EE->db->get('exp_channel_titles');
+            $entry_row = $entry->row_array();
+            
+            // if we have an entry id, lets use that now from the url_title
+            if($entry_row['entry_id'])
+            {
+                $options['root_entry_id'] = $entry_row['entry_id'];
+            }
+        } 
+
 		// if we're getting an entry_id, we need to get the path to the node
 		// so we can apply some extra css classes as we travel down the branches to
 		// the current node

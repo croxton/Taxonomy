@@ -50,7 +50,7 @@ class Taxonomy_mcp
 		// grab the trees
 		$query = $this->EE->db->get_where('exp_taxonomy_trees',array('site_id' => $this->site_id));
 
-		if ($query->num_rows() > 0)
+		if($query->num_rows() > 0)
 		{
 			foreach ($query->result_array() as $row)
 			{
@@ -60,16 +60,11 @@ class Taxonomy_mcp
 				$vars['trees'][$row['id']]['edit_tree_link'] = $this->base.AMP.'method=edit_tree'.AMP.'tree_id='.$row['id'];
 				$vars['trees'][$row['id']]['edit_nodes_link'] = $this->base.AMP.'method=edit_nodes'.AMP.'tree_id='.$row['id'];
 				$vars['trees'][$row['id']]['delete_tree_link'] = $this->base.AMP.'method=delete_tree'.AMP.'tree_id='.$row['id'];
-
 			}
 		}
-
-		// are we returning any results
-		$trees_exist = (isset($vars['trees'])) ? 1 : NULL;
-
-		// no trees exist, get started message
-		if(!$trees_exist)
+		else
 		{
+			// no trees exist, get started message
 			return $this->content_wrapper('newbie', 'welcome', $vars);
 		}
 

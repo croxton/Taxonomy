@@ -2642,11 +2642,15 @@ ORDER BY {$this->left_col} DESC) as parent";
 		
 		$closing_ul = "</ul>\n";
 		
+		// Added by @nevsie
+		$level_count = 0;
+        $level_total_count = count($array);
+		
     	foreach($array as $data)
     	{    
     	
-    		// echo '<pre>'; print_r($data); echo '</pre>';	
 	    	$active_parent = '';
+	    	$level_count ++;
 	    	
 	    	// flag active parents
 	    	if($options['path'])
@@ -2656,7 +2660,6 @@ ORDER BY {$this->left_col} DESC) as parent";
 					if($data['node_id'] === $parent_node['node_id'])
 					{
 						$active_parent = 'active_parent';
-						// echo $data['node_id'].' == '.$parent_node['node_id'].'<br />';
 					}
 				}
 			
@@ -2752,7 +2755,9 @@ ORDER BY {$this->left_col} DESC) as parent";
 									'node_entry_template_group_name' => $data['group_name'],
 									'node_has_children' => $children,
 									'node_next_child' => $data['lft']+1,
-									'node_level' => $data['level']
+									'node_level' => $data['level'],
+									'node_level_count' => $level_count,
+									'node_level_total_count' => $level_total_count 
 	        						);
 	        	
 	        	$tmp = $this->EE->functions->prep_conditionals($tagdata, $variables);
