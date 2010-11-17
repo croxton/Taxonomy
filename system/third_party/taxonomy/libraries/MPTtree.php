@@ -2755,6 +2755,8 @@ ORDER BY {$this->left_col} DESC) as parent";
 									'node_level' => $data['level']
 	        						);
 	        	
+	        	$tmp = $this->EE->functions->prep_conditionals($tagdata, $variables);
+	        	
 	        	// make sure each node has a unique class
 	        	if($data['entry_id'] == "")
 	        	{
@@ -2776,7 +2778,7 @@ ORDER BY {$this->left_col} DESC) as parent";
 	        						
 				$str .= '<li class="'.$node_class.'">';
 				$str .= "";
-	        	$str .= $this->EE->functions->var_swap($tagdata, $variables);
+	        	$str .= $this->EE->functions->var_swap($tmp, $variables);
 	        	
 	        	if(isset($data['children']) && $data['level'] < $options['depth'])
 	        	{
