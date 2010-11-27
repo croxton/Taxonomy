@@ -13,7 +13,7 @@
  */
 class Taxonomy_upd {
 
-	var $version        = '1.070';
+	var $version        = '1.100';
 	var $module_name 	= "Taxonomy";
 	
 	function Taxonomy_upd( $switch = TRUE ) 
@@ -222,6 +222,13 @@ class Taxonomy_upd {
 		{
 			$this->EE->load->dbforge();
 			$fields = array('last_updated' => array('type' => 'int', 'constraint' => '10'));
+			$this->EE->dbforge->add_column('taxonomy_trees', $fields);
+		}
+		
+		if($current < 1.100) 
+		{
+			$this->EE->load->dbforge();
+			$fields = array('extra' => array('type' => 'text'));
 			$this->EE->dbforge->add_column('taxonomy_trees', $fields);
 		}
 

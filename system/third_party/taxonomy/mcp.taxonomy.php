@@ -135,6 +135,7 @@ class Taxonomy_mcp
 		$channel_preferences = "";
 		$tree_id = ($this->EE->input->post('id')) ? $this->EE->input->post('id') : '';
 		$label = $this->EE->input->post('label');
+		$fields = $this->EE->input->post('field');
 		$tp_prefs_array = ($this->EE->input->post('template_preferences')) ? $this->EE->input->post('template_preferences') : "|";
 		$cnl_prefs_array = ($this->EE->input->post('channel_preferences')) ? $this->EE->input->post('channel_preferences') : "|";
 		
@@ -150,12 +151,24 @@ class Taxonomy_mcp
 			$channel_preferences .= implode('|', $cnl_prefs_array);
 		}
 		
+		$field_prefs = array();
+		foreach($fields as $key => $field)
+		{
+			if($field['label'] && $field['name'])
+			{
+				$field_prefs[$key] = $field;
+			}
+		}
+		
+		$field_prefs = (count($field_prefs) > 0) ? serialize($field_prefs) : '';
+		
 		$data = array(
 						'id'					=> $tree_id,
 						'site_id'				=> $this->site_id,
 						'label'					=> $label,
 						'template_preferences'	=> $template_preferences,
-						'channel_preferences' 	=> $channel_preferences
+						'channel_preferences' 	=> $channel_preferences,
+						'extra'					=> $field_prefs
 						);
 		
 		$data = $this->EE->security->xss_clean($data);
@@ -260,6 +273,7 @@ class Taxonomy_mcp
 			$vars['tree_info']['label'] = $row->label;
 			$vars['tree_info']['template_preferences'] = $row->template_preferences;
 			$vars['tree_info']['channel_preferences'] = $row->channel_preferences;
+			$vars['tree_info']['extra'] = ($row->extra != '') ? unserialize($row->extra) : '';
 		}
 		
 		// get all templates

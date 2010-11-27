@@ -70,6 +70,11 @@ $lang = array(
 "enable_pages_mode"				=> 'Use \'Pages Module\' mode (gives option to use Page URI)',
 "hide_template_select"			=> 'Hide Template Select option',
 "fetch_title"					=> 'Fetch the Title',
+"custom_field_label"			=> 'Field label <br /><small>(Visible to publishers)</small>',
+"custom_field_short"			=> 'Field name <br /><small>(Single word, no spaces. Underscores and dashes allowed)</small>',
+"type"							=> 'Type',
+"display_on_publish"			=> 'Display on publish?',
+"order"							=> 'Order',
 //
 ''=>''
 );
