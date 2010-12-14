@@ -38,7 +38,7 @@
 		
 	$this->table->add_row(
 		'Node Label:',
-		form_input('label', $label, 'id="label", style="width: 60%;"')
+		form_textarea('label', $label, 'id="label", style="width: 60%;"').'Advanced node'
 	);
 	
 	if($select_parent_dropdown)
@@ -49,7 +49,7 @@
 	
 	if($templates == '' && $select_entry_dropdown == '')
 	{
-		// no templates, no entries... just the url overrisde it is...
+		// no templates, no entries... just the url override it is...
 	}
 	elseif($templates == '' && $select_entry_dropdown != '')
 	{

@@ -185,6 +185,25 @@ class Taxonomy {
 		return $this->EE->mpttree->build_list($tree_array, $str, $options);
 		
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	 
+	
+	
+	
+	
+	
+	
+	
+	
 
 
 	function node_url()

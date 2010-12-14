@@ -2735,6 +2735,9 @@ ORDER BY {$this->left_col} DESC) as parent";
 	    		}    		
 	    		
 	    		//echo $children;
+	    		
+	    		
+	    		$data['label'] - $this->allow_eecode($data['label']);
 	        	
 	        	$variables = array(
 	        						'node_id' => $data['node_id'],
@@ -2804,6 +2807,70 @@ ORDER BY {$this->left_col} DESC) as parent";
         
    	 	return $str;
     }
+    
+ 
+ 
+ 	// lifted straight from the allow EE code plugin...
+    function allow_eecode($str)
+    {
+        $this->EE =& get_instance();
+
+        $query = ( ! $this->EE->TMPL->fetch_param('query') ) ? 'n' : $this->EE->TMPL->fetch_param('query');
+        $embed = ( ! $this->EE->TMPL->fetch_param('embed') ) ? 'n' : $this->EE->TMPL->fetch_param('embed');
+
+        if ($query != 'yes')
+        {
+        	$str = preg_replace("/&#123;exp:query(.*?)&#125;/","TgB903He0mnv3dd098$1TgB903He0mnv3dd099",$str);
+			$str = str_replace('&#123;/exp:query&#125;', 'Mu87ddk2QPoid990iod', $str);
+        }
+
+		if ($embed != 'yes')
+		{
+			$str = str_replace('&#123;embed', 'a9f83fa8b65b27e43a9db5fa4b2f62c8a23330e6', $str);
+		}
+
+        $array1 = array('&#123;',	'&#125;',	'{&#47;');
+        $array2 = array('{',		'}',		'{/');
+
+        $str = str_replace($array1,$array2,$str);
+
+		if (preg_match_all("#\{.+?}#si", $str, $matches))
+		{
+			for ($i = 0, $total = count($matches[0]); $i < $total; $i++)
+			{
+				$str = str_replace($matches['0'][$i],
+									str_replace(array('&#8220;', '&#8221;', '&#8216;','&#8217;'), array('"', '"', "'", "'"), $matches['0'][$i]),
+									$str);
+			}	
+		}
+
+        if ($query == 'n')
+        {
+        	$str = str_replace('TgB903He0mnv3dd098', '&#123;exp:query', $str);
+        	$str = str_replace('TgB903He0mnv3dd099', '&#125;', $str);
+			$str = str_replace('Mu87ddk2QPoid990iod', '&#123;/exp:query&#125;', $str);
+        }
+
+		if ($embed == 'n')
+		{
+			$str = str_replace('a9f83fa8b65b27e43a9db5fa4b2f62c8a23330e6', '&#123;embed', $str);
+		}
+
+ 		$this->return_data = $str;
+	}
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     // returns a page_uri from an entry_id
