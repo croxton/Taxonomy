@@ -386,8 +386,9 @@ class Taxonomy_mcp
 		// we'll hide the checkbox for now
 		$hide = " class='js_hide'";
 		
+		
 		// if pages exist
-		if($site_pages)
+		if(isset($site_pages[$this->site_id]))
 		{	
 			$checked = FALSE;
 			
@@ -399,7 +400,7 @@ class Taxonomy_mcp
 				$hide = "";
 			}
 			// maybe it's not checked, but the selected entry does have a pages uri
-			elseif(array_key_exists($selected_entry_id, $site_pages[1]['uris']))
+			elseif(array_key_exists($selected_entry_id, $site_pages[$this->site_id]['uris']))
 			{
 				$hide = "";
 			}

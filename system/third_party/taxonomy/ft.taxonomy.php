@@ -27,7 +27,7 @@
 
 		public function display_field($data)
 		{
-
+			
 			$mpttree = new MPTtree;
 
 			$tree = $this->settings['tree_id'];
@@ -96,13 +96,16 @@
 			$text_direction = ($this->settings['field_text_direction'] == 'rtl') ? 'rtl' : 'ltr';
 
 			// template dropdown
-			$template = form_dropdown($this->field_name.'[template]', $templates['options'], $data, 'dir="'.$text_direction.'" id="taxonomy_template_select_'.$this->field_id.'"' );
+			
+			$data['template'] = (isset($data['template'])) ? $data['template'] : '';
+			
+			$template = form_dropdown($this->field_name.'[template]', $templates['options'], $data['template'], 'dir="'.$text_direction.'" id="taxonomy_template_select_'.$this->field_id.'"' );
 
 			// node label
 			$label = form_input(array(
 									'name'	=> $this->field_name.'[label]',
 									'id' 	=>'taxonomy_label_'.$this->field_id,
-									'value'	=> ''
+									'value'	=> (isset($data['label'])) ? $data['label'] : ''
 								));
 
 			// fetch the nodes
@@ -119,10 +122,20 @@
 			// build the select parent pulldown
 			$parent_node_options = "<select name='".$this->field_name."[parent_node_id]'>";
 			$parent_node_options .= "<option value=''>--</option>";
-
+			
+			// if the form doesn't validate, grab the user's selected parent from $data not the db
+			$data['parent_node_id'] = (isset($data['parent_node_id']) ? $data['parent_node_id'] : '');
+			
 			foreach ($taxonomy_nodes as $node)
 			{
-				$parent_node_options .= "<option value='".$node['node_id']."'>".str_repeat ('-&nbsp;', $node['level']) . $node['label']."</option>";
+				// check for selection from $data
+				$selected = '';
+				if($data['parent_node_id'] == $node['node_id'])
+				{
+					$selected = " selected='selected'";
+				}
+			
+				$parent_node_options .= "<option value='".$node['node_id']."'".$selected.">".str_repeat ('-&nbsp;', $node['level']) . $node['label']."</option>";
 			}
 			
 			$parent_node_options .= "</select>";
