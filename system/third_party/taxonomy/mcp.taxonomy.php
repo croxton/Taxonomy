@@ -237,7 +237,7 @@ class Taxonomy_mcp
 		}
 		
 		$this->EE->session->set_flashdata('message_success', $cp_message);
-		$this->EE->functions->redirect($this->base.AMP.'method=index');
+		$this->EE->functions->redirect($this->base.AMP.'method=edit_tree'.AMP.'tree_id='.$tree_id);
 		
 	}
 
@@ -274,6 +274,11 @@ class Taxonomy_mcp
 			$vars['tree_info']['template_preferences'] = $row->template_preferences;
 			$vars['tree_info']['channel_preferences'] = $row->channel_preferences;
 			$vars['tree_info']['extra'] = ($row->extra != '') ? unserialize($row->extra) : '';
+		}
+		
+		if(is_array($vars['tree_info']['extra']))
+		{
+			$vars['tree_info']['extra'] = $this->array_sort($vars['tree_info']['extra'], 'order', SORT_ASC);
 		}
 		
 		// get all templates
@@ -1030,6 +1035,43 @@ class Taxonomy_mcp
 		
 		return $r;
 
+	}
+	
+	
+	// handles sorting of the custom fields
+	function array_sort($array, $on, $order=SORT_ASC)
+	{
+	    $new_array = array();
+	    $sortable_array = array();
+	
+	    if (count($array) > 0) {
+	        foreach ($array as $k => $v) {
+	            if (is_array($v)) {
+	                foreach ($v as $k2 => $v2) {
+	                    if ($k2 == $on) {
+	                        $sortable_array[$k] = $v2;
+	                    }
+	                }
+	            } else {
+	                $sortable_array[$k] = $v;
+	            }
+	        }
+	
+	        switch ($order) {
+	            case SORT_ASC:
+	                asort($sortable_array);
+	            break;
+	            case SORT_DESC:
+	                arsort($sortable_array);
+	            break;
+	        }
+	
+	        foreach ($sortable_array as $k => $v) {
+	            $new_array[$k] = $array[$k];
+	        }
+	    }
+	
+	    return $new_array;
 	}
 	
 	

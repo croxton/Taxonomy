@@ -53,6 +53,9 @@ ol#taxonomy-list .item-options a.delete-node,
 	background: #fff;
 }
 
+input.taxonomy-field-input {width: 90%; min-width: 250px;}
+input.taxonomy-number-input {width: 20px;}
+
 h3 small {font-weight: normal;}
 th.options,
 td.options {width: 200px;}

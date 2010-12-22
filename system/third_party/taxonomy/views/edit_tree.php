@@ -37,9 +37,9 @@
 <br />
 <div class="taxonomy-advanced-settings">
 <h3>Advanced settings: Tree Custom Fields</h3>
-	<p>Custom fields are optional, and will appear to publishers when editing nodes via the module interface.</p>
-	<p>By selecting "Display on publish?" the field will appear on the Taxonomy Fieldtype too.</p>
-	<br />
+	<p>Custom fields are optional, and will appear to publishers when editing nodes via the module interface.<br />
+	By selecting "Display on publish?" the field will appear on the Taxonomy Fieldtype too.</p>
+	
 
 
 <?php
@@ -52,7 +52,7 @@
 								array('data' => lang('display_on_publish'), 'style' => '')
 							);
 							
-	$field_options = array('text'  => 'Text Input', 'textarea'  => 'Textarea',);					
+	$field_options = array('text'  => 'Text Input', 'textarea'  => 'Textarea',  'checkbox'  => 'Checkbox',);					
 	
 	
 	
@@ -76,9 +76,9 @@
 			$show_on_publish = (isset($field_row['show_on_publish'])) ? $field_row['show_on_publish'] : FALSE;
 			
 			$this->table->add_row(
-				form_input('field['.$i.'][order]', $order),
-				array('data' => form_input('field['.$i.'][label]', $label, 'class="field_label"'), 'class' => 'foo'),
-				form_input('field['.$i.'][name]', $name, 'class="field_label"'),
+				form_input('field['.$i.'][order]', $order, 'class="taxonomy-number-input"'),
+				array('data' => form_input('field['.$i.'][label]', $label, 'class="taxonomy-field-input"'), 'class' => 'foo'),
+				form_input('field['.$i.'][name]', $name, 'class="taxonomy-field-input"'),
 				form_dropdown('field['.$i.'][type]', $field_options, $type),
 				form_checkbox('field['.$i.'][show_on_publish]', '1', $show_on_publish)
 			);
@@ -97,9 +97,9 @@
 	$show_on_publish = FALSE;
 	
 	$this->table->add_row(
-				form_input('field['.$i.'][order]', $order),
-				array('data' => form_input('field['.$i.'][label]', $label, 'class="field_label"'), 'class' => 'foo'),
-				form_input('field['.$i.'][name]', $name, 'class="field_label"'),
+				form_input('field['.$i.'][order]', $order, 'class="taxonomy-number-input"'),
+				array('data' => form_input('field['.$i.'][label]', $label, 'class="taxonomy-field-input"'), 'class' => 'foo'),
+				form_input('field['.$i.'][name]', $name, 'class="taxonomy-field-input"'),
 				form_dropdown('field['.$i.'][type]', $field_options, $type),
 				form_checkbox('field['.$i.'][show_on_publish]', '1', $show_on_publish)
 			);
@@ -109,8 +109,8 @@
 	$this->table->clear(); // needed to reset the table
 ?>
 
-<br />
 
+</div>
+<br />
 <input type="submit" class="submit" value="<?=lang('save_settings')?>" />
 <?=form_close()?>
-</div>
