@@ -1,6 +1,5 @@
 <?=form_open($_form_base.AMP.'method=update_trees')?>
 
-<h3>Basic settings: Select channels, and templates</h3>
 
 <?php
 	
@@ -36,7 +35,7 @@
 ?>
 
 <br />
-
+<div class="taxonomy-advanced-settings">
 <h3>Advanced settings: Tree Custom Fields</h3>
 	<p>Custom fields are optional, and will appear to publishers when editing nodes via the module interface.</p>
 	<p>By selecting "Display on publish?" the field will appear on the Taxonomy Fieldtype too.</p>
@@ -65,28 +64,47 @@
 	
 	if(count($tree_info['extra']) > 0 && is_array($tree_info['extra']))
 	{	
-		$order 	= (isset($tree_info['extra'][$i]['order'])) ? $tree_info['extra'][$i]['order'] : '';
-		$label 	= (isset($tree_info['extra'][$i]['label'])) ? $tree_info['extra'][$i]['label'] : '';
-		$name 	= (isset($tree_info['extra'][$i]['name'])) ? $tree_info['extra'][$i]['name'] : '';
-		$type 	= (isset($tree_info['extra'][$i]['type'])) ? $tree_info['extra'][$i]['type'] : '';
-		$show_on_publish = (isset($tree_info['extra'][$i]['show_on_publish'])) ? $tree_info['extra'][$i]['show_on_publish'] : FALSE;
-	}
-	else
-	{
-		$order = 0;
-		$label = '';
-		$name = '';
-		$type = '';
-		$show_on_publish = FALSE;
-	}
+		// print_r($tree_info['extra']);
+		
+		foreach($tree_info['extra'] as $key => $field_row)
+		{
+	
+			$order 	= (isset($field_row['order'])) ? $field_row['order'] : '';
+			$label 	= (isset($field_row['label'])) ? $field_row['label'] : '';
+			$name 	= (isset($field_row['name'])) ? $field_row['name'] : '';
+			$type 	= (isset($field_row['type'])) ? $field_row['type'] : '';
+			$show_on_publish = (isset($field_row['show_on_publish'])) ? $field_row['show_on_publish'] : FALSE;
 			
+			$this->table->add_row(
+				form_input('field['.$i.'][order]', $order),
+				array('data' => form_input('field['.$i.'][label]', $label, 'class="field_label"'), 'class' => 'foo'),
+				form_input('field['.$i.'][name]', $name, 'class="field_label"'),
+				form_dropdown('field['.$i.'][type]', $field_options, $type),
+				form_checkbox('field['.$i.'][show_on_publish]', '1', $show_on_publish)
+			);
+			
+			$i++;
+			
+		}
+		
+	}
+	
+	// add our last blank row
+	$order = 0;
+	$label = '';
+	$name = '';
+	$type = '';
+	$show_on_publish = FALSE;
+	
 	$this->table->add_row(
-		form_input('field['.$i.'][order]', $order),
-		array('data' => form_input('field['.$i.'][label]', $label, 'class="field_label"'), 'class' => 'foo'),
-		form_input('field['.$i.'][name]', $name, 'class="field_label"'),
-		form_dropdown('field['.$i.'][type]', $field_options, $type),
-		form_checkbox('field['.$i.'][show_on_publish]', '1', $show_on_publish)
-	);
+				form_input('field['.$i.'][order]', $order),
+				array('data' => form_input('field['.$i.'][label]', $label, 'class="field_label"'), 'class' => 'foo'),
+				form_input('field['.$i.'][name]', $name, 'class="field_label"'),
+				form_dropdown('field['.$i.'][type]', $field_options, $type),
+				form_checkbox('field['.$i.'][show_on_publish]', '1', $show_on_publish)
+			);
+			
+	
 	echo $this->table->generate();
 	$this->table->clear(); // needed to reset the table
 ?>
@@ -95,3 +113,4 @@
 
 <input type="submit" class="submit" value="<?=lang('save_settings')?>" />
 <?=form_close()?>
+</div>

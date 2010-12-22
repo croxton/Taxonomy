@@ -247,7 +247,7 @@ class Taxonomy_mcp
 	 */
 	function edit_tree() 
 	{
-		
+		$this->EE->cp->add_to_head('<link type="text/css" href="'.$this->theme_base.'css/taxonomy.css" rel="stylesheet" />');
 		$this->EE->load->helper(array('form'));
 		$this->EE->load->library('table');
 		

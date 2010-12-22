@@ -48,6 +48,11 @@ ol#taxonomy-list .item-options a.delete-node,
 	clear: both;
 }
 
+#mainContent .contents .pageContents .taxonomy-content .taxonomy-advanced-settings {
+	padding: 20px !important;
+	background: #fff;
+}
+
 h3 small {font-weight: normal;}
 th.options,
 td.options {width: 200px;}
