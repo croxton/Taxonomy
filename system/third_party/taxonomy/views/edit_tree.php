@@ -1,10 +1,7 @@
 <?=form_open($_form_base.AMP.'method=update_trees')?>
 
-
 <?php
-	
-	
-	
+
 	$selected_templates = explode('|', $tree_info['template_preferences']);
 	$selected_channels = explode('|', $tree_info['channel_preferences']);
 	
@@ -40,8 +37,6 @@
 	<p>Custom fields are optional, and will appear to publishers when editing nodes via the module interface.<br />
 	By selecting "Display on publish?" the field will appear on the Taxonomy Fieldtype too.</p>
 	
-
-
 <?php
 	$this->table->set_template($cp_table_template);
 	$this->table->set_heading(
@@ -53,10 +48,7 @@
 							);
 							
 	$field_options = array('text'  => 'Text Input', 'textarea'  => 'Textarea',  'checkbox'  => 'Checkbox',);					
-	
-	
-	
-	
+
 	// move all this crap out of the view
 	// add an additional row after save
 	
@@ -90,7 +82,7 @@
 	}
 	
 	// add our last blank row
-	$order = 0;
+	$order = $i-1;
 	$label = '';
 	$name = '';
 	$type = '';
@@ -108,7 +100,6 @@
 	echo $this->table->generate();
 	$this->table->clear(); // needed to reset the table
 ?>
-
 
 </div>
 <br />
