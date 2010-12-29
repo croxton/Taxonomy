@@ -152,11 +152,15 @@ class Taxonomy_mcp
 		}
 		
 		$field_prefs = array();
-		foreach($fields as $key => $field)
+		
+		if(count($fields) && is_array($fields))
 		{
-			if($field['label'] && $field['name'])
+			foreach($fields as $key => $field)
 			{
-				$field_prefs[$key] = $field;
+				if($field['label'] && $field['name'])
+				{
+					$field_prefs[$key] = $field;
+				}
 			}
 		}
 		
@@ -228,17 +232,21 @@ class Taxonomy_mcp
 			unset($fields);
 			
 			$cp_message = $this->EE->lang->line('tree_added');
+			
+			$this->EE->session->set_flashdata('message_success', $cp_message);
+			$this->EE->functions->redirect($this->base.AMP.'method=index');
+			
 		}
 		// we're just updating
 		else
 		{
 			$this->EE->db->query($this->EE->db->update_string('exp_taxonomy_trees', $data, "id = '$tree_id'"));
 			$cp_message = $this->EE->lang->line('properties_updated');
+			
+			$this->EE->session->set_flashdata('message_success', $cp_message);
+			$this->EE->functions->redirect($this->base.AMP.'method=edit_tree'.AMP.'tree_id='.$tree_id);
 		}
-		
-		$this->EE->session->set_flashdata('message_success', $cp_message);
-		$this->EE->functions->redirect($this->base.AMP.'method=edit_tree'.AMP.'tree_id='.$tree_id);
-		
+	
 	}
 
 
@@ -434,7 +442,12 @@ class Taxonomy_mcp
 		    $vars['select_page_uri_option'] = "<div id='taxonomy_use_page_uri'><div".$hide.">".form_checkbox($site_pages_checkbox_options)." ".lang('use_pages_module_uri')."</div></div>";
 		
 		}
-
+		
+		// custom fields?
+		if(isset($tree_settings['extra']))
+		{
+			$vars['custom_fields'] = unserialize($tree_settings['extra']);
+		}
 
 		return $this->content_wrapper('manage_node', 'manage_node', $vars);
 	
@@ -596,13 +609,20 @@ class Taxonomy_mcp
 		
 		$label = htmlspecialchars($this->EE->input->post('label'), ENT_COMPAT, 'UTF-8');
 		
+		$extra = $this->EE->input->post('extra');
+		
+		if($extra)
+		{
+			$extra = serialize($extra);
+		}
+		
 		$data = array(
 						'node_id'			=> $node_id,
 						'label'				=> $label,
 						'entry_id'			=> $this->EE->input->post('entry_id'),
 						'template_path'		=> $this->EE->input->post('template_path'),
 						'custom_url'		=> $this->EE->input->post('custom_url'),
-						'extra'				=> $this->EE->input->post('extra')
+						'extra'				=> $extra
 						);
 						
 		$data = $this->EE->security->xss_clean($data);				
@@ -907,6 +927,7 @@ class Taxonomy_mcp
 				$tree_info['template_preferences'] = $row->template_preferences;
 				$tree_info['channel_preferences'] = $row->channel_preferences;
 				$tree_info['last_updated'] = $row->last_updated;
+				$tree_info['extra'] = $row->extra;
 			}
 			
 			$this->EE->session->cache['taxonomy']['tree'][$id]['settings'] = $tree_info;

@@ -75,6 +75,9 @@ $lang = array(
 "type"							=> 'Type',
 "display_on_publish"			=> 'Display on publish?',
 "order"							=> 'Order',
+"advanced_settings"				=> 'Advanced settings: Tree Custom Fields',
+"advanced_settings_instructions" => 'Custom fields are optional, and will appear to publishers when editing nodes via the module interface.<br />By selecting "Display on publish?" the field will appear on the Taxonomy Fieldtype too.',
+"root_node_notice"				=> '<h3>Please insert a root node<br /><small>All Taxonomy trees must have a root node</small></h3>',
 //
 ''=>''
 );

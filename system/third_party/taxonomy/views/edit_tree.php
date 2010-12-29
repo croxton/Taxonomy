@@ -33,9 +33,8 @@
 
 <br />
 <div class="taxonomy-advanced-settings">
-<h3>Advanced settings: Tree Custom Fields</h3>
-	<p>Custom fields are optional, and will appear to publishers when editing nodes via the module interface.<br />
-	By selecting "Display on publish?" the field will appear on the Taxonomy Fieldtype too.</p>
+<h3><?=lang('advanced_settings')?></h3>
+	<p><?=lang('advanced_settings_instructions')?></p>
 	
 <?php
 	$this->table->set_template($cp_table_template);
@@ -49,9 +48,7 @@
 							
 	$field_options = array('text'  => 'Text Input', 'textarea'  => 'Textarea',  'checkbox'  => 'Checkbox',);					
 
-	// move all this crap out of the view
-	// add an additional row after save
-	
+	// @todo move all this crap out of the view
 	$i = 1;
 	
 	if(count($tree_info['extra']) > 0 && is_array($tree_info['extra']))

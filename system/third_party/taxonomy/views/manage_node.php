@@ -19,7 +19,7 @@
 	{
 		echo form_hidden('is_root', '1');
 		
-		echo "<h3>Please insert a root node<br /><small>All Taxonomy trees must have a root node</small></h3>";
+		echo lang('root_node_notice');
 		
 	}
 	
@@ -38,7 +38,7 @@
 		
 	$this->table->add_row(
 		'Node Label:',
-		form_textarea('label', $label, 'id="label", style="width: 60%;"').'Advanced node'
+		form_input('label', $label, 'id="label", style="width: 60%;"')
 	);
 	
 	if($select_parent_dropdown)
@@ -75,6 +75,33 @@
 		'URL Override:',
 		form_input('custom_url', $custom_url, 'id="custom_url",  style="width: 60%; float:left;"').$select_page_uri_option
 	);
+	
+	
+	// loop through the fields
+	if(isset($custom_fields) && is_array($custom_fields))
+	{
+		foreach($custom_fields as $custom_field)
+		{
+			// custom url
+			switch($custom_field)
+			{
+				case($custom_field['type'] == 'text'):
+					$this->table->add_row(
+						$custom_field['label'],
+						form_input('extra['.$custom_field['name'].']', $custom_url, 'id='.$custom_field['name'].',  style="width: 60%; float:left;"')
+					);
+					break;
+				case($custom_field['type'] == 'checkbox'):
+					$this->table->add_row(
+						'&nbsp;',
+						form_checkbox('extra['.$custom_field['name'].']', 1, FALSE).' &nbsp; '.$custom_field['label']
+					);
+					break;
+			}
+			
+		}
+	}
+	//echo "<pre>"; print_r($custom_fields); echo "</pre>";
 	
 	// submit
 	$this->table->add_row(
