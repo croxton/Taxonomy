@@ -2706,11 +2706,19 @@ ORDER BY {$this->left_col} DESC) as parent";
 	    				$site_id = $this->EE->config->item('site_id');
 	    				$node_url = $this->entry_id_to_page_uri($data['entry_id'], $site_id);
 	    			}
-
-	    			// does the custom url start with http://, 
-	    			// if not we add our site_index as it'll be a relative link
-	    			// and the nav tag will apply the $active css class to the node
+	    			elseif($node_url[0] == "#")
+	    			{
+	    				$node_url = $data['custom_url'];
+	    			}
+	    			// if it's a relative url, prepend the site index
+	    			// otherwise just roll with the user's input
+	    			else
+					{
+	    				// does the custom url start with http://, 
+	    				// if not we add our site_index as it'll be a relative link
+	    				// and the nav tag will apply the $active css class to the node
 	    			$node_url = (substr(ltrim($node_url), 0, 7) != 'http://' ? $this->EE->functions->fetch_site_index() : '') . $node_url;
+	    			}
 	    			
 	    		}
 	    		

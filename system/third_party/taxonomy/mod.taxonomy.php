@@ -85,6 +85,10 @@ class Taxonomy {
 	    			$site_id = $this->EE->config->item('site_id');
 	    			$node_url .= $this->EE->mpttree->entry_id_to_page_uri($crumb['entry_id'], $site_id);
 				}
+				elseif($node_url[0] == "#")
+    			{
+    				$node_url = $data['custom_url'];
+    			}
 				elseif($crumb['custom_url'] != "")
 				{
 					// if its a relative link, add our site index
@@ -94,11 +98,9 @@ class Taxonomy {
 				{
 					$node_url .= $template_group.$template_name.$url_title;
 				}
-				
-				
-				// if we're not using an index, get rid of double slashes
-				$node_url = $this->EE->functions->remove_double_slashes($node_url);
-				
+
+				// get rid of double slashes, and trailing slash
+				$node_url 	= rtrim($this->EE->functions->remove_double_slashes($node_url), '/');
 				
 				if($display_root =="no" && $depth == 0)
 				{
@@ -250,6 +252,13 @@ class Taxonomy {
 	    				$site_id = $this->EE->config->item('site_id');
 	    				$node_url = $this->EE->functions->fetch_site_index().$this->EE->mpttree->entry_id_to_page_uri($node['entry_id'], $site_id);
 	    			}
+	    			// is the first char a '#'
+	    			elseif($node_url[0] == "#")
+	    			{
+	    				$node_url = $node['custom_url'];
+	    			}
+	    			// if it's a relative url, prepend the site index
+	    			// otherwise just roll with the user's input
 	    			else
 	    			{
 	    				$node_url = (substr(ltrim($node['custom_url']), 0, 7) != 'http://' ? $this->EE->functions->fetch_site_index() : '') . $node['custom_url'];
