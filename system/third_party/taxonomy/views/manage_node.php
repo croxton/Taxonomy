@@ -10,7 +10,8 @@
 	$select_page_uri_option		= (isset($select_page_uri_option)) ? $select_page_uri_option : '';
 	$templates		= (isset($templates) && $templates != array()) ? form_dropdown('template_path', $templates, $template_path) : '';
 	$entries		= (isset($entries)) ? $entries : array();
-		
+	$node_extra		= (isset($current_node['extra'])) ? unserialize($current_node['extra']) : '';
+			
 	echo form_open($_form_base.AMP.'method=process_manage_node');
 	
 	echo form_hidden('tree_id', $tree_id);
@@ -82,26 +83,30 @@
 	{
 		foreach($custom_fields as $custom_field)
 		{
-			// custom url
+			
+			$value = (isset($node_extra[$custom_field['name']])) ? $node_extra[$custom_field['name']] : '';
+			
 			switch($custom_field)
 			{
 				case($custom_field['type'] == 'text'):
 					$this->table->add_row(
-						$custom_field['label'],
-						form_input('extra['.$custom_field['name'].']', $custom_url, 'id='.$custom_field['name'].',  style="width: 60%; float:left;"')
+						$custom_field['label'].':',
+						form_input('extra['.$custom_field['name'].']', $value, 'id='.$custom_field['name'].',  style="width: 60%; float:left;"')
 					);
 					break;
 				case($custom_field['type'] == 'checkbox'):
 					$this->table->add_row(
 						'&nbsp;',
-						form_checkbox('extra['.$custom_field['name'].']', 1, FALSE).' &nbsp; '.$custom_field['label']
+						form_checkbox('extra['.$custom_field['name'].']', 1, $value).' &nbsp; '.$custom_field['label']
 					);
 					break;
 			}
 			
 		}
 	}
-	//echo "<pre>"; print_r($custom_fields); echo "</pre>";
+	// echo "<pre>"; print_r($custom_fields); echo "</pre>";
+	// echo "<pre>"; print_r($node_extra); echo "</pre>";
+	
 	
 	// submit
 	$this->table->add_row(
