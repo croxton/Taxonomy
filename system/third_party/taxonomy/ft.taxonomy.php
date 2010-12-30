@@ -53,7 +53,8 @@
 			{
 				$usertemplates 	=  $row->template_preferences;
 				$userchannels	=  $row->channel_preferences;
-			}	
+				$userfields		=  $row->extra;
+			}
 
 			if($usertemplates == 0)
 			{
@@ -240,6 +241,8 @@
 					{
 						$custom_url = $row->custom_url;
 					}
+					
+					$fields_data = ($row->extra != '') ? unserialize($row->extra) : '';
 
 				}
 
@@ -368,7 +371,7 @@
 			if(isset($custom_url))
 			{
 			
-			$custom_url_input = form_input(array(
+				$custom_url_input = form_input(array(
 									'name'	=> $this->field_name.'[override_url]',
 									'id'	=> 'taxonomy_override_url_'.$this->field_id,
 									'value'	=> $custom_url,
@@ -376,7 +379,7 @@
 									'style' => 'opacity: 0.5;'
 								));
 			
-			$return .= '	<tr>
+				$return .= '	<tr>
 								<td style="width: 140px;">'.$this->EE->lang->line('override_url').'</td>
 								<td>'.$custom_url_input.'</td>
 							</tr>';
@@ -391,6 +394,46 @@
 								<td>'.$template.'</td>
 							</tr>';
 			}
+
+			// custom fields
+			if($userfields)
+			{
+				$userfields = unserialize($userfields);
+				
+				foreach($userfields as $custom_field)
+				{
+					if(isset($custom_field['show_on_publish']) && $custom_field['show_on_publish'] == 1)
+					{
+						// does the array key exist, if so grab the value
+						$value = (isset($fields_data[$custom_field['name']])) ? $fields_data[$custom_field['name']] : '';
+
+						switch($custom_field)
+						{
+							case($custom_field['type'] == 'text'):
+									$custom_field_label = $custom_field['label'];
+									$custom_field_input = form_input('extra['.$custom_field['name'].']', $value, 'id='.$custom_field['name']);
+								break;
+							case($custom_field['type'] == 'checkbox'):
+									$custom_field_label = '&nbsp;';
+									$custom_field_input = form_checkbox('extra['.$custom_field['name'].']', 1, $value).' &nbsp; '.$custom_field['label'];
+								break;
+							case($custom_field['type'] == 'textarea'):
+									$custom_field_label = $custom_field['label'];
+									$custom_field_input = form_textarea('extra['.$custom_field['name'].']', $value, 'id='.$custom_field['name'].',  style=" height:60px;"');
+								break;
+						}
+
+
+						$return .= '<tr id="taxonomy_template_select_row_'.$this->field_id.'">
+									<td>'.$custom_field_label.'</td>
+									<td>'.$custom_field_input.'</td>
+									</tr>';
+					}
+				}
+				
+			}
+			
+			
 			
 			$return .= '</table>';
 					
@@ -449,12 +492,19 @@
 			
 			$parent_node_lft = $parent_node['lft'];
 			
+			$extra = $this->EE->input->post('extra');	
+			if($extra)
+			{
+				$extra = serialize($extra);
+			}
+			
 			$taxonomy_data = array(
 							'node_id'			=> '',
 							'label'				=> htmlspecialchars($data['label'], ENT_COMPAT, 'UTF-8'),
 							'entry_id'			=> $this->settings['entry_id'],
 							'template_path'		=> (isset($data['template']) ? $data['template'] : NULL),
-							'custom_url'		=> (isset($data['use_page_uri']) ? '[page_uri]' : $data['override_url'])
+							'custom_url'		=> (isset($data['use_page_uri']) ? '[page_uri]' : $data['override_url']),
+							'extra'				=> $extra
 							);
 
 			$taxonomy_data = $this->EE->security->xss_clean($taxonomy_data);
