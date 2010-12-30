@@ -258,6 +258,7 @@ class Taxonomy_mcp
 		$this->EE->cp->add_to_head('<link type="text/css" href="'.$this->theme_base.'css/taxonomy.css" rel="stylesheet" />');
 		$this->EE->load->helper(array('form'));
 		$this->EE->load->library('table');
+		$this->EE->load->library('MPTtree');
 		
 		$tree_id = $this->EE->input->get('tree_id');
 		
@@ -286,7 +287,7 @@ class Taxonomy_mcp
 		
 		if(is_array($vars['tree_info']['extra']))
 		{
-			$vars['tree_info']['extra'] = $this->array_sort($vars['tree_info']['extra'], 'order', SORT_ASC);
+			$vars['tree_info']['extra'] = $this->EE->mpttree->array_sort($vars['tree_info']['extra'], 'order', SORT_ASC);
 		}
 		
 		// get all templates
@@ -446,7 +447,7 @@ class Taxonomy_mcp
 		// custom fields?
 		if(isset($tree_settings['extra']))
 		{
-			$vars['custom_fields'] = unserialize($tree_settings['extra']);
+			$vars['custom_fields'] = $this->EE->mpttree->array_sort(unserialize($tree_settings['extra']), 'order', SORT_ASC);
 		}
 
 		return $this->content_wrapper('manage_node', 'manage_node', $vars);
@@ -1060,41 +1061,7 @@ class Taxonomy_mcp
 	}
 	
 	
-	// handles sorting of the custom fields
-	function array_sort($array, $on, $order=SORT_ASC)
-	{
-	    $new_array = array();
-	    $sortable_array = array();
 	
-	    if (count($array) > 0) {
-	        foreach ($array as $k => $v) {
-	            if (is_array($v)) {
-	                foreach ($v as $k2 => $v2) {
-	                    if ($k2 == $on) {
-	                        $sortable_array[$k] = $v2;
-	                    }
-	                }
-	            } else {
-	                $sortable_array[$k] = $v;
-	            }
-	        }
-	
-	        switch ($order) {
-	            case SORT_ASC:
-	                asort($sortable_array);
-	            break;
-	            case SORT_DESC:
-	                arsort($sortable_array);
-	            break;
-	        }
-	
-	        foreach ($sortable_array as $k => $v) {
-	            $new_array[$k] = $array[$k];
-	        }
-	    }
-	
-	    return $new_array;
-	}
 	
 	
 	

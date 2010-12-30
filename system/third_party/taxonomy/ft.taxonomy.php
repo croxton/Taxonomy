@@ -382,7 +382,8 @@
 			// custom fields
 			if($userfields)
 			{
-				$userfields = unserialize($userfields);
+				
+				$userfields = $mpttree->array_sort(unserialize($userfields), 'order', SORT_ASC);
 				
 				foreach($userfields as $custom_field)
 				{
