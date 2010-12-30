@@ -2788,7 +2788,7 @@ ORDER BY {$this->left_col} DESC) as parent";
 	        	if($data['entry_id'] == "")
 	        	{
 	        		$this->EE->load->helper('url');
-	        		$unique_class = url_title(strtolower($data['label']));
+	        		$unique_class = str_replace(".","_", url_title(strtolower($data['label'])));
 	        	}
 	        	else
 	        	{

@@ -410,7 +410,7 @@
 						switch($custom_field)
 						{
 							case($custom_field['type'] == 'text'):
-									$custom_field_label = $custom_field['label'];
+									$custom_field_label = $custom_field['label'].':';
 									$custom_field_input = form_input('extra['.$custom_field['name'].']', $value, 'id='.$custom_field['name']);
 								break;
 							case($custom_field['type'] == 'checkbox'):
@@ -418,7 +418,7 @@
 									$custom_field_input = form_checkbox('extra['.$custom_field['name'].']', 1, $value).' &nbsp; '.$custom_field['label'];
 								break;
 							case($custom_field['type'] == 'textarea'):
-									$custom_field_label = $custom_field['label'];
+									$custom_field_label = $custom_field['label'].':';
 									$custom_field_input = form_textarea('extra['.$custom_field['name'].']', $value, 'id='.$custom_field['name'].',  style=" height:60px;"');
 								break;
 						}
