@@ -251,10 +251,7 @@
 			// add the hidden field that flags if this is 'new' or an 'edit' submission_type
 			$return .= form_hidden($this->field_name.'[submission_type]', $submission_type, '');
 			
-			if($breadcrumb)
-			{
-				$return .= '<p id="taxonomy-crumb"><strong>'.lang('path_to_here').'</strong> '.$breadcrumb.'</p>';
-			}
+			
 			
 			// if the settings for the field have enabled pages mode, 
 			// & the admin has opted to keep the template picker available
@@ -333,8 +330,10 @@
 				
 				<style type='text/css'>
 					
-					.taxonomy_fetch_title { padding: 0 2px; color: green}
+					.taxonomy_fetch_title { padding: 0 2px; font-weight: bold; background: #fff; padding: 0 3px; border-radius: 3px; -webkit-box-shadow: 0 1px 1px rgba(0,0,0, 0.2)}
 					.taxonomy_fetch_title:hover {cursor: pointer;}
+					.taxonomy_table tr td { height: 23px;}
+					.taxonomy_table tr td.taxonomy_crumb_holder {background: #FDFCD1;}
 					
 				</style>";
 
@@ -344,27 +343,24 @@
 				$hide_template_select = TRUE;
 				$return .= form_hidden($this->field_name.'[use_page_uri]', 1);
 			}			
-			
-			
-			// @todo add fetch title
+
 			$return .= '
-					<table class="mainTable" border="0" cellspacing="0" cellpadding="0" style="margin-top: 5px;">
+					<table class="mainTable taxonomy_table" border="0" cellspacing="0" cellpadding="0" style="margin-top: 5px;">
 							<tr>
 								<th colspan="2">'.$this->EE->lang->line('node_properties').'</th>
 							</tr>';
-			
-			
-			
+
 			$return .= '	<tr>
-								<td style="width: 140px;">'.$this->EE->lang->line('node_label').' [<span class="taxonomy_fetch_title" title="'.$this->EE->lang->line('fetch_title').'">+</span>]</td>
+								<td style="width: 140px;">'.$this->EE->lang->line('node_label').' <span class="taxonomy_fetch_title" title="'.$this->EE->lang->line('fetch_title').'">+</span></td>
 								<td>'.$label.'</td>
 							</tr>';
 			
 			// if we don't have a custom uri in the tree for this node
 			// and it's not a pages module association
-
+			
+			
 			$return .= '	<tr>
-								<td>'.$this->EE->lang->line('parent_node').'</td>
+								<td>'.$this->EE->lang->line('parent_node').':</td>
 								<td>'.$parent_node_options.' &nbsp; '.$pages_option.'</td>
 							</tr>';
 
@@ -380,7 +376,7 @@
 								));
 			
 				$return .= '	<tr>
-								<td style="width: 140px;">'.$this->EE->lang->line('override_url').'</td>
+								<td style="width: 140px;">'.$this->EE->lang->line('override_url').':</td>
 								<td>'.$custom_url_input.'</td>
 							</tr>';
 			
@@ -390,7 +386,7 @@
 			if(!isset($this->settings['hide_template_select']) && !isset($custom_url))
 			{
 				$return .= '<tr id="taxonomy_template_select_row_'.$this->field_id.'">
-								<td>'.$this->EE->lang->line('template').'</td>
+								<td>'.$this->EE->lang->line('template').':</td>
 								<td>'.$template.'</td>
 							</tr>';
 			}
@@ -433,7 +429,10 @@
 				
 			}
 			
-			
+			if($breadcrumb)
+			{
+				$return .= '<tr><td>'.lang('path_to_here').'</td><td>'.$breadcrumb.'</td></tr>';
+			}
 			
 			$return .= '</table>';
 					
