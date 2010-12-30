@@ -92,7 +92,7 @@ class Taxonomy {
 				elseif($crumb['custom_url'] != "")
 				{
 					// if its a relative link, add our site index
-					$node_url = (substr(ltrim($crumb['custom_url']), 0, 7) != 'http://' ? $this->EE->functions->fetch_site_index() : '') . $crumb['custom_url'];
+					$node_url = ((substr(ltrim($node_url), 0, 7) != 'http://') && (substr(ltrim($node_url), 0, 8) != 'https://') ? $this->EE->functions->fetch_site_index() : '') . $crumb['custom_url'];
 				}
 				else
 				{
