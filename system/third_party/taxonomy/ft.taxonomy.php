@@ -314,23 +314,11 @@
 				
 			}
 			
-			$return .= "<script type='text/javascript'>
-				$(document).ready(function() {
-				
-					// set the taxonomy label from the title
-					$('.taxonomy_fetch_title').click(function() {
-						
-						var titleval = $('input#title').val();
-						
-						$('#taxonomy_label_".$this->field_id."').val(titleval);
-					});
-					
-				});
-				</script>
+			$return .= "
 				
 				<style type='text/css'>
 					
-					.taxonomy_fetch_title { padding: 0 2px; font-weight: bold; background: #fff; padding: 0 3px; border-radius: 3px; -webkit-box-shadow: 0 1px 1px rgba(0,0,0, 0.2)}
+					.taxonomy_fetch_title { padding: 0 2px; font-weight: bold; background: #fff; padding: 0 3px; border-radius: 3px; -webkit-box-shadow: 0 1px 1px rgba(0,0,0, 0.2); margin-left: 3px;}
 					.taxonomy_fetch_title:hover {cursor: pointer;}
 					.taxonomy_table tr td { height: 23px;}
 					.taxonomy_table tr td.taxonomy_crumb_holder {background: #FDFCD1;}
@@ -351,7 +339,7 @@
 							</tr>';
 
 			$return .= '	<tr>
-								<td style="width: 140px;">'.$this->EE->lang->line('node_label').' <span class="taxonomy_fetch_title" title="'.$this->EE->lang->line('fetch_title').'">+</span></td>
+								<td style="width: 140px;"><strong>'.$this->EE->lang->line('node_label').'</strong> <span class="taxonomy_fetch_title" title="'.$this->EE->lang->line('fetch_title').'">+</span></td>
 								<td>'.$label.'</td>
 							</tr>';
 			
@@ -360,7 +348,7 @@
 			
 			
 			$return .= '	<tr>
-								<td>'.$this->EE->lang->line('parent_node').':</td>
+								<td><strong>'.$this->EE->lang->line('parent_node').':</strong></td>
 								<td>'.$parent_node_options.' &nbsp; '.$pages_option.'</td>
 							</tr>';
 
@@ -376,7 +364,7 @@
 								));
 			
 				$return .= '	<tr>
-								<td style="width: 140px;">'.$this->EE->lang->line('override_url').':</td>
+								<td style="width: 140px;"><strong>'.$this->EE->lang->line('override_url').':</strong></td>
 								<td>'.$custom_url_input.'</td>
 							</tr>';
 			
@@ -386,7 +374,7 @@
 			if(!isset($this->settings['hide_template_select']) && !isset($custom_url))
 			{
 				$return .= '<tr id="taxonomy_template_select_row_'.$this->field_id.'">
-								<td>'.$this->EE->lang->line('template').':</td>
+								<td><strong>'.$this->EE->lang->line('template').':</strong></td>
 								<td>'.$template.'</td>
 							</tr>';
 			}
@@ -420,8 +408,8 @@
 						}
 
 
-						$return .= '<tr id="taxonomy_template_select_row_'.$this->field_id.'">
-									<td>'.$custom_field_label.'</td>
+						$return .= '<tr>
+									<td><strong>'.$custom_field_label.'</strong></td>
 									<td>'.$custom_field_input.'</td>
 									</tr>';
 					}
@@ -431,7 +419,7 @@
 			
 			if($breadcrumb)
 			{
-				$return .= '<tr><td>'.lang('path_to_here').'</td><td>'.$breadcrumb.'</td></tr>';
+				// $return .= '<tr><td>'.lang('path_to_here').'</td><td>'.$breadcrumb.'</td></tr>';
 			}
 			
 			$return .= '</table>';

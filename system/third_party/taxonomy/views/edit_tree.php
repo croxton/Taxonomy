@@ -79,7 +79,7 @@
 	}
 	
 	// add our last blank row
-	$order = $i-1;
+	$order = $i;
 	$label = '';
 	$name = '';
 	$type = '';
@@ -97,7 +97,7 @@
 	echo $this->table->generate();
 	$this->table->clear(); // needed to reset the table
 ?>
-
+<p><?=lang('field_notice')?></p>
 </div>
 <br />
 <input type="submit" class="submit" value="<?=lang('save_settings')?>" />
