@@ -2981,8 +2981,10 @@ ORDER BY {$this->left_col} DESC) as parent";
 	{
 	    $new_array = array();
 	    $sortable_array = array();
-	
-	    if (count($array) > 0) {
+		
+		
+		
+	    if (count($array) > 0 && is_array($array)) {
 	        foreach ($array as $k => $v) {
 	            if (is_array($v)) {
 	                foreach ($v as $k2 => $v2) {
