@@ -67,7 +67,9 @@ class Taxonomy_upd {
 														 'constraint' => '10'),
 														 
 						'pages_mode' 			=> array('type'	=> 'int', 
-											 			 'constraint' => '1')
+											 			 'constraint' => '1'),
+											 			 
+			 			 'extra' 			=> array('type'	=> 'text')
 						);
 
 		$this->EE->dbforge->add_field($fields);

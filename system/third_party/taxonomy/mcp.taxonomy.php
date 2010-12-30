@@ -218,8 +218,7 @@ class Taxonomy_mcp
 					'custom_url'		=> array('type' => 'varchar', 
 												'constraint' => '250', 
 												'null' => TRUE),
-					'extra'				=> array('type' => 'varchar', 
-												'constraint' => '255')	
+					'extra'				=> array('type' => 'text')	
 												
 					);
 				
