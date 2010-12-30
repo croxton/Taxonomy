@@ -227,9 +227,22 @@ class Taxonomy_upd {
 		
 		if($current < 1.100) 
 		{
+			// add the extra col
 			$this->EE->load->dbforge();
 			$fields = array('extra' => array('type' => 'text'));
 			$this->EE->dbforge->add_column('taxonomy_trees', $fields);
+			
+			// stoopid me set it to varchar(255) initially, not enough room for fields I think...
+			$query = $this->EE->db->get('exp_taxonomy_trees');	
+			if ($query->num_rows() > 0)
+			{
+				foreach($query->result_array() as $row)
+				{
+					$fields = array('extra' => array('name' => 'extra', 'type' => 'TEXT'));
+					$this->EE->dbforge->modify_column('taxonomy_tree_'.$row['id'], $fields);
+				}
+			}
+	
 		}
 
 		

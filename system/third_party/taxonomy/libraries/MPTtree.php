@@ -2771,6 +2771,17 @@ ORDER BY {$this->left_col} DESC) as parent";
 									'node_level_total_count' => $level_total_count 
 	        						);
 	        	
+	        	$custom_fields = (isset($data['extra'])) ? unserialize($data['extra']) : NULL;
+	        	
+	        	if(is_array($custom_fields))
+	        	{
+	        		foreach($custom_fields as $label => $field_data)
+	        		{
+	        			$variables[$label] = $field_data;
+	        		}
+
+	        	}
+	        	
 	        	$tmp = $this->EE->functions->prep_conditionals($tagdata, $variables);
 	        	
 	        	// make sure each node has a unique class

@@ -100,6 +100,13 @@
 						form_checkbox('extra['.$custom_field['name'].']', 1, $value).' &nbsp; '.$custom_field['label']
 					);
 					break;
+				case($custom_field['type'] == 'textarea'):
+					$this->table->add_row(
+						$custom_field['label'].':',
+						form_textarea('extra['.$custom_field['name'].']', $value, 'id='.$custom_field['name'].',  style="width: 60%; height:60px;"')
+
+					);
+					break;
 			}
 			
 		}
