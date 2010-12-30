@@ -2358,7 +2358,7 @@ ORDER BY {$this->left_col} DESC) as parent";
     			}
     			// does the custom url start with http://, 
     			// if not we add our site_index as it'll be a relative link
-    			$node_url = (substr(ltrim($node_url), 0, 7) != 'http://' ? $this->EE->functions->fetch_site_index() : '') . $node_url;
+    			$node_url = ((substr(ltrim($node_url), 0, 7) != 'http://') && (substr(ltrim($node_url), 0, 8) != 'https://') ? $this->EE->functions->fetch_site_index() : '') . $node_url;
     		}
     		else
     		{
@@ -2717,7 +2717,7 @@ ORDER BY {$this->left_col} DESC) as parent";
 	    				// does the custom url start with http://, 
 	    				// if not we add our site_index as it'll be a relative link
 	    				// and the nav tag will apply the $active css class to the node
-	    			$node_url = (substr(ltrim($node_url), 0, 7) != 'http://' ? $this->EE->functions->fetch_site_index() : '') . $node_url;
+	    			$node_url = ((substr(ltrim($node_url), 0, 7) != 'http://') && (substr(ltrim($node_url), 0, 8) != 'https://') ? $this->EE->functions->fetch_site_index() : '') . $node_url;
 	    			}
 	    			
 	    		}
