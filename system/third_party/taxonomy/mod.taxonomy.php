@@ -24,10 +24,8 @@ class Taxonomy {
 	
 		$tree = $this->EE->TMPL->fetch_param('tree_id');
 				
-		if ( ! $this->EE->db->table_exists('exp_taxonomy_tree_'.$tree))
-		{
+		if ( ! $this->check_taxonomy_table_exists($tree))
 			return false;
-		}
 		
 		$display_root = $this->EE->TMPL->fetch_param('display_root');
 		
@@ -128,7 +126,7 @@ class Taxonomy {
 		$tree = $this->EE->TMPL->fetch_param('tree_id');
 		$options = array();
 		
-		if ( ! $this->EE->db->table_exists('exp_taxonomy_tree_'.$tree))
+		if ( ! $this->check_taxonomy_table_exists($tree))
 			return false;
 
 		$this->EE->load->library('MPTtree');
@@ -151,6 +149,7 @@ class Taxonomy {
 		$options['hide_dt_group'] 	= ($this->EE->TMPL->fetch_param('hide_dt_group')) ? $this->EE->TMPL->fetch_param('hide_dt_group') : NULL;
 		$options['path'] 			= NULL;
 		$options['url_title']  		= ($this->EE->TMPL->fetch_param('url_title')) ? $this->EE->TMPL->fetch_param('url_title') : NULL;
+		$options['auto_expand']  		= ($this->EE->TMPL->fetch_param('auto_expand')) ? $this->EE->TMPL->fetch_param('auto_expand') : "no";
 
 		// if we've got a url title, set the root_entry_id var by
 		// doing a quick lookup for that entry - added by Todd Perkins
@@ -212,10 +211,8 @@ class Taxonomy {
 	{
 		$tree = $this->EE->TMPL->fetch_param('tree_id');
 		
-		if ( ! $this->EE->db->table_exists('exp_taxonomy_tree_'.$tree))
-		{
-			return false;
-		}		
+		if ( ! $this->check_taxonomy_table_exists($tree))
+			return false;	
 
 		// set a session variable with an array of all the node entry_ids and path settings
 		if ( ! isset($this->EE->session->cache['taxonomy']['templates_to_entries'][$tree]))
@@ -316,10 +313,8 @@ class Taxonomy {
 
 		$tree = $this->EE->TMPL->fetch_param('tree_id');
 
-		if ( ! $this->EE->db->table_exists('exp_taxonomy_tree_'.$tree))
-		{
+		if ( ! $this->check_taxonomy_table_exists($tree))
 			return false;
-		}
 				
 		$entry_id = $this->EE->TMPL->fetch_param('entry_id');
 
@@ -365,10 +360,8 @@ class Taxonomy {
 		$tree = $this->EE->TMPL->fetch_param('tree_id');
 		
 		// check the table exists
-		if ( ! $this->EE->db->table_exists('exp_taxonomy_tree_'.$tree))
-		{
+		if ( ! $this->check_taxonomy_table_exists($tree))
 			return false;
-		}
 		
 		$entry_id = $this->EE->TMPL->fetch_param('entry_id');
 		$include_current = $this->EE->TMPL->fetch_param('include_current');
@@ -407,6 +400,22 @@ class Taxonomy {
 		return $return;
 	
 	}
+	
+	
+	
+	
+	private function check_taxonomy_table_exists($tree)
+	{
+		if ( ! isset($this->EE->session->cache['taxonomy']['tree_exists'][$tree]))
+		{
+			if (! $this->EE->db->table_exists('exp_taxonomy_tree_'.$tree))
+				return FALSE;
+			
+			$this->EE->session->cache['taxonomy']['tree_exists'][$tree] = 1;
+		}
+		return TRUE;
+	}
+	
 
 
 } // end class Taxonomy
