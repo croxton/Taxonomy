@@ -2693,7 +2693,7 @@ function get_parents_crumbs($lft,$rgt){
     		
     		else
     		{
-    			// Lots of if  OR ANDS...
+    			// move onwards only if autoexpand is no, or level = 0, or we're on a sibling of an active branch/node using autoexpand=yes
 				if (	$options['auto_expand'] == 'no'
 						||
 						$data['level'] == 0
@@ -2743,7 +2743,7 @@ function get_parents_crumbs($lft,$rgt){
 						if($node_url == "[page_uri]")
 						{
 							$site_id = $this->EE->config->item('site_id');
-							$node_url = $this->entry_id_to_page_uri($data['entry_id'], $site_id);
+							$node_url = $this->EE->functions->fetch_site_index().$this->entry_id_to_page_uri($data['entry_id'], $site_id);
 						}
 						elseif($node_url[0] == "#")
 						{
