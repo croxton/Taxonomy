@@ -476,7 +476,7 @@
 				$data['override_url'] = '';
 			}
 			
-			$parent_node = $mpttree->get_node_by_nodeid($data['parent_node_id']);
+			$parent_node = $mpttree->get_node_by_nodeid($data['parent_node_id']);			
 			
 			$parent_node_lft = $parent_node['lft'];
 			
@@ -511,6 +511,18 @@
 
 				// fetch the node
 				$node = $mpttree->get_node_by_entry_id($this->settings['entry_id']);
+				
+				// possible that fields are not displayed on publish, and have had
+				// data entered via the module interface, so we merge the array with the existing data
+				
+				if($node['extra'])
+				{
+					$node['extra'] = unserialize($node['extra']);
+					$taxonomy_data['extra'] = unserialize($taxonomy_data['extra']);
+					
+					$taxonomy_data['extra'] = array_merge($node['extra'], $taxonomy_data['extra']);
+					$taxonomy_data['extra'] = serialize($taxonomy_data['extra']);
+				}
 
 				// what is the existing parent value
 				$existing_parent = $mpttree->get_parent($node['lft'],$node['rgt']);
