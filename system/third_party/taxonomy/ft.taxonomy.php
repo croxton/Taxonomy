@@ -519,9 +519,7 @@
 				{
 					$node['extra'] = unserialize($node['extra']);
 					$taxonomy_data['extra'] = unserialize($taxonomy_data['extra']);
-					
-					$taxonomy_data['extra'] = array_merge($node['extra'], $taxonomy_data['extra']);
-					$taxonomy_data['extra'] = serialize($taxonomy_data['extra']);
+					$taxonomy_data['extra'] = serialize(array_merge($node['extra'], $taxonomy_data['extra']));
 				}
 
 				// what is the existing parent value
