@@ -13,10 +13,10 @@
  */
 class Taxonomy_upd {
 
-	var $version        = '1.100';
+	var $version        = '1.110';
 	var $module_name 	= "Taxonomy";
 	
-	function Taxonomy_upd( $switch = TRUE ) 
+	function __construct() 
 	{ 
 		// Make a local reference to the ExpressionEngine super object
 		$this->EE =& get_instance();

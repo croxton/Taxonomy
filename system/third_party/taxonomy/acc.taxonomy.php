@@ -8,19 +8,18 @@ class Taxonomy_acc {
 	var $sections		= array();
 
 	
-	function Taxonomy_acc()
+	function __construct()
 	{
 		$this->EE =& get_instance();
 		$this->base = BASE.AMP.'C=addons_modules'.AMP.'M=show_module_cp'.AMP.'module=taxonomy';
 		$this->edit_tree_base = $this->base.AMP.'method=edit_nodes'.AMP.'tree_id=';
-		
 	}
 	
 
 	function set_sections()
 	{
 
-		$r 					= '';
+		$r = '';
 		$this->sections[] = '<script type="text/javascript" charset="utf-8">$("#accessoryTabs a.taxonomy_acc").parent().remove();</script>';
 
 		$installed_modules 	= $this->EE->cp->get_installed_modules();

@@ -16,7 +16,7 @@ class Taxonomy_mcp
 	var $form_base;		// base url for forms
 	var $module_name = "taxonomy";	
 
-	function Taxonomy_mcp( $switch = TRUE )
+	function __construct()
 	{
 		// Make a local reference to the ExpressionEngine super object
 		$this->EE =& get_instance(); 

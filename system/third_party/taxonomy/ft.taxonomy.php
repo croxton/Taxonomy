@@ -18,7 +18,7 @@
 			'version'	=> '0.4'
 		);
 
-		public function Taxonomy_ft()
+		function __construct()
 		{
 			parent::EE_Fieldtype();
 			include_once PATH_THIRD.'taxonomy/libraries/MPTtree.php';

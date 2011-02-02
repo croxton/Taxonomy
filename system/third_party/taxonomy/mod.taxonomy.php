@@ -11,7 +11,7 @@
  */
 class Taxonomy {
 
-	function Taxonomy()
+	function __construct()
 	{
 		// Make a local reference to the ExpressionEngine super object
 		$this->EE =& get_instance();
@@ -28,6 +28,7 @@ class Taxonomy {
 			return false;
 		
 		$display_root = $this->EE->TMPL->fetch_param('display_root');
+		$wrap_li = ($this->EE->TMPL->fetch_param('wrap_li') == 'yes') ? TRUE : FALSE;
 		
 		$entry_id = $this->EE->TMPL->fetch_param('entry_id');
 
@@ -38,7 +39,9 @@ class Taxonomy {
 										'id' => 'node_id',
 										'title' => 'label'));
 		
-		$delimiter = $this->EE->TMPL->fetch_param('delimiter');
+		$delimiter = ($this->EE->TMPL->fetch_param('delimiter')) ? ' '.$this->EE->TMPL->fetch_param('delimiter').' ' : ' &rarr; ';
+		// remove the delimiter if we're wrapping in <li>
+		if($wrap_li) $delimiter = NULL;
 		
 		$hide_dt_group 	= ($this->EE->TMPL->fetch_param('hide_dt_group')) ? $this->EE->TMPL->fetch_param('hide_dt_group') : NULL;
 
@@ -47,7 +50,7 @@ class Taxonomy {
 
 		$return_data = '';
 		
-		if($delimiter ==''){$delimiter = '&rarr;';}
+		
 					
 		if($here != '')
 		{
@@ -106,14 +109,17 @@ class Taxonomy {
 				}
 				else
 				{
-					$return_data .= '<a href="'.$node_url.'">'.$crumb['label'].'</a> '.$delimiter.' ';
+					$return_data .= ($wrap_li) ? '<li>' : '';
+					$return_data .= '<a href="'.$node_url.'">'.$crumb['label'].'</a>'.$delimiter;
+					$return_data .= ($wrap_li) ? "</li>\n" : '';
 				}
 				
 				$depth++;
 				
 			}
-
+			$return_data .= ($wrap_li) ? '<li>' : '';
 			$return_data .= $here['label'];
+			$return_data .= ($wrap_li) ? "</li>\n" : '';
 		}	
 	
 		return $return_data;
