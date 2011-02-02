@@ -613,6 +613,7 @@ class Taxonomy_mcp
 		
 		if($extra)
 		{
+			$extra = $this->EE->security->xss_clean($extra);
 			$extra = serialize($extra);
 		}
 		

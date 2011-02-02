@@ -384,13 +384,17 @@
 			{
 				
 				$userfields = $mpttree->array_sort(unserialize($userfields), 'order', SORT_ASC);
+				$hidden_custom_fields = '';
 				
 				foreach($userfields as $custom_field)
 				{
+					
+					// does the array key exist, if so grab the value
+					$value = (isset($fields_data[$custom_field['name']])) ? $fields_data[$custom_field['name']] : '';
+					
+					// output our custom fields
 					if(isset($custom_field['show_on_publish']) && $custom_field['show_on_publish'] == 1)
 					{
-						// does the array key exist, if so grab the value
-						$value = (isset($fields_data[$custom_field['name']])) ? $fields_data[$custom_field['name']] : '';
 
 						switch($custom_field)
 						{
@@ -414,6 +418,11 @@
 									<td>'.$custom_field_input.'</td>
 									</tr>';
 					}
+					
+					else
+					{
+						$hidden_custom_fields .= form_hidden('extra['.$custom_field['name'].']', $value);
+					}
 				}
 				
 			}
@@ -423,7 +432,7 @@
 				// $return .= '<tr><td>'.lang('path_to_here').'</td><td>'.$breadcrumb.'</td></tr>';
 			}
 			
-			$return .= '</table>';
+			$return .= '</table>'. $hidden_custom_fields;
 					
 			
 			return $return;
@@ -483,9 +492,11 @@
 			$extra = $this->EE->input->post('extra');	
 			if($extra)
 			{
+				$extra = $this->EE->security->xss_clean($extra);
 				$extra = serialize($extra);
 			}
 			
+			// get our array together for the insert/update
 			$taxonomy_data = array(
 							'node_id'			=> '',
 							'label'				=> htmlspecialchars($data['label'], ENT_COMPAT, 'UTF-8'),
@@ -509,18 +520,8 @@
 			if($data['submission_type'] =='edit' && $data['label'] != '')
 			{
 
-				// fetch the node
+				// fetch the existing node values
 				$node = $mpttree->get_node_by_entry_id($this->settings['entry_id']);
-				
-				// possible that fields are not displayed on publish, and have had
-				// data entered via the module interface, so we merge the array with the existing data
-				
-				if($node['extra'])
-				{
-					$node['extra'] = unserialize($node['extra']);
-					$taxonomy_data['extra'] = unserialize($taxonomy_data['extra']);
-					$taxonomy_data['extra'] = serialize(array_merge($node['extra'], $taxonomy_data['extra']));
-				}
 
 				// what is the existing parent value
 				$existing_parent = $mpttree->get_parent($node['lft'],$node['rgt']);
