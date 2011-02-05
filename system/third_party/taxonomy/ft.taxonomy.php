@@ -289,17 +289,6 @@
 					       	$('tr#taxonomy_template_select_row_".$this->field_id."').hide();
 						} 
 					);
-					
-					
-					// set the taxonomy label from the title
-					$('.taxonomy_fetch_title').click(function() {
-						
-						var titleval = $('input#title').val();
-						// alert('test');
-						
-						$('#taxonomy_label_".$this->field_id."').val(titleval);
-					});
-					
 				});
 				</script>
 				
@@ -315,6 +304,16 @@
 			}
 			
 			$return .= "
+			
+				<script type='text/javascript'>
+					// set the taxonomy label from the title
+					$(document).ready(function() {
+						$('.taxonomy_fetch_title').click(function() {
+								var titleval = $('input#title').val();								
+								$('#taxonomy_label_".$this->field_id."').val(titleval);
+							});
+						});
+				</script>
 				
 				<style type='text/css'>
 					
@@ -378,13 +377,15 @@
 								<td>'.$template.'</td>
 							</tr>';
 			}
+			
+			$hidden_custom_fields = '';
 
 			// custom fields
 			if($userfields)
 			{
 				
 				$userfields = $mpttree->array_sort(unserialize($userfields), 'order', SORT_ASC);
-				$hidden_custom_fields = '';
+				
 				
 				foreach($userfields as $custom_field)
 				{
